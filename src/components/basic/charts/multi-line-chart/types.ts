@@ -16,12 +16,6 @@ export interface TimeExtentResult {
   timeStep: number;
 }
 
-export interface ShiftAnimationCheckConfig {
-  prevTimeExtent: [number, number];
-  currentTimeExtent: [number, number];
-  chartWidth: number;
-}
-
 export interface CreateClipPathsConfig {
   svg: d3.Selection<SVGSVGElement, unknown, null, undefined>;
   chartWidth: number;

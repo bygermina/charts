@@ -9,9 +9,12 @@ import {
   createLineGenerator,
   prepareChartData,
 } from './multi-line-chart/index';
-import { resolveChartColors, resolveCSSVariable } from './utils/canvas-helpers';
+import { resolveChartColors, resolveCSSVariable, setupCanvas } from './utils/canvas-helpers';
 import { drawGrid, drawAxes, drawLine, drawLegend } from './multi-line-chart-canvas/drawing';
-import { getCanvasCache, getCachedOrCompute } from './utils/chart-cache';
+import styles from './multi-line-chart-canvas.module.scss';
+
+const TIME_WINDOW_MS = 30000;
+const MAX_DISPLAY_POINTS = 200;
 
 interface MultiLineChartCanvasProps {
   lines: LineSeries[];
@@ -23,6 +26,18 @@ interface MultiLineChartCanvasProps {
   strokeWidth?: number;
   yDomain?: [number, number];
 }
+
+const processLinesData = (lines: LineSeries[], timeWindowStart: number): LineSeries[] => {
+  const processed = lines.map((line) => ({
+    ...line,
+    data: line.data.slice(-MAX_DISPLAY_POINTS),
+  }));
+
+  return processed.map((line) => {
+    const filtered = line.data.filter((point) => point.time >= timeWindowStart);
+    return { ...line, data: filtered.length > 0 ? filtered : line.data };
+  });
+};
 
 export const MultiLineChartCanvas = ({
   lines,
@@ -48,67 +63,20 @@ export const MultiLineChartCanvas = ({
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    const setupResult = setupCanvas(canvas, width, height);
+    if (!setupResult) return;
 
-    const dpr = window.devicePixelRatio || 1;
-    const actualWidth = width * dpr;
-    const actualHeight = height * dpr;
+    const { ctx } = setupResult;
 
-    const cache = getCanvasCache(canvas);
+    const resolvedChartColors = resolveChartColors(chartColors, canvas);
 
-    const needsResize = canvas.width !== actualWidth || canvas.height !== actualHeight;
-    if (needsResize) {
-      canvas.width = actualWidth;
-      canvas.height = actualHeight;
-      canvas.style.width = `${width}px`;
-      canvas.style.height = `${height}px`;
-    }
+    const timeWindowStart = Date.now() - TIME_WINDOW_MS;
+    const dataToUse = processLinesData(lines, timeWindowStart);
 
-    const resolvedChartColors = getCachedOrCompute(cache, 'resolvedColors', () =>
-      resolveChartColors(chartColors, canvas),
-    );
-
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
-    ctx.scale(dpr, dpr);
-    if (!needsResize) ctx.clearRect(0, 0, width, height);
-
-    const timeWindowMs = 30000;
-    const timeWindowStart = Date.now() - timeWindowMs;
-    const MAX_DISPLAY_POINTS = 200;
-
-    const linesHash = JSON.stringify(
-      lines.map((line) => ({
-        length: line.data.length,
-        lastTime: line.data.at(-1)?.time,
-      })),
-    );
-
-    const linesToProcess =
-      cache.cachedLines && cache.cachedLinesHash === linesHash
-        ? cache.cachedLines
-        : (() => {
-            const processed = lines.map((line) => ({
-              ...line,
-              data: line.data.slice(-MAX_DISPLAY_POINTS),
-            }));
-            cache.cachedLines = processed;
-            cache.cachedLinesHash = linesHash;
-            return processed;
-          })();
-
-    const dataToUse = linesToProcess.map((line) => {
-      const filtered = line.data.filter((point) => point.time >= timeWindowStart);
-      return { ...line, data: filtered.length > 0 ? filtered : line.data };
-    });
-
-    const prevData = cache.prevData ?? [];
-    const prevMetadata = cache.prevMetadata ?? { timeExtent: null, timeStep: 0 };
-    const isInitialRender = prevData.length === 0;
     const chartData = prepareChartData({
       lines: dataToUse,
-      prevMetadata,
-      isInitialRender,
+      prevMetadata: { timeExtent: null, timeStep: 0 },
+      isInitialRender: true,
       chartWidth,
     });
 
@@ -150,6 +118,7 @@ export const MultiLineChartCanvas = ({
     const linesWithResolvedColors = dataToUse.map((line) => {
       const resolvedColor = resolveCSSVariable(line.color, canvas);
       drawLine(ctx, line.data, lineGenerator, resolvedColor, strokeWidth, shiftOffset);
+
       return { ...line, color: resolvedColor };
     });
 
@@ -160,29 +129,6 @@ export const MultiLineChartCanvas = ({
     }
 
     ctx.restore();
-
-    const MAX_PREV_POINTS = 100;
-    const hasDataChanged =
-      !prevData.length ||
-      lines.length !== prevData.length ||
-      lines.some((line, idx) => {
-        const prevLine = prevData[idx];
-        if (!prevLine) return true;
-        const lastPoint = line.data.at(-1);
-        const prevLastPoint = prevLine.data.at(-1);
-        return line.data.length !== prevLine.data.length || lastPoint?.time !== prevLastPoint?.time;
-      });
-
-    if (hasDataChanged) {
-      cache.prevData = lines.map((line) => ({
-        ...line,
-        data: line.data.slice(-MAX_PREV_POINTS).map((point) => ({ ...point })),
-      }));
-      cache.prevMetadata = {
-        timeExtent: chartData.timeExtent,
-        timeStep: chartData.timeStep,
-      };
-    }
   }, [
     lines,
     width,
@@ -199,8 +145,8 @@ export const MultiLineChartCanvas = ({
   ]);
 
   return (
-    <div style={{ width, height, overflow: 'hidden', position: 'relative' }}>
-      <canvas ref={canvasRef} width={width} height={height} style={{ display: 'block' }} />
+    <div className={styles.container} style={{ width, height }}>
+      <canvas ref={canvasRef} width={width} height={height} className={styles.canvas} />
     </div>
   );
 };

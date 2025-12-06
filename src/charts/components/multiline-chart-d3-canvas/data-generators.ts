@@ -1,6 +1,5 @@
 import { type DataPoint } from '@/components/basic/charts/types';
 
-let velocity = 0; // Rate of change per update
 const maxVelocity = 2; // Maximum change per step
 const velocityDecay = 0.9; // Slow down velocity over time
 const noiseStrength = 3; // Maximum random deviation from trend
@@ -10,6 +9,7 @@ export const createTrendGenerator = (
   baseRange: [number, number] = [30, 170],
 ) => {
   let currentValue = initialValue;
+  let velocity = 0; // Rate of change per update - каждый генератор имеет свою velocity
 
   return (): number => {
     velocity *= velocityDecay;

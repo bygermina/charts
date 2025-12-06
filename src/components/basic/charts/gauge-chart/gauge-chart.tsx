@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { type ChartVariant, getChartColors } from './types';
+import { type ChartVariant, getChartColors } from '../types';
 
 interface GaugeChartProps {
   value: number; // 0-100

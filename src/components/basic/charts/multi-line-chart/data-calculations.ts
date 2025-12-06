@@ -2,7 +2,7 @@ import { type DataPoint } from '../types';
 import { type LineSeries } from './types';
 import { calculateTimeExtent } from './time-extent';
 import { calculateMaxValue } from './values';
-import { checkShiftAnimation } from './animation';
+import { calculateShiftAnimation } from '../chart-animation';
 
 const calculateTimeStep = (data: DataPoint[]): number => {
   if (data.length < 2) return 0;
@@ -52,7 +52,7 @@ export const prepareChartData = ({
   let shiftOffset = 0;
 
   if (!isInitialRender && prevMetadata.timeExtent !== null) {
-    const animationResult = checkShiftAnimation({
+    const animationResult = calculateShiftAnimation({
       prevTimeExtent: prevMetadata.timeExtent,
       currentTimeExtent: timeExtent,
       chartWidth,

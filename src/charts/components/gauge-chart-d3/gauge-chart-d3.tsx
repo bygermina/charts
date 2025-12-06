@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { GaugeChart } from '@/components/basic/charts/gauge-chart';
+import { GaugeChart } from '@/components/basic/charts/gauge-chart/gauge-chart';
 import { LabeledInput } from '@/components/basic/input/labeled-input';
 
 export const GaugeChartD3 = () => {

@@ -19,24 +19,33 @@ interface MultiLineChartCanvasProps {
 
 const MAX_DATA_POINTS = 200;
 
+const LINE_CONFIGS = [
+  { baseValue: 100, baseRange: [50, 150] as [number, number] },
+  { baseValue: 80, baseRange: [30, 130] as [number, number] },
+] as const;
+
+const createInitialData = (count: number, config: (typeof LINE_CONFIGS)[number]) =>
+  generateLineData(count, undefined, undefined, config.baseValue, config.baseRange);
+
 export const MultiLineChartD3Canvas = ({
-  delay = 1,
+  delay = 12,
   count = 200,
   variant = 'normal',
   showLegend = true,
   width = 600,
   height = 250,
 }: MultiLineChartCanvasProps) => {
-  const line1GeneratorRef = useRef(createTrendGenerator(100, [50, 150]));
-  const line2GeneratorRef = useRef(createTrendGenerator(80, [30, 130]));
-
   const effectiveCount = Math.min(count, MAX_DATA_POINTS);
 
+  const generatorsRef = useRef(
+    LINE_CONFIGS.map((config) => createTrendGenerator(config.baseValue, config.baseRange)),
+  );
+
   const [lineData, setLineData] = useState<DataPoint[]>(() =>
-    generateLineData(effectiveCount, undefined, undefined, 100, [50, 150]),
+    createInitialData(effectiveCount, LINE_CONFIGS[0]),
   );
   const [areaData, setAreaData] = useState<DataPoint[]>(() =>
-    generateLineData(effectiveCount, undefined, undefined, 80, [30, 130]),
+    createInitialData(effectiveCount, LINE_CONFIGS[1]),
   );
 
   const chartColors = getChartColors(variant);
@@ -44,33 +53,19 @@ export const MultiLineChartD3Canvas = ({
   useEffect(() => {
     let animationFrameId: number | null = null;
     let lastUpdateTime = 0;
-    let wasHidden = document.hidden;
+    let wasHidden = false;
     let isMounted = true;
 
     const tick = (timestamp: number) => {
-      if (!isMounted) return;
-
-      if (document.hidden) {
+      if (!isMounted || document.hidden) {
         animationFrameId = null;
         return;
       }
 
       if (timestamp - lastUpdateTime >= delay) {
         const now = Date.now();
-        const updateData = (prev: DataPoint[], generator: () => number) => {
-          if (prev.length >= effectiveCount) {
-            const newData = new Array(effectiveCount);
-            for (let i = 0; i < effectiveCount - 1; i++) {
-              newData[i] = prev[i + 1];
-            }
-            newData[effectiveCount - 1] = { time: now, value: generator() };
-            return newData;
-          }
-          return [...prev, { time: now, value: generator() }];
-        };
-
-        setLineData((prev) => updateData(prev, line1GeneratorRef.current));
-        setAreaData((prev) => updateData(prev, line2GeneratorRef.current));
+        setLineData((prev) => [...prev.slice(1), { time: now, value: generatorsRef.current[0]() }]);
+        setAreaData((prev) => [...prev.slice(1), { time: now, value: generatorsRef.current[1]() }]);
         lastUpdateTime = timestamp;
       }
 
@@ -86,6 +81,27 @@ export const MultiLineChartD3Canvas = ({
       }
     };
 
+    const resetData = (now: number) => {
+      setLineData(
+        generateLineData(
+          effectiveCount,
+          undefined,
+          now,
+          LINE_CONFIGS[0].baseValue,
+          LINE_CONFIGS[0].baseRange,
+        ),
+      );
+      setAreaData(
+        generateLineData(
+          effectiveCount,
+          undefined,
+          now,
+          LINE_CONFIGS[1].baseValue,
+          LINE_CONFIGS[1].baseRange,
+        ),
+      );
+    };
+
     const handleVisibilityChange = () => {
       if (document.hidden) {
         wasHidden = true;
@@ -95,11 +111,7 @@ export const MultiLineChartD3Canvas = ({
         }
       } else if (wasHidden && isMounted) {
         wasHidden = false;
-        const now = Date.now();
-        line1GeneratorRef.current = createTrendGenerator(100, [50, 150]);
-        line2GeneratorRef.current = createTrendGenerator(80, [30, 130]);
-        setLineData(generateLineData(effectiveCount, undefined, now, 100, [50, 150]));
-        setAreaData(generateLineData(effectiveCount, undefined, now, 80, [30, 130]));
+        resetData(Date.now());
         startTick();
       }
     };
@@ -111,7 +123,6 @@ export const MultiLineChartD3Canvas = ({
       isMounted = false;
       if (animationFrameId !== null) {
         cancelAnimationFrame(animationFrameId);
-        animationFrameId = null;
       }
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
@@ -132,7 +143,7 @@ export const MultiLineChartD3Canvas = ({
         showDots: true,
       },
     ],
-    [lineData, areaData, chartColors.primary, chartColors.tertiary],
+    [lineData, areaData, chartColors],
   );
 
   return (
