@@ -7,11 +7,6 @@ interface UseVisibilityCleanupConfig {
   onVisible?: () => void;
 }
 
-/**
- * Хук для очистки графика при переключении вкладки браузера
- * При скрытии вкладки полностью удаляет график и вызывает onHidden
- * При возврате на вкладку вызывает onVisible
- */
 export const useVisibilityCleanup = ({
   svgRef,
   onHidden,

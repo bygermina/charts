@@ -1,8 +1,8 @@
 import { type DataPoint } from '@/components/basic/charts/types';
 
-const maxVelocity = 2; // Maximum change per step
+const maxVelocity = 5; // Maximum change per step
 const velocityDecay = 0.9; // Slow down velocity over time
-const noiseStrength = 3; // Maximum random deviation from trend
+const noiseStrength = 8; // Maximum random deviation from trend
 
 export const createTrendGenerator = (
   initialValue: number = 75,

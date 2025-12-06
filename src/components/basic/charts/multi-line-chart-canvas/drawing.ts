@@ -109,9 +109,8 @@ export const drawLine = (
 
   if (shiftOffset !== 0) ctx.translate(shiftOffset, 0);
 
-  const lineWithContext = line.context(ctx);
   ctx.beginPath();
-  lineWithContext(data);
+  line.context(ctx)(data);
   ctx.stroke();
 
   ctx.restore();

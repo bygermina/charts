@@ -35,6 +35,7 @@ const processLinesData = (lines: LineSeries[], timeWindowStart: number): LineSer
 
   return processed.map((line) => {
     const filtered = line.data.filter((point) => point.time >= timeWindowStart);
+
     return { ...line, data: filtered.length > 0 ? filtered : line.data };
   });
 };
