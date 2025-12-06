@@ -1,0 +1,140 @@
+@use 'styles/design-system' as *;
+
+.typography {
+  margin: 0;
+  padding: 0;
+}
+
+// ============================================
+// TYPOGRAPHY HIERARCHY
+// ============================================
+// h1 > h2 > h3 > subheading > body > caption > label
+
+.typography-h1 {
+  font-size: clamp(2rem, 8vw, 3.5rem);
+  line-height: 1.1;
+  font-weight: font-weight(extrabold);
+  letter-spacing: -0.025em;
+
+  @include respond-to(md) {
+    font-size: 4.5rem;
+    line-height: 0.95;
+  }
+}
+
+.typography-h2 {
+  @include typography(3xl);
+  font-weight: font-weight(extrabold);
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+
+  @include respond-to(md) {
+    @include typography(4xl);
+  }
+}
+
+.typography-h3 {
+  @include typography(2xl);
+  font-weight: font-weight(extrabold);
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+
+  @include respond-to(md) {
+    @include typography(3xl);
+  }
+}
+
+.typography-subheading {
+  @include typography(base);
+  line-height: 1.5;
+  margin-bottom: spacing(4);
+
+  @include respond-to(sm) {
+    @include typography(xl);
+  }
+
+  @include respond-to(md) {
+    @include typography(2xl);
+  }
+}
+
+// ============================================
+// TEXT VARIANTS
+// ============================================
+
+.typography-body {
+  @include typography(base);
+  line-height: 1.5;
+}
+
+.typography-caption {
+  @include typography(xs);
+  line-height: 1.4;
+  color: var(--color-slate-400);
+}
+
+.typography-label {
+  @include typography(sm, medium);
+  line-height: 1.4;
+  display: block;
+  margin-bottom: spacing(1);
+}
+
+$sizes: xs, sm, base, lg, xl, 2xl, 3xl, 4xl, 5xl;
+
+@each $size in $sizes {
+  .typography-size-#{$size} {
+    @include typography($size);
+  }
+}
+
+$weights: (
+  normal: normal,
+  medium: medium,
+  bold: bold,
+  extrabold: extrabold,
+);
+
+@each $key, $value in $weights {
+  .typography-weight-#{$key} {
+    font-weight: font-weight($value);
+  }
+}
+
+// Colors
+$colors: (
+  default: var(--color-white),
+  muted: var(--color-slate-300),
+  primary: var(--color-cyan-400),
+  secondary: var(--color-slate-400),
+  accent: var(--color-cyan-300),
+);
+
+@each $key, $value in $colors {
+  .typography-color-#{$key} {
+    color: $value;
+  }
+}
+
+$alignments: (
+  left: left,
+  center: center,
+  right: right,
+  justify: justify,
+);
+
+@each $key, $value in $alignments {
+  .typography-align-#{$key} {
+    text-align: $value;
+  }
+}
+
+.typographyTruncate {
+  @include truncate;
+}
+
+@for $i from 1 through 4 {
+  .typographyLineClamp-#{$i} {
+    @include line-clamp($i);
+  }
+}

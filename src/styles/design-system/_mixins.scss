@@ -1,0 +1,105 @@
+@use './tokens' as tokens;
+@use './functions' as *;
+
+@mixin typography($size: base, $weight: normal) {
+  font-size: font-size($size);
+  line-height: line-height($size);
+  font-weight: font-weight($weight);
+}
+
+@mixin font-family($family: sans) {
+  font-family: font-family($family);
+}
+
+@mixin button-base {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: radius(md);
+  font-weight: font-weight(medium);
+  transition: all transition(base);
+  outline: none;
+  cursor: pointer;
+  border: none;
+
+  &:disabled {
+    pointer-events: none;
+    opacity: 0.5;
+  }
+
+  &:focus-visible {
+    outline: 2px solid transparent;
+    outline-offset: 0;
+  }
+}
+
+@mixin focus-ring($color: 'cyan', $shade: 400, $opacity: 0.6) {
+  &:focus-visible {
+    outline-color: color-opacity($color, $shade, $opacity);
+  }
+}
+
+@mixin respond-to($breakpoint) {
+  @media (min-width: breakpoint($breakpoint)) {
+    @content;
+  }
+}
+
+@mixin container($max-width: 1280px) {
+  width: 100%;
+  max-width: $max-width;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: spacing(4);
+  padding-right: spacing(4);
+}
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@mixin line-clamp($lines: 2) {
+  display: -webkit-box;
+  -webkit-line-clamp: $lines;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+@mixin scrollbar($width: 8px, $track-color: transparent, $thumb-color: var(--color-slate-600)) {
+  &::-webkit-scrollbar {
+    width: $width;
+    height: $width;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: $track-color;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $thumb-color;
+    border-radius: radius(full);
+
+    &:hover {
+      background: var(--color-slate-500);
+    }
+  }
+}
+
+@mixin fade-in($duration: 0.8s, $delay: 0s) {
+  opacity: 0;
+  animation: fadeIn $duration $delay forwards;
+}

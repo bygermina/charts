@@ -1,0 +1,32 @@
+@use 'styles/design-system' as *;
+
+.root {
+  position: relative;
+  padding: spacing(12) spacing(4);
+  min-height: 100vh;
+  @include flex-center;
+  overflow: hidden;
+}
+
+.container {
+  position: relative;
+  z-index: z-index(content);
+  max-width: 1200px;
+  width: 100%;
+}
+
+.title {
+  margin-bottom: spacing(12);
+}
+
+.chartsGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: spacing(8);
+  color: var(--color-white);
+
+  @include respond-to(md) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: spacing(12);
+  }
+}

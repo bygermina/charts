@@ -1,0 +1,92 @@
+import * as d3 from 'd3';
+
+import { createGrid, createLineLegend } from '../chart-utils';
+import { applyShiftAnimation, getCurrentTranslate } from '../chart-animation';
+import {
+  type ManageLegendConfig,
+  type ManageGridConfig,
+  type AnimateGridAndAxisConfig,
+} from './types';
+
+export const manageLegend = ({
+  mainGroup,
+  lines,
+  chartWidth,
+  showLegend,
+  chartColors,
+}: ManageLegendConfig): void => {
+  mainGroup
+    .selectAll('g')
+    .filter(function () {
+      const transform = d3.select(this).attr('transform');
+      return !!(transform && transform.includes(`translate(${chartWidth - 120}`));
+    })
+    .remove();
+
+  if (showLegend) {
+    const legendItems = lines.map((lineSeries) => ({
+      label: lineSeries.label,
+      color: lineSeries.color,
+      type: 'line' as const,
+    }));
+
+    createLineLegend(mainGroup, legendItems, chartWidth, chartColors);
+  }
+};
+
+export const manageGrid = ({
+  mainGroup,
+  xScale,
+  yScale,
+  chartWidth,
+  chartHeight,
+  margin,
+  gridLeftShift,
+  chartColors,
+}: ManageGridConfig): d3.Selection<SVGGElement, unknown, null, undefined> | null => {
+  const existingGridGroup = mainGroup.select<SVGGElement>('g.grid-group');
+  const savedTransform = existingGridGroup.empty() ? '' : existingGridGroup.attr('transform') || '';
+
+  const gridGroup = createGrid(
+    mainGroup,
+    xScale,
+    yScale,
+    chartWidth - margin.right,
+    chartHeight,
+    chartColors,
+  );
+
+  const transform = savedTransform || `translate(${-gridLeftShift}, 0)`;
+  gridGroup.attr('transform', transform);
+
+  return gridGroup;
+};
+
+export const animateGridAndAxis = ({
+  gridGroup,
+  xAxisGroup,
+  shiftOffset,
+  speed,
+  gridLeftShift,
+  chartHeight,
+}: AnimateGridAndAxisConfig): void => {
+  if (gridGroup) {
+    const { y: gridY } = getCurrentTranslate(gridGroup);
+    applyShiftAnimation({
+      element: gridGroup,
+      shiftOffset,
+      speed,
+      targetX: -gridLeftShift,
+      targetY: gridY,
+    });
+  }
+
+  const { y: xAxisY } = getCurrentTranslate(xAxisGroup);
+  applyShiftAnimation({
+    element: xAxisGroup,
+    shiftOffset,
+    speed,
+    targetX: 0,
+    targetY: xAxisY || chartHeight,
+  });
+};

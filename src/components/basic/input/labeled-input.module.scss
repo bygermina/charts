@@ -1,0 +1,53 @@
+@use 'styles/design-system' as *;
+
+.label {
+  display: block;
+  @include typography(sm, medium);
+  color: var(--color-slate-300);
+  margin-bottom: spacing(2);
+}
+
+.input {
+  width: 100%;
+  border-radius: radius(lg);
+  box-sizing: border-box;
+}
+
+.inputText {
+  padding: spacing(2) spacing(3);
+  background-color: var(--color-slate-900);
+  border: 1px solid var(--color-slate-600);
+  color: var(--color-slate-300);
+  @include typography(sm);
+  transition: border-color var(--transition-base);
+
+  &:focus {
+    outline: none;
+    border-color: var(--color-cyan-400);
+  }
+}
+
+.inputRange {
+  height: 0.5rem;
+  background-color: var(--color-slate-700);
+  appearance: none;
+  cursor: pointer;
+
+  &::-webkit-slider-thumb {
+    appearance: none;
+    width: 1rem;
+    height: 1rem;
+    border-radius: radius(full);
+    background-color: var(--color-cyan-400);
+    cursor: pointer;
+  }
+
+  &::-moz-range-thumb {
+    width: 1rem;
+    height: 1rem;
+    border-radius: radius(full);
+    background-color: var(--color-cyan-400);
+    cursor: pointer;
+    border: none;
+  }
+}

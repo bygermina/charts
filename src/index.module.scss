@@ -1,0 +1,21 @@
+@use 'styles/design-system' as *;
+
+.root {
+  position: relative;
+  min-height: 100vh;
+  margin: 0 auto;
+  max-width: 1280px;
+  background-color: var(--color-background-dark);
+  @supports (height: 100dvh) {
+    min-height: 100dvh;
+  }
+}
+
+.codeBackground {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 0;
+}

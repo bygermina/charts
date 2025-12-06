@@ -1,0 +1,71 @@
+@use './tokens' as *;
+@use './functions' as *;
+
+:root {
+  // Cyan
+  --color-cyan-300: #{ds-color('cyan', 300)};
+  --color-cyan-400: #{ds-color('cyan', 400)};
+
+  // Blue
+  --color-blue-400: #{ds-color('blue', 400)};
+
+  // Purple
+  --color-purple-500: #{ds-color('purple', 500)};
+
+  // Indigo
+  --color-indigo-500: #{ds-color('indigo', 500)};
+
+  // Slate
+  --color-slate-300: #{ds-color('slate', 300)};
+  --color-slate-400: #{ds-color('slate', 400)};
+  --color-slate-500: #{ds-color('slate', 500)};
+  --color-slate-600: #{ds-color('slate', 600)};
+  --color-slate-700: #{ds-color('slate', 700)};
+  --color-slate-800: #{ds-color('slate', 800)};
+  --color-slate-900: #{ds-color('slate', 900)};
+
+  // Special colors
+  --color-background-dark: #{ds-color('background-dark')};
+
+  // Base colors
+  --color-white: #{ds-color('white')};
+
+  // Colors with opacity (for common use cases)
+  --color-cyan-400-50: #{color-opacity('cyan', 400, 0.5)};
+  --color-blue-400-60: #{color-opacity('blue', 400, 0.6)};
+  --color-blue-400-30: #{color-opacity('blue', 400, 0.3)};
+  --color-blue-400-50: #{color-opacity('blue', 400, 0.5)};
+  --color-purple-500-30: #{color-opacity('purple', 500, 0.3)};
+  --color-indigo-500-40: #{color-opacity('indigo', 500, 0.4)};
+  --color-deepBlue-7: #{color-opacity('deepBlue', null, 0.07)};
+
+  --spacing-4: #{spacing(4)};
+
+  --transition-base: #{transition(base)};
+
+  // Chart color schemes - Normal variant
+  --chart-normal-primary: var(--color-blue-400);
+  --chart-normal-secondary: var(--color-cyan-400);
+  --chart-normal-tertiary: var(--color-purple-500);
+  --chart-normal-quaternary: var(--color-indigo-500);
+  --chart-normal-primary-opacity: var(--color-blue-400-60);
+  --chart-normal-secondary-opacity: var(--color-cyan-400-50);
+  --chart-normal-tertiary-opacity: var(--color-purple-500-30);
+  --chart-normal-quaternary-opacity: var(--color-indigo-500-40);
+  --chart-normal-grid: var(--color-slate-700);
+  --chart-normal-text: var(--color-slate-300);
+  --chart-normal-text-secondary: var(--color-slate-400);
+
+  // Chart color schemes - Accent variant
+  --chart-accent-primary: var(--color-cyan-400);
+  --chart-accent-secondary: var(--color-blue-400);
+  --chart-accent-tertiary: var(--color-indigo-500);
+  --chart-accent-quaternary: var(--color-purple-500);
+  --chart-accent-primary-opacity: var(--color-cyan-400-50);
+  --chart-accent-secondary-opacity: var(--color-blue-400-60);
+  --chart-accent-tertiary-opacity: var(--color-indigo-500-40);
+  --chart-accent-quaternary-opacity: var(--color-purple-500-30);
+  --chart-accent-grid: var(--color-slate-700);
+  --chart-accent-text: var(--color-slate-300);
+  --chart-accent-text-secondary: var(--color-slate-400);
+}

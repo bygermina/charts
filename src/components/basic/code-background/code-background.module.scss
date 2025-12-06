@@ -1,0 +1,38 @@
+@use 'styles/design-system' as *;
+
+.root {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  background-color: var(--color-background-dark);
+}
+
+.container {
+  position: absolute;
+  inset: 0;
+  @include font-family(mono);
+  white-space: pre;
+  opacity: 0.7;
+}
+
+.grid {
+  display: grid;
+  height: 100%;
+  grid-template-columns: repeat(3, 1fr);
+  gap: spacing(8);
+  padding: spacing(4);
+
+  .column {
+    display: flex;
+    flex-direction: column;
+    gap: spacing(2);
+    user-select: none;
+
+    .line {
+      transition: all transition(slow);
+      color: var(--color-blue-400-30);
+    }
+  }
+}

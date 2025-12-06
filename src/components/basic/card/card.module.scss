@@ -1,0 +1,20 @@
+@use 'styles/design-system' as *;
+
+.card {
+  padding: spacing(4);
+  border-radius: radius(lg);
+  background-color: rgba(from var(--color-slate-800) r g b / 0.3);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border: 1px solid rgba(from var(--color-slate-600) r g b / 0.2);
+  box-sizing: border-box;
+  transition:
+    border-color transition(base),
+    background-color transition(base),
+    box-shadow transition(base);
+  width: 100%;
+
+  &:hover {
+    transform: translateY(-4px) perspective(1000px) rotateX(2deg);
+  }
+}

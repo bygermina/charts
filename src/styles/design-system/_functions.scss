@@ -1,0 +1,82 @@
+@use 'sass:map';
+@use 'sass:meta';
+@use './tokens' as tokens;
+
+@function ds-color($color-name, $shade: null) {
+  $color-value: map.get(tokens.$colors, $color-name);
+
+  @if $color-value == null {
+    @error "Color '#{$color-name}' not found in color map.";
+  }
+
+  @if $shade {
+    @if meta.type-of($color-value) == map {
+      $shade-value: map.get($color-value, $shade);
+      @if $shade-value == null {
+        @error "Shade '#{$shade}' not found for color '#{$color-name}'.";
+      }
+      @return $shade-value;
+    }
+    @error "Color '#{$color-name}' is not a nested map and cannot have a shade.";
+  }
+
+  @return $color-value;
+}
+
+@function spacing($size) {
+  @return map.get(tokens.$spacing, $size);
+}
+
+@function font-family($family) {
+  $family-list: map.get(tokens.$font-family, $family);
+  @if $family-list == null {
+    @error "Font family '#{$family}' not found in font-family map.";
+  }
+  @return $family-list;
+}
+
+@function font-size($size) {
+  $font-map: map.get(tokens.$font-size, $size);
+  @return map.get($font-map, size);
+}
+
+@function line-height($size) {
+  $font-map: map.get(tokens.$font-size, $size);
+  @return map.get($font-map, line-height);
+}
+
+@function font-weight($weight) {
+  @return map.get(tokens.$font-weight, $weight);
+}
+
+@function radius($size) {
+  @return map.get(tokens.$radius, $size);
+}
+
+@function shadow($size) {
+  $shadow: map.get(tokens.$shadows, $size);
+  @if meta.type-of($shadow) == list {
+    @return $shadow;
+  }
+  @return $shadow;
+}
+
+@function transition($speed) {
+  @return map.get(tokens.$transitions, $speed);
+}
+
+@function z-index($layer) {
+  @return map.get(tokens.$z-index, $layer);
+}
+
+@function breakpoint($size) {
+  @return map.get(tokens.$breakpoints, $size);
+}
+
+@function color-opacity($color-name, $shade: null, $opacity: 1) {
+  $color: ds-color($color-name, $shade);
+  @if meta.type-of($color) == color {
+    @return rgba($color, $opacity);
+  }
+  @return $color;
+}

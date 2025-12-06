@@ -1,0 +1,26 @@
+export const RADIUS_MARGIN = 40;
+export const INNER_RADIUS_RATIO = 0.5;
+export const PAD_ANGLE = 0.02;
+export const CORNER_RADIUS = 4;
+export const MIN_PERCENT_FOR_LABEL = 5;
+export const LABEL_OFFSET_RATIO = 0.3;
+export const ARC_ANIMATION_DURATION = 1000;
+export const ARC_ANIMATION_DELAY = 120;
+export const LABEL_ANIMATION_DURATION = 600;
+export const LABEL_ANIMATION_DELAY = 400;
+export const HOVER_ANIMATION_DURATION = 200;
+export const HOVER_SCALE = 1.05;
+export const ARC_OPACITY = 0.95;
+export const SHADOW_OPACITY = 0.3;
+export const STROKE_WIDTH = 2;
+export const STROKE_OPACITY = 0.8;
+export const GRADIENT_STOP_1_OFFSET = '0%';
+export const GRADIENT_STOP_1_OPACITY = 1;
+export const GRADIENT_STOP_2_OFFSET = '70%';
+export const GRADIENT_STOP_2_OPACITY = 0.9;
+export const GRADIENT_STOP_3_OFFSET = '100%';
+export const GRADIENT_STOP_3_OPACITY = 0.7;
+export const SHADOW_BLUR = 3;
+export const SHADOW_OFFSET_X = 2;
+export const SHADOW_OFFSET_Y = 2;
+
