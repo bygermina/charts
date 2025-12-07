@@ -1,9 +1,9 @@
-.container {
-  overflow: hidden;
-  position: relative;
+.container,
+.canvas {
+  width: 100%;
+  height: 100%;
 }
 
 .canvas {
   display: block;
 }
-

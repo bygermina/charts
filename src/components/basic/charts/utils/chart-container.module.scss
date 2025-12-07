@@ -5,36 +5,28 @@
   flex-direction: column;
   margin-bottom: spacing(4);
   gap: spacing(1);
-  z-index: 1;
 }
 
 .chartTitle {
   margin: 0;
-  letter-spacing: -0.01em;
 }
 
 .chart {
   width: 100%;
-  height: auto;
-  @include flex-center;
-  position: relative;
-  transition: transform transition(base);
-  transform-style: preserve-3d;
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-  :global(svg) {
+  > div {
+    width: 100%;
+    height: 100%;
+  }
+
+  :global(svg),
+  :global(canvas) {
     display: block;
-    max-width: 100%;
-    height: auto;
-  }
-}
-
-@keyframes chartAppear {
-  from {
-    opacity: 0;
-    transform: translateY(20px) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
+    width: 100%;
+    height: 100%;
   }
 }

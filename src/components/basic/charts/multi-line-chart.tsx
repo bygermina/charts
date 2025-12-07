@@ -5,6 +5,8 @@ import { type ChartVariant } from './types';
 import { useChartBase } from './use-chart-base';
 import { createAxes } from './chart-utils';
 import { useVisibilityCleanup } from './use-visibility-cleanup';
+
+import styles from './multi-line-chart.module.scss';
 import {
   type LineSeries,
   createClipPaths,
@@ -239,8 +241,8 @@ export const MultiLineChart = ({
   ]);
 
   return (
-    <div style={{ width, height, overflow: 'hidden', position: 'relative' }}>
-      <svg ref={svgRef} width={width} height={height} style={{ display: 'block' }} />
+    <div className={styles.container} style={{ width, height }}>
+      <svg ref={svgRef} width={width} height={height} className={styles.svg} />
     </div>
   );
 };

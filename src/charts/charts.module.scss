@@ -1,16 +1,15 @@
 @use 'styles/design-system' as *;
 
 .root {
-  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: spacing(12) spacing(4);
   min-height: 100vh;
-  @include flex-center;
-  overflow: hidden;
+  overflow-y: auto;
 }
 
 .container {
-  position: relative;
-  z-index: z-index(content);
   max-width: 1200px;
   width: 100%;
 }
@@ -23,10 +22,13 @@
   display: grid;
   grid-template-columns: 1fr;
   gap: spacing(8);
-  color: var(--color-white);
 
-  @include respond-to(md) {
+  @media (min-width: 1040px) {
     grid-template-columns: repeat(2, 1fr);
     gap: spacing(12);
+  }
+
+  > * {
+    min-width: 0;
   }
 }

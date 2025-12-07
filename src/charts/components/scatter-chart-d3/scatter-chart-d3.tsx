@@ -1,4 +1,5 @@
 import { ScatterChart, type ScatterDataPoint } from '@/components/basic/charts';
+import { ResponsiveChartWrapper } from '@/components/basic/charts/utils/responsive-chart-wrapper';
 
 const generateScatterData = (count: number): ScatterDataPoint[] => {
   const categories = ['A', 'B', 'C'];
@@ -15,14 +16,18 @@ const generateScatterData = (count: number): ScatterDataPoint[] => {
 
 export const ScatterChartD3 = () => {
   return (
-    <ScatterChart
-      data={generateScatterData(50)}
-      width={600}
-      height={250}
-      variant={'normal'}
-      xAxisLabel="X Value"
-      yAxisLabel="Y Value"
-      showGrid={true}
-    />
+    <ResponsiveChartWrapper>
+      {({ width: chartWidth, height: chartHeight }) => (
+        <ScatterChart
+          data={generateScatterData(50)}
+          width={chartWidth}
+          height={chartHeight}
+          variant={'normal'}
+          xAxisLabel="X Value"
+          yAxisLabel="Y Value"
+          showGrid={true}
+        />
+      )}
+    </ResponsiveChartWrapper>
   );
 };

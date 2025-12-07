@@ -1,4 +1,5 @@
 import { PieChart, type PieDataPoint } from '@/components/basic/charts';
+import { ResponsiveChartWrapper } from '@/components/basic/charts/utils/responsive-chart-wrapper';
 
 const generatePieData = (): PieDataPoint[] => {
   return [
@@ -12,13 +13,17 @@ const generatePieData = (): PieDataPoint[] => {
 
 export const PieChartD3 = () => {
   return (
-    <PieChart
-      data={generatePieData()}
-      width={600}
-      height={250}
-      variant={'normal'}
-      showLabels={true}
-      showLegend={true}
-    />
+    <ResponsiveChartWrapper>
+      {({ width: chartWidth, height: chartHeight }) => (
+        <PieChart
+          data={generatePieData()}
+          width={chartWidth}
+          height={chartHeight}
+          variant={'normal'}
+          showLabels={true}
+          showLegend={true}
+        />
+      )}
+    </ResponsiveChartWrapper>
   );
 };

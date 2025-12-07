@@ -2,6 +2,9 @@ import { useState } from 'react';
 
 import { GaugeChart } from '@/components/basic/charts/gauge-chart/gauge-chart';
 import { LabeledInput } from '@/components/basic/input/labeled-input';
+import { ResponsiveChartWrapper } from '@/components/basic/charts/utils/responsive-chart-wrapper';
+
+import styles from './gauge-chart-d3.module.scss';
 
 export const GaugeChartD3 = () => {
   const [value, setValue] = useState<number>(50);
@@ -19,7 +22,7 @@ export const GaugeChartD3 = () => {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'center' }}>
+    <div className={styles.container}>
       <LabeledInput
         label="Value (0-100)"
         type="number"
@@ -27,9 +30,20 @@ export const GaugeChartD3 = () => {
         max={100}
         value={value.toString()}
         onChange={handleInputChange}
-        style={{ width: '200px' }}
+        className={styles.input}
       />
-      <GaugeChart value={value} width={250} height={200} variant="normal" />
+      <div className={styles.chartContainer}>
+        <ResponsiveChartWrapper>
+          {({ width, height }) => {
+            const chartSize = Math.min(width, height || 200);
+            const chartWidth = chartSize > 0 ? chartSize : 250;
+            const chartHeight = chartSize > 0 ? chartSize : 200;
+            return (
+              <GaugeChart value={value} width={chartWidth} height={chartHeight} variant="normal" />
+            );
+          }}
+        </ResponsiveChartWrapper>
+      </div>
     </div>
   );
 };

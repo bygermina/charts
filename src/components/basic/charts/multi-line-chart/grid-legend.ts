@@ -15,13 +15,7 @@ export const manageLegend = ({
   showLegend,
   chartColors,
 }: ManageLegendConfig): void => {
-  mainGroup
-    .selectAll('g')
-    .filter(function () {
-      const transform = d3.select(this).attr('transform');
-      return !!(transform && transform.includes(`translate(${chartWidth - 120}`));
-    })
-    .remove();
+  mainGroup.selectAll('g.chart-legend').remove();
 
   if (showLegend) {
     const legendItems = lines.map((lineSeries) => ({

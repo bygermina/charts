@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 
 import { BarChart, type BarDataPoint, type ChartVariant } from '@/components/basic/charts';
+import { ResponsiveChartWrapper } from '@/components/basic/charts/utils/responsive-chart-wrapper';
 
 const generateBarData = (count: number, startTime?: number, endTime?: number): BarDataPoint[] => {
   const data: BarDataPoint[] = [];
@@ -25,8 +26,8 @@ export const BarChartD3 = ({
   delay = 1000,
   count = 50,
   variant = chartVariant,
-  width = 600,
-  height = 250,
+  width,
+  height,
 }: {
   delay?: number;
   count?: number;
@@ -84,5 +85,11 @@ export const BarChartD3 = ({
     };
   }, [delay, count]);
 
-  return <BarChart data={barData} width={width} height={height} variant={variant} />;
+  return (
+    <ResponsiveChartWrapper width={width} height={height}>
+      {({ width: chartWidth, height: chartHeight }) => (
+        <BarChart data={barData} width={chartWidth} height={chartHeight} variant={variant} />
+      )}
+    </ResponsiveChartWrapper>
+  );
 };

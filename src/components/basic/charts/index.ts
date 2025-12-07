@@ -3,8 +3,10 @@ export { PieChart } from './pie-chart';
 export { ScatterChart } from './scatter-chart';
 export { MultiLineChart } from './multi-line-chart';
 export { MultiLineChartCanvas } from './multi-line-chart-canvas';
+export { RealTimeMultiLineChartCanvas } from './real-time-multi-line-chart-canvas';
 export { GaugeChart } from './gauge-chart/gauge-chart';
 export { ChartContainer } from './utils/chart-container';
+export { ResponsiveChartWrapper } from './utils/responsive-chart-wrapper';
 export type {
   DataPoint,
   BarDataPoint,
@@ -14,3 +16,5 @@ export type {
 } from './types';
 export { getChartColors } from './types';
 export { useChartBase } from './use-chart-base';
+export { useRealTimeDataStream } from './use-real-time-data-stream';
+export { useCanvasRenderLoop } from './use-canvas-render-loop';

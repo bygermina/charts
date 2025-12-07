@@ -13,6 +13,7 @@
     background-color transition(base),
     box-shadow transition(base);
   width: 100%;
+  min-width: 0;
 
   &:hover {
     transform: translateY(-4px) perspective(1000px) rotateX(2deg);

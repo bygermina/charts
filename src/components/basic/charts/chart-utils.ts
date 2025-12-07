@@ -329,6 +329,7 @@ export const createLineLegend = (
 ) => {
   const legend = g
     .append('g')
+    .attr('class', 'chart-legend')
     .attr('transform', `translate(${chartWidth - position.x}, ${position.y})`);
 
   items.forEach((item, i) => {

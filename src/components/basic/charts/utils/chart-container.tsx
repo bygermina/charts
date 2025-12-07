@@ -18,7 +18,7 @@ export const ChartContainer = ({ header, subtitle, children }: ChartContainerPro
         <Typography variant="h3" size="lg" weight="bold" className={styles.chartTitle}>
           {header}
         </Typography>
-        <Typography variant="caption" size="sm" color="muted" className={styles.chartSubtitle}>
+        <Typography variant="caption" size="sm" color="muted">
           {subtitle}
         </Typography>
       </div>

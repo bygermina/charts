@@ -6,6 +6,7 @@ import {
   getChartColors,
   type ChartVariant,
 } from '@/components/basic/charts';
+import { ResponsiveChartWrapper } from '@/components/basic/charts/utils/responsive-chart-wrapper';
 
 const generateLineData = (count: number, startTime?: number, endTime?: number): DataPoint[] => {
   const data: DataPoint[] = [];
@@ -31,8 +32,8 @@ export const MultiLineChartD3 = ({
   count = 30,
   variant = chartVariant,
   showLegend = true,
-  width = 600,
-  height = 250,
+  width,
+  height,
 }: {
   delay?: number;
   count?: number;
@@ -107,26 +108,30 @@ export const MultiLineChartD3 = ({
   }, [delay, count]);
 
   return (
-    <MultiLineChart
-      lines={[
-        {
-          data: lineData,
-          color: chartColors.primary,
-          label: 'Line 1',
-          showDots: true,
-        },
-        {
-          data: areaData,
-          color: chartColors.tertiary,
-          label: 'Line 2',
-          showDots: true,
-        },
-      ]}
-      width={width}
-      height={height}
-      variant={variant}
-      showLegend={showLegend}
-      yDomain={[0, 200]}
-    />
+    <ResponsiveChartWrapper width={width} height={height}>
+      {({ width: chartWidth, height: chartHeight }) => (
+        <MultiLineChart
+          lines={[
+            {
+              data: lineData,
+              color: chartColors.primary,
+              label: 'Line 1',
+              showDots: true,
+            },
+            {
+              data: areaData,
+              color: chartColors.tertiary,
+              label: 'Line 2',
+              showDots: true,
+            },
+          ]}
+          width={chartWidth}
+          height={chartHeight}
+          variant={variant}
+          showLegend={showLegend}
+          yDomain={[0, 200]}
+        />
+      )}
+    </ResponsiveChartWrapper>
   );
 };

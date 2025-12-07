@@ -2,6 +2,8 @@ import { useMemo } from 'react';
 
 import { type ChartVariant, getChartColors } from '../types';
 
+import styles from './gauge-chart.module.scss';
+
 interface GaugeChartProps {
   value: number; // 0-100
   width?: number;
@@ -74,8 +76,8 @@ export const GaugeChart = ({
   }, [min, max]);
 
   return (
-    <div style={{ width, height, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <svg width={width} height={height} style={{ display: 'block' }}>
+    <div className={styles.container} style={{ width, height }}>
+      <svg width={width} height={height} className={styles.svg}>
         <g transform={`translate(${centerX}, ${centerY}) scale(${scale})`}>
           <path
             d="M -80 0 A 80 80 0 1 1 80 0 L 60 0 A 60 60 0 1 0 -60 0 Z"
