@@ -1,15 +1,15 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 
 import { type ChartVariant } from './types';
 import { useChartBase } from './use-chart-base';
 import { type LineSeries } from './multi-line-chart/index';
-import { setupCanvas } from './utils/canvas-helpers';
 import { processLinesData } from './multi-line-chart-canvas/process-data';
 import { renderMultiLineChart } from './multi-line-chart-canvas/render-chart';
 import { TIME_WINDOW_MS, MAX_DISPLAY_POINTS } from './multi-line-chart-canvas/constants';
+import { useCanvasRenderLoop } from './use-canvas-render-loop';
 import styles from './multi-line-chart-canvas.module.scss';
 
-interface MultiLineChartCanvasProps {
+interface RealTimeMultiLineChartCanvasProps {
   lines: LineSeries[];
   width?: number;
   height?: number;
@@ -18,9 +18,11 @@ interface MultiLineChartCanvasProps {
   showLegend?: boolean;
   strokeWidth?: number;
   yDomain?: [number, number];
+  timeWindowMs?: number;
+  maxDisplayPoints?: number;
 }
 
-export const MultiLineChartCanvas = ({
+export const RealTimeMultiLineChartCanvas = ({
   lines,
   width = 600,
   height = 250,
@@ -29,27 +31,23 @@ export const MultiLineChartCanvas = ({
   showLegend = true,
   strokeWidth = 1,
   yDomain,
-}: MultiLineChartCanvasProps) => {
+  timeWindowMs = TIME_WINDOW_MS,
+  maxDisplayPoints = MAX_DISPLAY_POINTS,
+}: RealTimeMultiLineChartCanvasProps) => {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
   const { chartColors, margin, chartWidth, chartHeight } = useChartBase({
     width,
     height,
     variant,
   });
 
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const setupResult = setupCanvas(canvas, width, height);
-    if (!setupResult) return;
-
-    const timeWindowStart = Date.now() - TIME_WINDOW_MS;
-    const dataToUse = processLinesData(lines, timeWindowStart, MAX_DISPLAY_POINTS);
+  const renderChart = (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {
+    const timeWindowStart = Date.now() - timeWindowMs;
+    const dataToUse = processLinesData(lines, timeWindowStart, maxDisplayPoints);
 
     renderMultiLineChart({
-      ctx: setupResult.ctx,
+      ctx,
       canvas,
       lines: dataToUse,
       chartColors,
@@ -61,19 +59,27 @@ export const MultiLineChartCanvas = ({
       strokeWidth,
       yDomain,
     });
-  }, [
-    lines,
+  };
+
+  useCanvasRenderLoop({
+    canvasRef,
     width,
     height,
-    chartColors,
-    showGrid,
-    showLegend,
-    strokeWidth,
-    margin,
-    chartWidth,
-    chartHeight,
-    yDomain,
-  ]);
+    render: renderChart,
+    dependencies: [
+      lines,
+      chartColors,
+      showGrid,
+      showLegend,
+      strokeWidth,
+      chartWidth,
+      chartHeight,
+      margin,
+      yDomain,
+      timeWindowMs,
+      maxDisplayPoints,
+    ],
+  });
 
   return (
     <div className={styles.container} style={{ width, height }}>
