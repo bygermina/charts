@@ -7,6 +7,8 @@ import { createCSSVariableCache } from './utils/canvas-helpers';
 import { renderSingleLineChart } from './single-line-chart-canvas/render-chart';
 import { type Scales } from './multi-line-chart/index';
 
+import styles from './multi-line-chart-canvas.module.scss';
+
 export interface RealTimeSingleLineDataRef {
   values: Float32Array;
   times: Float64Array;
@@ -98,5 +100,9 @@ export const RealTimeSingleLineChartCanvas = ({
     dependencies: [timeWindowMs],
   });
 
-  return <canvas ref={canvasRef} width={width} height={height} />;
+  return (
+    <div className={styles.container} style={{ width, height }}>
+      <canvas ref={canvasRef} width={width} height={height} className={styles.canvas} />
+    </div>
+  );
 };

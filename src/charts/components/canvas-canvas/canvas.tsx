@@ -6,7 +6,7 @@ import {
   type ChartVariant,
 } from '@/components/basic/charts';
 
-import { createTrendGenerator } from '../multiline-chart-d3-canvas/data-generators';
+import { createTrendGenerator } from './data-generators';
 
 const MAX_POINTS = 2000;
 const TIME_WINDOW_MS = 8000;

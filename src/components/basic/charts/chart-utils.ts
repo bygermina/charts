@@ -5,10 +5,8 @@ import { getChartColors } from './types';
 
 export type ChartColors = ReturnType<typeof getChartColors>;
 
-// Единый шрифт для всех графиков (как на canvas графике)
 const CHART_FONT_SIZE = '12px';
 const CHART_FONT_FAMILY = 'Arial, sans-serif';
-const CHART_FONT = `${CHART_FONT_SIZE} ${CHART_FONT_FAMILY}`;
 
 export interface CreateChartGroupsConfig {
   svg: d3.Selection<SVGSVGElement, unknown, null, undefined>;
@@ -188,15 +186,9 @@ const createXAxis = (
 
   // Используем цвет из дизайн-системы для осей
   const axisColor = chartColors.grid;
-  g.selectAll('path')
-    .attr('stroke', axisColor)
-    .attr('stroke-width', 1)
-    .attr('stroke-opacity', 1);
+  g.selectAll('path').attr('stroke', axisColor).attr('stroke-width', 1).attr('stroke-opacity', 1);
 
-  g.selectAll('line')
-    .attr('stroke', axisColor)
-    .attr('stroke-width', 1)
-    .attr('stroke-opacity', 1);
+  g.selectAll('line').attr('stroke', axisColor).attr('stroke-width', 1).attr('stroke-opacity', 1);
 
   g.selectAll('text')
     .attr('fill', chartColors.textSecondary)

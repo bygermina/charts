@@ -1,3 +1,5 @@
+import * as d3 from 'd3';
+
 interface CSSVariableCache {
   computedStyle: CSSStyleDeclaration | null;
   element: HTMLElement | null;
@@ -5,7 +7,7 @@ interface CSSVariableCache {
   maxCacheSize: number;
 }
 
-const MAX_CSS_CACHE_SIZE = 50; // Ограничиваем размер кэша CSS переменных
+const MAX_CSS_CACHE_SIZE = 50;
 
 const createCSSVariableCache = (): CSSVariableCache => ({
   computedStyle: null,
@@ -28,7 +30,6 @@ export const resolveCSSVariable = (
 
   const varName = match[1].trim();
 
-  // Кэшируем computedStyle и результаты
   if (cache) {
     if (cache.element !== element) {
       cache.computedStyle = getComputedStyle(element);
@@ -71,14 +72,12 @@ export const resolveChartColors = (
 ): Record<string, string> => {
   const resolved = resultCache || {};
 
-  // Очищаем старые ключи, которых больше нет
   for (const key in resolved) {
     if (!(key in chartColors)) {
       delete resolved[key];
     }
   }
 
-  // Обновляем только измененные значения
   for (const [key, value] of Object.entries(chartColors)) {
     if (resolved[key] !== value) {
       resolved[key] = resolveCSSVariable(value, element, cache);
@@ -101,12 +100,9 @@ export const setupCanvas = (
   width: number,
   height: number,
 ): SetupCanvasResult | null => {
-  // Use '2d' context with default settings optimized for D3.js canvas rendering
-  // D3.js works best with standard 2d context for line.path() and other generators
   const ctx = canvas.getContext('2d', {
-    // Optimize for frequent drawing operations
-    alpha: true, // Allow transparency
-    desynchronized: false, // Keep synchronized for better compatibility
+    alpha: true,
+    desynchronized: false,
   });
   if (!ctx) return null;
 
@@ -122,12 +118,9 @@ export const setupCanvas = (
     canvas.style.height = `${height}px`;
   }
 
-  // Reset transform and apply device pixel ratio scaling
-  // This ensures crisp rendering on high-DPI displays (D3.js best practice)
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.scale(dpr, dpr);
 
-  // Always clear canvas before rendering to prevent artifacts
   ctx.clearRect(0, 0, width, height);
 
   return { ctx, dpr, needsResize };
@@ -148,4 +141,93 @@ export const hasDataChanged = (current: LineSeries[], previous: LineSeries[]): b
     const prevLastPoint = prevLine.data.at(-1);
     return line.data.length !== prevLine.data.length || lastPoint?.time !== prevLastPoint?.time;
   });
+};
+
+interface DrawAxesConfig {
+  ctx: CanvasRenderingContext2D;
+  xAxisScale: d3.ScaleTime<number, number>;
+  yScale: d3.ScaleLinear<number, number>;
+  chartWidth: number;
+  chartHeight: number;
+  margin: { top: number; right: number; bottom: number; left: number };
+  resolvedChartColors: Record<string, string>;
+  xTicks: number;
+  yTicks: number;
+}
+
+const CHART_FONT_SIZE = '12px';
+const CHART_FONT_FAMILY = 'Arial, sans-serif';
+
+export const drawAxes = ({
+  ctx,
+  xAxisScale,
+  yScale,
+  chartWidth,
+  chartHeight,
+  margin,
+  resolvedChartColors,
+  xTicks,
+  yTicks,
+}: DrawAxesConfig): void => {
+  try {
+    const axisColor = resolvedChartColors.grid || '#e0e0e0';
+    const textColor = resolvedChartColors.textSecondary || '#666';
+
+    ctx.save();
+    ctx.strokeStyle = axisColor;
+    ctx.fillStyle = textColor;
+    ctx.font = `${CHART_FONT_SIZE} ${CHART_FONT_FAMILY}`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    ctx.beginPath();
+    ctx.moveTo(0, chartHeight);
+    ctx.lineTo(chartWidth - margin.right, chartHeight);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(0, chartHeight);
+    ctx.stroke();
+
+    const xTickCount = xTicks !== undefined ? xTicks : 10;
+    const xTickValues = xAxisScale.ticks(xTickCount);
+    const xTickFormat = xAxisScale.tickFormat(xTickCount);
+
+    xTickValues.forEach((tickValue) => {
+      const x = xAxisScale(tickValue);
+      if (x >= 0 && x <= chartWidth - margin.right) {
+        ctx.beginPath();
+        ctx.moveTo(x, chartHeight);
+        ctx.lineTo(x, chartHeight + 5);
+        ctx.stroke();
+
+        const label = xTickFormat(tickValue);
+        ctx.fillText(label, x, chartHeight + 15);
+      }
+    });
+
+    const yTickCount = yTicks !== undefined ? yTicks : 10;
+    const yTickValues = yScale.ticks(yTickCount);
+    const yTickFormat = yScale.tickFormat(yTickCount);
+
+    ctx.textAlign = 'right';
+    yTickValues.forEach((tickValue) => {
+      const y = yScale(tickValue);
+      if (y >= 0 && y <= chartHeight) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(-5, y);
+        ctx.stroke();
+
+        const label = yTickFormat(tickValue);
+        ctx.fillText(label, -10, y);
+      }
+    });
+
+    ctx.restore();
+  } catch (error) {
+    ctx.restore();
+    console.error('Error drawing axes:', error);
+  }
 };

@@ -6,7 +6,7 @@ import { BarChartD3 } from './components/bar-chart-d3/bar-chart-d3';
 import { PieChartD3 } from './components/pie-chart-d3/pie-chart-d3';
 import { ScatterChartD3 } from './components/scatter-chart-d3/scatter-chart-d3';
 import { GaugeChartD3 } from './components/gauge-chart-d3/gauge-chart-d3';
-import RealTimeChart from './components/canvas/Canvas';
+import RealTimeChart from './components/canvas-canvas/Canvas';
 
 import styles from './charts.module.scss';
 

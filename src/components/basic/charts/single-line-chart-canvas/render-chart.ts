@@ -1,11 +1,9 @@
-import * as d3 from 'd3';
-
 import { type RealTimeSingleLineDataRef } from '../real-time-single-line-chart-canvas';
-import { createScalesForAxes, updateScalesForAxes, type Scales } from '../multi-line-chart';
-import { drawAxes } from '../multi-line-chart-canvas/drawing';
+import { createScalesForAxes, updateScalesForAxes, type Scales } from '../multi-line-chart/index';
 import {
   resolveChartColors,
   resolveCSSVariable,
+  drawAxes,
   type CSSVariableCache,
 } from '../utils/canvas-helpers';
 
@@ -51,7 +49,8 @@ export const renderSingleLineChart = ({
 } => {
   const data = dataRef.current;
   if (!data || data.size < 2) {
-    const defaultTimeExtent: [number, number] = [Date.now(), Date.now()];
+    const defaultTime = Date.now();
+    const defaultTimeExtent: [number, number] = [defaultTime, defaultTime];
     const defaultScales =
       cachedScales ||
       createScalesForAxes({
@@ -59,7 +58,7 @@ export const renderSingleLineChart = ({
         maxValue: 0,
         chartWidth,
         chartHeight,
-        margin,
+        margin: { right: margin.right },
         yDomain,
       });
     return {
@@ -89,7 +88,7 @@ export const renderSingleLineChart = ({
       maxValue: 0,
       chartWidth,
       chartHeight,
-      margin,
+      margin: { right: margin.right },
       yDomain,
     });
 
@@ -99,7 +98,7 @@ export const renderSingleLineChart = ({
       maxValue: 0,
       chartWidth,
       chartHeight,
-      margin,
+      margin: { right: margin.right },
       yDomain,
     });
   }
@@ -120,7 +119,7 @@ export const renderSingleLineChart = ({
     const pointTime = times[idx];
 
     if (pointTime >= t0 && pointTime <= t1) {
-      const x = scales.xScale(new Date(pointTime));
+      const x = scales.xAxisScale(new Date(pointTime));
       const y = scales.yScale(values[idx]);
 
       if (isFirstPoint) {
@@ -134,17 +133,17 @@ export const renderSingleLineChart = ({
 
   ctx.stroke();
 
-  drawAxes(
+  drawAxes({
     ctx,
-    scales.xAxisScale,
-    scales.yScale,
+    xAxisScale: scales.xAxisScale,
+    yScale: scales.yScale,
     chartWidth,
     chartHeight,
     margin,
     resolvedChartColors,
     xTicks,
     yTicks,
-  );
+  });
 
   ctx.restore();
 
