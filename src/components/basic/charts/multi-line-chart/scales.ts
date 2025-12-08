@@ -27,3 +27,22 @@ export const createScalesForAxes = ({
 
   return { xScale, xAxisScale, yScale };
 };
+
+export const updateScalesForAxes = (
+  scales: Scales,
+  {
+    timeExtent,
+    maxValue,
+    chartWidth,
+    chartHeight,
+    margin,
+    yDomain,
+  }: CreateScalesConfig,
+): void => {
+  scales.xScale.domain(timeExtent).range([0, chartWidth]);
+  scales.xAxisScale.domain(timeExtent).range([0, chartWidth - margin.right]);
+  scales.yScale
+    .domain(yDomain ?? [0, maxValue * Y_SCALE_PADDING_MULTIPLIER])
+    .nice()
+    .range([chartHeight, 0]);
+};

@@ -103,7 +103,8 @@ export const GaugeChart = ({
                   textAnchor="middle"
                   dominantBaseline="middle"
                   fill={chartColors.textSecondary}
-                  fontSize="11px"
+                  fontSize="12px"
+                  fontFamily="Arial, sans-serif"
                 >
                   {Math.round(tick.value)}
                 </text>

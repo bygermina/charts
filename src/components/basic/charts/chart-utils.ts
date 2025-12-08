@@ -5,6 +5,11 @@ import { getChartColors } from './types';
 
 export type ChartColors = ReturnType<typeof getChartColors>;
 
+// Единый шрифт для всех графиков (как на canvas графике)
+const CHART_FONT_SIZE = '12px';
+const CHART_FONT_FAMILY = 'Arial, sans-serif';
+const CHART_FONT = `${CHART_FONT_SIZE} ${CHART_FONT_FAMILY}`;
+
 export interface CreateChartGroupsConfig {
   svg: d3.Selection<SVGSVGElement, unknown, null, undefined>;
   margin: { left: number; top: number };
@@ -177,21 +182,26 @@ const createXAxis = (
     g.call(axis);
   }
 
-  g.attr('color', chartColors.text).attr('font-size', '11px');
+  g.attr('color', chartColors.text)
+    .attr('font-size', CHART_FONT_SIZE)
+    .attr('font-family', CHART_FONT_FAMILY);
 
+  // Используем цвет из дизайн-системы для осей
+  const axisColor = chartColors.grid;
   g.selectAll('path')
-    .attr('stroke', chartColors.textSecondary)
-    .attr('stroke-width', 1.5)
-    .attr('stroke-opacity', 0.8);
+    .attr('stroke', axisColor)
+    .attr('stroke-width', 1)
+    .attr('stroke-opacity', 1);
 
   g.selectAll('line')
-    .attr('stroke', chartColors.textSecondary)
+    .attr('stroke', axisColor)
     .attr('stroke-width', 1)
-    .attr('stroke-opacity', 0.6);
+    .attr('stroke-opacity', 1);
 
   g.selectAll('text')
     .attr('fill', chartColors.textSecondary)
-    .attr('font-size', '11px')
+    .attr('font-size', CHART_FONT_SIZE)
+    .attr('font-family', CHART_FONT_FAMILY)
     .attr('opacity', 1)
     .style('pointer-events', 'none');
 };
@@ -209,24 +219,31 @@ const createYAxis = (
   g.call(axis);
   const axisGroup = g;
 
-  axisGroup.attr('color', chartColors.text).attr('font-size', '11px').attr('opacity', 0.7);
+  axisGroup
+    .attr('color', chartColors.text)
+    .attr('font-size', CHART_FONT_SIZE)
+    .attr('font-family', CHART_FONT_FAMILY)
+    .attr('opacity', 1);
 
+  // Используем цвет из дизайн-системы для осей
+  const axisColor = chartColors.grid;
   axisGroup
     .selectAll('path')
-    .attr('stroke', chartColors.textSecondary)
+    .attr('stroke', axisColor)
     .attr('stroke-width', 1)
-    .attr('stroke-opacity', 0.5);
+    .attr('stroke-opacity', 1);
 
   axisGroup
     .selectAll('line')
-    .attr('stroke', chartColors.textSecondary)
+    .attr('stroke', axisColor)
     .attr('stroke-width', 1)
-    .attr('stroke-opacity', 0.4);
+    .attr('stroke-opacity', 1);
 
   axisGroup
     .selectAll('text')
     .attr('fill', chartColors.textSecondary)
-    .attr('font-size', '11px')
+    .attr('font-size', CHART_FONT_SIZE)
+    .attr('font-family', CHART_FONT_FAMILY)
     .attr('opacity', 1)
     .style('pointer-events', 'none');
 };
@@ -292,7 +309,8 @@ export const createXAxisLabel = (
     .attr('transform', `translate(${chartWidth / 2}, ${chartHeight + offset})`)
     .style('text-anchor', 'middle')
     .attr('fill', chartColors.textSecondary)
-    .attr('font-size', '11px')
+    .attr('font-size', CHART_FONT_SIZE)
+    .attr('font-family', CHART_FONT_FAMILY)
     .text(label);
 };
 
@@ -309,7 +327,8 @@ export const createYAxisLabel = (
     .attr('x', -chartHeight / 2)
     .style('text-anchor', 'middle')
     .attr('fill', chartColors.textSecondary)
-    .attr('font-size', '11px')
+    .attr('font-size', CHART_FONT_SIZE)
+    .attr('font-family', CHART_FONT_FAMILY)
     .text(label);
 };
 
@@ -349,7 +368,8 @@ export const createLineLegend = (
       .attr('x', 20)
       .attr('y', 4)
       .attr('fill', chartColors.text)
-      .attr('font-size', '11px')
+      .attr('font-size', CHART_FONT_SIZE)
+      .attr('font-family', CHART_FONT_FAMILY)
       .text(item.label);
   });
 };
@@ -377,7 +397,8 @@ export const createCircleLegend = (
       .attr('x', radius * 2 + 2)
       .attr('y', 4)
       .attr('fill', chartColors.text)
-      .attr('font-size', '11px')
+      .attr('font-size', CHART_FONT_SIZE)
+      .attr('font-family', CHART_FONT_FAMILY)
       .text(item.label);
   });
 };
@@ -410,7 +431,8 @@ export const createRectLegend = (
       .attr('x', rectSize.width + 5)
       .attr('y', rectSize.height - 3)
       .attr('fill', chartColors.text)
-      .attr('font-size', '11px')
+      .attr('font-size', CHART_FONT_SIZE)
+      .attr('font-family', CHART_FONT_FAMILY)
       .text(item.label);
   });
 };

@@ -1,12 +1,22 @@
 import { type LineSeries } from '../multi-line-chart/types';
 import {
   createScalesForAxes,
+  updateScalesForAxes,
   calculateGridLeftShift,
-  createLineGenerator,
   prepareChartData,
+  type Scales,
 } from '../multi-line-chart/index';
-import { resolveChartColors, resolveCSSVariable } from '../utils/canvas-helpers';
+import { calculateTimeStep } from '../multi-line-chart/data-calculations';
+import { calculateMaxValue } from '../multi-line-chart/values';
+import {
+  resolveChartColors,
+  resolveCSSVariable,
+  type CSSVariableCache,
+} from '../utils/canvas-helpers';
 import { drawGrid, drawAxes, drawLine, drawLegend } from './drawing';
+
+const DEFAULT_X_AXIS_TICKS = 5;
+const DEFAULT_Y_AXIS_TICKS = 5;
 
 interface RenderChartConfig {
   ctx: CanvasRenderingContext2D;
@@ -20,6 +30,13 @@ interface RenderChartConfig {
   showLegend: boolean;
   strokeWidth: number;
   yDomain?: [number, number];
+  cachedScales?: Scales | null;
+  cachedResolvedColors?: Record<string, string> | null;
+  cachedLinesForLegend?: LineSeries[];
+  cssVariableCache?: CSSVariableCache;
+  timeExtentCache?: { allTimes: number[]; timeIntervals: number[] };
+  animatedTranslate?: number;
+  precomputedTimeExtent?: [number, number] | null;
 }
 
 export const renderMultiLineChart = ({
@@ -34,28 +51,81 @@ export const renderMultiLineChart = ({
   showLegend,
   strokeWidth,
   yDomain,
-}: RenderChartConfig): void => {
-  if (lines.length === 0 || lines.some((line) => line.data.length === 0)) return;
+  cachedScales,
+  cachedResolvedColors,
+  cachedLinesForLegend,
+  cssVariableCache,
+  timeExtentCache,
+  animatedTranslate,
+  precomputedTimeExtent,
+}: RenderChartConfig): {
+  scales: Scales;
+  resolvedColors: Record<string, string>;
+} => {
+  if (!lines.length || lines.some((line) => !line.data?.length)) {
+    const defaultScales =
+      cachedScales ||
+      createScalesForAxes({
+        timeExtent: [Date.now(), Date.now()],
+        maxValue: 0,
+        chartWidth,
+        chartHeight,
+        margin,
+        yDomain,
+      });
+    return {
+      scales: defaultScales,
+      resolvedColors: cachedResolvedColors || {},
+    };
+  }
 
-  const resolvedChartColors = resolveChartColors(chartColors, canvas);
+  const resolvedChartColors = resolveChartColors(
+    chartColors,
+    canvas,
+    cssVariableCache,
+    cachedResolvedColors || undefined,
+  );
 
-  const chartData = prepareChartData({
-    lines,
-    prevMetadata: { timeExtent: null, timeStep: 0 },
-    isInitialRender: true,
-    chartWidth,
-  });
+  // Используем предвычисленный timeExtent если передан, иначе вычисляем через prepareChartData
+  let timeExtent: [number, number];
+  let timeStep: number;
+  let maxValue: number;
+  let shiftOffset = 0;
 
-  const { timeExtent, timeStep, maxValue, shiftOffset } = chartData;
+  if (precomputedTimeExtent) {
+    // Используем предвычисленный timeExtent
+    timeExtent = precomputedTimeExtent;
+    timeStep = calculateTimeStep(lines[0]?.data || [], timeExtentCache?.timeIntervals);
+    maxValue = calculateMaxValue({ lines });
+  } else {
+    // Вычисляем через prepareChartData (для обратной совместимости)
+    const chartData = prepareChartData({
+      lines,
+      prevMetadata: { timeExtent: null, timeStep: 0 },
+      isInitialRender: true,
+      chartWidth,
+      timeExtentCache,
+    });
+    timeExtent = chartData.timeExtent;
+    timeStep = chartData.timeStep;
+    maxValue = chartData.maxValue;
+    shiftOffset = chartData.shiftOffset;
+  }
 
-  const { xScale, xAxisScale, yScale } = createScalesForAxes({
-    timeExtent,
-    maxValue,
-    chartWidth,
-    chartHeight,
-    margin,
-    yDomain,
-  });
+  const finalShiftOffset = animatedTranslate !== undefined ? animatedTranslate : shiftOffset;
+
+  const scales =
+    cachedScales ||
+    createScalesForAxes({
+      timeExtent,
+      maxValue,
+      chartWidth,
+      chartHeight,
+      margin,
+      yDomain,
+    });
+  if (cachedScales)
+    updateScalesForAxes(scales, { timeExtent, maxValue, chartWidth, chartHeight, margin, yDomain });
 
   const gridLeftShift = calculateGridLeftShift({
     timeStep,
@@ -63,35 +133,61 @@ export const renderMultiLineChart = ({
     chartWidth,
   });
 
+  // Apply margin transform once for all drawing operations
   ctx.save();
   ctx.translate(margin.left, margin.top);
-
-  const lineGenerator = createLineGenerator({ xScale, yScale });
 
   if (showGrid) {
     drawGrid(
       ctx,
-      xAxisScale,
-      yScale,
+      scales.xAxisScale,
+      scales.yScale,
       chartWidth,
       chartHeight,
       margin,
-      gridLeftShift,
+      gridLeftShift - finalShiftOffset,
       resolvedChartColors,
     );
   }
 
-  const linesWithResolvedColors = lines.map((line) => {
-    const resolvedColor = resolveCSSVariable(line.color, canvas);
-    drawLine(ctx, line.data, lineGenerator, resolvedColor, strokeWidth, shiftOffset);
-    return { ...line, color: resolvedColor };
-  });
+  const linesForLegend = cachedLinesForLegend || [];
+  linesForLegend.length = 0;
 
-  drawAxes(ctx, xAxisScale, yScale, chartWidth, chartHeight, margin, resolvedChartColors);
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    if (!line?.data?.length) continue;
 
-  if (showLegend && linesWithResolvedColors.length > 0) {
-    drawLegend(ctx, linesWithResolvedColors, chartWidth, resolvedChartColors);
+    const resolvedColor = resolveCSSVariable(line.color, canvas, cssVariableCache);
+    drawLine(ctx, line.data, scales.xScale, scales.yScale, resolvedColor, strokeWidth, finalShiftOffset);
+
+    if (showLegend && line.label) {
+      if (!linesForLegend[i]) linesForLegend[i] = { data: [], color: '', label: '' };
+      linesForLegend[i].data = line.data;
+      linesForLegend[i].color = resolvedColor;
+      linesForLegend[i].label = line.label;
+    }
+  }
+
+  drawAxes(
+    ctx,
+    scales.xAxisScale,
+    scales.yScale,
+    chartWidth,
+    chartHeight,
+    margin,
+    resolvedChartColors,
+    DEFAULT_X_AXIS_TICKS,
+    DEFAULT_Y_AXIS_TICKS,
+  );
+
+  if (showLegend && linesForLegend.length) {
+    drawLegend(ctx, linesForLegend, chartWidth, resolvedChartColors);
   }
 
   ctx.restore();
+
+  return {
+    scales,
+    resolvedColors: resolvedChartColors,
+  };
 };

@@ -17,7 +17,15 @@ export const createLineGenerator = ({
     .line<DataPoint>()
     .x((d) => xScale(d.time))
     .y((d) => yScale(d.value))
-    .curve(d3.curveCatmullRom.alpha(0.8));
+    .curve(d3.curveCatmullRom.alpha(0.8))
+    .defined((d) => d != null && !isNaN(d.time) && !isNaN(d.value));
+};
+
+export const updateLineGenerator = (
+  line: d3.Line<DataPoint>,
+  { xScale, yScale }: CreateLineGeneratorConfig,
+): void => {
+  line.x((d) => xScale(d.time)).y((d) => yScale(d.value));
 };
 
 export const updateLinePath = ({

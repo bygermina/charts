@@ -4,6 +4,8 @@ export { ScatterChart } from './scatter-chart';
 export { MultiLineChart } from './multi-line-chart';
 export { MultiLineChartCanvas } from './multi-line-chart-canvas';
 export { RealTimeMultiLineChartCanvas } from './real-time-multi-line-chart-canvas';
+export { RealTimeSingleLineChartCanvas } from './real-time-single-line-chart-canvas';
+export type { RealTimeSingleLineDataRef } from './real-time-single-line-chart-canvas';
 export { GaugeChart } from './gauge-chart/gauge-chart';
 export { ChartContainer } from './utils/chart-container';
 export { ResponsiveChartWrapper } from './utils/responsive-chart-wrapper';

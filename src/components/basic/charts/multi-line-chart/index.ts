@@ -1,14 +1,14 @@
-export type { LineSeries } from './types';
+export type { LineSeries, Scales } from './types';
 
 export { prepareChartData, type ChartData } from './data-calculations';
 
 export { calculateGridLeftShift } from './grid-shift';
 
-export { createScalesForAxes } from './scales';
+export { createScalesForAxes, updateScalesForAxes } from './scales';
 
 export { createClipPaths } from './clip-paths';
 
-export { createLineGenerator, updateLine } from './line-generator';
+export { createLineGenerator, updateLineGenerator, updateLine } from './line-generator';
 
 export { updateDotsCoordinates, createAndAnimateDots } from './dots';
 

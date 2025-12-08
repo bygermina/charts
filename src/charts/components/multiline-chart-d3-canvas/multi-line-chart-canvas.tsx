@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 
 import { type ChartVariant, getChartColors, type DataPoint } from '@/components/basic/charts';
 import { type LineSeries } from '@/components/basic/charts/multi-line-chart/index';
@@ -54,9 +54,54 @@ export const MultiLineChartD3Canvas = ({
     return generateLineData(initialCount, undefined, undefined, config.baseValue, config.baseRange);
   };
 
-  const [dataBuffers, setDataBuffers] = useState<DataPoint[][]>(() =>
+  const dataBuffersRef = useRef<DataPoint[][]>(
     LINE_CONFIGS.map((_, index) => createInitialData(count, index)),
   );
+
+  const linesRef = useRef<LineSeries[]>([]);
+
+  const chartColorsRef = useRef(chartColors);
+
+  // Переиспользуем объекты LineSeries
+  const linesCacheRef = useRef<LineSeries[]>([
+    {
+      data: [],
+      color: '',
+      label: '',
+    },
+    {
+      data: [],
+      color: '',
+      label: '',
+    },
+  ]);
+
+  const updateLines = (buffers: DataPoint[][]) => {
+    if (buffers.length < 2) {
+      linesRef.current = [];
+      return;
+    }
+
+    const cache = linesCacheRef.current;
+    const colors = chartColorsRef.current;
+    cache[0].data = buffers[0];
+    cache[0].color = colors.primary;
+    cache[0].label = LINE_CONFIGS[0].label;
+    cache[1].data = buffers[1];
+    cache[1].color = colors.tertiary;
+    cache[1].label = LINE_CONFIGS[1].label;
+    linesRef.current = cache;
+  };
+
+  const onDataUpdate = (buffers: DataPoint[][]) => {
+    dataBuffersRef.current = buffers;
+    updateLines(buffers);
+  };
+
+  useEffect(() => {
+    chartColorsRef.current = chartColors;
+    updateLines(dataBuffersRef.current);
+  }, [chartColors]);
 
   useRealTimeDataStream({
     generators,
@@ -64,33 +109,14 @@ export const MultiLineChartD3Canvas = ({
     bufferSize: BUFFER_SIZE,
     initialCount: count,
     createInitialData,
-    onDataUpdate: (buffers) => {
-      setDataBuffers(buffers);
-    },
+    onDataUpdate,
   });
-
-  const lines: LineSeries[] = useMemo(() => {
-    if (dataBuffers.length < 2) return [];
-
-    return [
-      {
-        data: dataBuffers[0] || [],
-        color: chartColors.primary,
-        label: LINE_CONFIGS[0].label,
-      },
-      {
-        data: dataBuffers[1] || [],
-        color: chartColors.tertiary,
-        label: LINE_CONFIGS[1].label,
-      },
-    ];
-  }, [dataBuffers, chartColors]);
 
   return (
     <ResponsiveChartWrapper width={width} height={height}>
       {({ width: chartWidth, height: chartHeight }) => (
         <RealTimeMultiLineChartCanvas
-          lines={lines}
+          linesRef={linesRef}
           width={chartWidth}
           height={chartHeight}
           variant={variant}

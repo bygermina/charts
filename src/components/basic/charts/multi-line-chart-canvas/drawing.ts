@@ -16,6 +16,8 @@ export const drawGrid = (
   chartColors: Record<string, string>,
 ): void => {
   ctx.save();
+
+  // Batch all style changes before drawing
   ctx.strokeStyle = chartColors.grid;
   ctx.lineWidth = 0.5;
   ctx.setLineDash([2, 2]);
@@ -23,22 +25,27 @@ export const drawGrid = (
 
   ctx.translate(-gridLeftShift, 0);
 
-  yScale.ticks(DEFAULT_Y_AXIS_TICKS).forEach((tick) => {
+  // Use D3's ticks() method for optimal tick calculation
+  // Batch horizontal grid lines
+  const yTicks = yScale.ticks(DEFAULT_Y_AXIS_TICKS);
+  ctx.beginPath();
+  for (const tick of yTicks) {
     const y = yScale(tick);
-    if (tick <= 0 || Math.abs(y - chartHeight) < 1) return;
-    ctx.beginPath();
+    if (tick <= 0 || Math.abs(y - chartHeight) < 1) continue;
     ctx.moveTo(0, y);
     ctx.lineTo(chartWidth - margin.right, y);
-    ctx.stroke();
-  });
+  }
+  ctx.stroke();
 
-  xScale.ticks(DEFAULT_X_AXIS_TICKS).forEach((tick) => {
+  // Batch vertical grid lines
+  const xTicks = xScale.ticks(DEFAULT_X_AXIS_TICKS);
+  ctx.beginPath();
+  for (const tick of xTicks) {
     const x = xScale(tick);
-    ctx.beginPath();
     ctx.moveTo(x, 0);
     ctx.lineTo(x, chartHeight - 0.5);
-    ctx.stroke();
-  });
+  }
+  ctx.stroke();
 
   ctx.restore();
 };
@@ -51,43 +58,106 @@ export const drawAxes = (
   chartHeight: number,
   margin: { right: number },
   chartColors: Record<string, string>,
+  xTicks?: number,
+  yTicks?: number,
 ): void => {
   ctx.save();
-  ctx.strokeStyle = chartColors.textSecondary;
+
+  // Используем D3 axis generators для получения данных осей (как в SVG версии)
+  const xAxis = d3.axisBottom(xScale);
+  if (xTicks !== undefined) {
+    xAxis.ticks(xTicks);
+  }
+  // Форматируем время как часы:минуты:секунды
+  xAxis.tickFormat(d3.timeFormat('%H:%M:%S'));
+
+  const yAxis = d3.axisLeft(yScale);
+  if (yTicks !== undefined) {
+    yAxis.ticks(yTicks);
+  }
+
+  // Получаем ticks и форматирование из D3 axis generators
+  const numXTicks = xTicks || DEFAULT_X_AXIS_TICKS;
+  const numYTicks = yTicks || DEFAULT_Y_AXIS_TICKS;
+  const xAxisTicks = xScale.ticks(numXTicks);
+  const xTickFormat = xAxis.tickFormat();
+  const yAxisTicks = yScale.ticks(numYTicks);
+  const yTickFormat = yAxis.tickFormat();
+
+  // Batch style changes - используем цвет из дизайн-системы для осей
+  const axisColor = chartColors.grid;
+  ctx.strokeStyle = axisColor;
   ctx.fillStyle = chartColors.textSecondary;
-  ctx.font = '11px sans-serif';
+  // Используем Arial для более читаемого отображения без сжатия символов
+  ctx.font = 'normal 12px Arial, sans-serif';
   ctx.globalAlpha = 1;
   ctx.lineWidth = 1;
 
+  // Draw X-axis line
   ctx.beginPath();
   ctx.moveTo(0, chartHeight);
   ctx.lineTo(chartWidth - margin.right, chartHeight);
   ctx.stroke();
 
-  xScale.ticks(DEFAULT_X_AXIS_TICKS).forEach((tick) => {
+  // Draw X-axis ticks
+  ctx.beginPath();
+  for (const tick of xAxisTicks) {
     const x = xScale(tick);
-    ctx.beginPath();
     ctx.moveTo(x, chartHeight);
     ctx.lineTo(x, chartHeight + 5);
-    ctx.stroke();
-  });
+  }
+  ctx.stroke();
 
+  // Draw X-axis labels
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'top';
+  ctx.globalAlpha = 1;
+  // Увеличиваем ширину символов на 60% по оси X
+  ctx.save();
+  ctx.scale(1.6, 1);
+  xAxisTicks.forEach((tick, index) => {
+    const x = xScale(tick) / 1.6; // Компенсируем масштаб для позиционирования
+    const label = xTickFormat ? xTickFormat(tick, index) : String(tick);
+    // Убеждаемся, что подписи видны под осью
+    if (label && label.trim()) {
+      ctx.fillText(label, x, chartHeight + 8);
+    }
+  });
+  ctx.restore();
+
+  // Draw Y-axis line - тот же цвет и толщина
+  ctx.strokeStyle = axisColor;
+  ctx.lineWidth = 1;
   ctx.beginPath();
   ctx.moveTo(0, 0);
   ctx.lineTo(0, chartHeight);
   ctx.stroke();
 
-  yScale.ticks(DEFAULT_Y_AXIS_TICKS).forEach((tick) => {
+  // Draw Y-axis ticks
+  ctx.beginPath();
+  for (const tick of yAxisTicks) {
     const y = yScale(tick);
-    ctx.beginPath();
     ctx.moveTo(0, y);
     ctx.lineTo(-5, y);
-    ctx.stroke();
+  }
+  ctx.stroke();
 
-    ctx.textAlign = 'right';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(tick.toString(), -8, y);
+  // Draw Y-axis labels
+  ctx.textAlign = 'right';
+  ctx.textBaseline = 'middle';
+  ctx.globalAlpha = 1;
+  // Увеличиваем ширину символов на 60% по оси X
+  ctx.save();
+  ctx.scale(1.6, 1);
+  yAxisTicks.forEach((tick, index) => {
+    const y = yScale(tick);
+    const label = yTickFormat ? yTickFormat(tick, index) : String(tick);
+    // Убеждаемся, что подписи видны слева от оси
+    if (label && label.trim()) {
+      ctx.fillText(label, -10 / 1.6, y); // Компенсируем масштаб для позиционирования
+    }
   });
+  ctx.restore();
 
   ctx.restore();
 };
@@ -95,7 +165,8 @@ export const drawAxes = (
 export const drawLine = (
   ctx: CanvasRenderingContext2D,
   data: Array<{ time: number; value: number }>,
-  line: d3.Line<{ time: number; value: number }>,
+  xScale: d3.ScaleTime<number, number>,
+  yScale: d3.ScaleLinear<number, number>,
   color: string,
   strokeWidth: number,
   shiftOffset: number = 0,
@@ -103,14 +174,36 @@ export const drawLine = (
   if (data.length === 0) return;
 
   ctx.save();
+
+  // Batch style changes together
   ctx.strokeStyle = color;
   ctx.lineWidth = strokeWidth;
   ctx.globalAlpha = 0.8;
+  ctx.lineJoin = 'round';
+  ctx.lineCap = 'round';
 
   if (shiftOffset !== 0) ctx.translate(shiftOffset, 0);
 
+  // Draw line using pure canvas API
   ctx.beginPath();
-  line.context(ctx)(data);
+  let isFirstPoint = true;
+
+  for (let i = 0; i < data.length; i++) {
+    const point = data[i];
+    const x = xScale(point.time);
+    const y = yScale(point.value);
+
+    // Skip invalid points
+    if (!Number.isFinite(x) || !Number.isFinite(y)) continue;
+
+    if (isFirstPoint) {
+      ctx.moveTo(x, y);
+      isFirstPoint = false;
+    } else {
+      ctx.lineTo(x, y);
+    }
+  }
+
   ctx.stroke();
 
   ctx.restore();
@@ -138,7 +231,7 @@ export const drawLegend = (
 
     // Draw label
     ctx.fillStyle = chartColors.text;
-    ctx.font = '11px sans-serif';
+    ctx.font = 'normal 12px Arial, sans-serif';
     ctx.textAlign = 'left';
     ctx.textBaseline = 'middle';
     ctx.fillText(line.label, legendX + 20, y);

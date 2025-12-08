@@ -1,4 +1,24 @@
-export const resolveCSSVariable = (variable: string, element: HTMLElement): string => {
+interface CSSVariableCache {
+  computedStyle: CSSStyleDeclaration | null;
+  element: HTMLElement | null;
+  cache: Map<string, string>;
+  maxCacheSize: number;
+}
+
+const MAX_CSS_CACHE_SIZE = 50; // Ограничиваем размер кэша CSS переменных
+
+const createCSSVariableCache = (): CSSVariableCache => ({
+  computedStyle: null,
+  element: null,
+  cache: new Map(),
+  maxCacheSize: MAX_CSS_CACHE_SIZE,
+});
+
+export const resolveCSSVariable = (
+  variable: string,
+  element: HTMLElement,
+  cache?: CSSVariableCache,
+): string => {
   if (!variable.startsWith('var(')) {
     return variable;
   }
@@ -7,11 +27,37 @@ export const resolveCSSVariable = (variable: string, element: HTMLElement): stri
   if (!match) return variable;
 
   const varName = match[1].trim();
-  const computedStyle = getComputedStyle(element);
+
+  // Кэшируем computedStyle и результаты
+  if (cache) {
+    if (cache.element !== element) {
+      cache.computedStyle = getComputedStyle(element);
+      cache.element = element;
+      cache.cache.clear();
+    }
+
+    const cached = cache.cache.get(varName);
+    if (cached !== undefined) {
+      if (cached.startsWith('var(')) {
+        return resolveCSSVariable(cached, element, cache);
+      }
+      return cached;
+    }
+  }
+
+  const computedStyle = cache?.computedStyle || getComputedStyle(element);
   const value = computedStyle.getPropertyValue(varName).trim();
 
+  if (cache) {
+    if (cache.cache.size >= cache.maxCacheSize) {
+      const firstKey = cache.cache.keys().next().value;
+      if (firstKey) cache.cache.delete(firstKey);
+    }
+    cache.cache.set(varName, value);
+  }
+
   if (value.startsWith('var(')) {
-    return resolveCSSVariable(value, element);
+    return resolveCSSVariable(value, element, cache);
   }
 
   return value || variable;
@@ -20,13 +66,29 @@ export const resolveCSSVariable = (variable: string, element: HTMLElement): stri
 export const resolveChartColors = (
   chartColors: Record<string, string>,
   element: HTMLElement,
+  cache?: CSSVariableCache,
+  resultCache?: Record<string, string>,
 ): Record<string, string> => {
-  const resolved: Record<string, string> = {};
-  for (const [key, value] of Object.entries(chartColors)) {
-    resolved[key] = resolveCSSVariable(value, element);
+  const resolved = resultCache || {};
+
+  // Очищаем старые ключи, которых больше нет
+  for (const key in resolved) {
+    if (!(key in chartColors)) {
+      delete resolved[key];
+    }
   }
+
+  // Обновляем только измененные значения
+  for (const [key, value] of Object.entries(chartColors)) {
+    if (resolved[key] !== value) {
+      resolved[key] = resolveCSSVariable(value, element, cache);
+    }
+  }
+
   return resolved;
 };
+
+export { createCSSVariableCache, type CSSVariableCache };
 
 interface SetupCanvasResult {
   ctx: CanvasRenderingContext2D;
@@ -39,7 +101,13 @@ export const setupCanvas = (
   width: number,
   height: number,
 ): SetupCanvasResult | null => {
-  const ctx = canvas.getContext('2d');
+  // Use '2d' context with default settings optimized for D3.js canvas rendering
+  // D3.js works best with standard 2d context for line.path() and other generators
+  const ctx = canvas.getContext('2d', {
+    // Optimize for frequent drawing operations
+    alpha: true, // Allow transparency
+    desynchronized: false, // Keep synchronized for better compatibility
+  });
   if (!ctx) return null;
 
   const dpr = window.devicePixelRatio || 1;
@@ -54,9 +122,13 @@ export const setupCanvas = (
     canvas.style.height = `${height}px`;
   }
 
+  // Reset transform and apply device pixel ratio scaling
+  // This ensures crisp rendering on high-DPI displays (D3.js best practice)
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.scale(dpr, dpr);
-  if (!needsResize) ctx.clearRect(0, 0, width, height);
+
+  // Always clear canvas before rendering to prevent artifacts
+  ctx.clearRect(0, 0, width, height);
 
   return { ctx, dpr, needsResize };
 };

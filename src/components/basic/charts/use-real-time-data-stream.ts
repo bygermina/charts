@@ -45,45 +45,25 @@ export const useRealTimeDataStream = ({
   createInitialData,
   onDataUpdate,
 }: UseRealTimeDataStreamConfig): void => {
-  // Рефы для хранения актуальных значений без пересоздания эффектов
-
-  /** Текущие генераторы данных (обновляются при изменении пропсов) */
   const generatorsRef = useRef(generators);
-
-  /** Буферы данных для каждой линии графика (массив массивов точек) */
   const dataBuffersRef = useRef<DataPoint[][]>(
     generators.map((_, index) => createInitialData(initialCount, index)),
   );
-
-  /** Флаг инициализации начальных данных */
   const isInitializedRef = useRef(false);
-
-  /** Время последнего обновления данных (для контроля задержки) */
   const lastDataUpdateTimeRef = useRef(0);
-
-  /** ID кадра requestAnimationFrame для возможности отмены */
   const dataUpdateFrameIdRef = useRef<number | null>(null);
-
-  /** Флаг монтирования компонента (для очистки при размонтировании) */
   const isMountedRef = useRef(true);
-
-  /** Флаг того, что страница была скрыта (для сброса данных при возврате) */
   const wasHiddenRef = useRef(false);
-
-  /** Реф для колбэка обновления данных (обновляется при изменении пропса) */
   const onDataUpdateRef = useRef(onDataUpdate);
 
-  // Обновляем реф генераторов при изменении пропса
   useEffect(() => {
     generatorsRef.current = generators;
   }, [generators]);
 
-  // Обновляем реф колбэка при изменении пропса
   useEffect(() => {
     onDataUpdateRef.current = onDataUpdate;
   }, [onDataUpdate]);
 
-  // Инициализируем начальные данные при первом рендере или изменении параметров
   useEffect(() => {
     if (!isInitializedRef.current) {
       dataBuffersRef.current = generators.map((_, index) => createInitialData(initialCount, index));
@@ -91,101 +71,71 @@ export const useRealTimeDataStream = ({
     }
   }, [initialCount, generators, createInitialData]);
 
-  // Основной эффект: запускает и управляет потоком данных
   useEffect(() => {
-    // Инициализация состояния при монтировании
     isMountedRef.current = true;
     wasHiddenRef.current = false;
     lastDataUpdateTimeRef.current = 0;
 
-    /**
-     * Сбрасывает буферы данных, создавая новые начальные данные
-     * Используется при возврате на страницу после скрытия
-     */
     const resetData = () => {
       dataBuffersRef.current = generators.map((_, index) => createInitialData(initialCount, index));
     };
 
-    /**
-     * Основная функция обновления данных
-     * Вызывается через requestAnimationFrame для плавной генерации
-     */
     const updateDataBuffer = () => {
-      // Прерываем обновление, если компонент размонтирован или страница скрыта
       if (!isMountedRef.current || document.hidden) return;
 
-      const now = Date.now(); // Время для метки точки данных
-      const currentTime = performance.now(); // Точное время для контроля задержки
+      const now = Date.now();
+      const currentTime = performance.now();
 
-      // Проверяем, прошла ли необходимая задержка с последнего обновления
+      // Добавляем данные плавно по одной точке с заданной задержкой
       if (currentTime - lastDataUpdateTimeRef.current >= delay) {
-        // Обновляем данные для каждого генератора (каждой линии графика)
         generatorsRef.current.forEach((generator, index) => {
           const buffer = dataBuffersRef.current[index];
-          if (!buffer) return;
-
-          // Добавляем новую точку данных: текущее время и значение от генератора
           buffer.push({ time: now, value: generator() });
 
-          // Удаляем самую старую точку, если буфер превысил максимальный размер (FIFO)
-          if (buffer.length > bufferSize) buffer.shift();
+          if (buffer.length > bufferSize) {
+            const removeCount = buffer.length - bufferSize;
+            for (let i = 0; i < bufferSize; i++) {
+              buffer[i] = buffer[i + removeCount];
+            }
+            buffer.length = bufferSize;
+          }
         });
 
-        // Обновляем время последнего обновления
         lastDataUpdateTimeRef.current = currentTime;
-
-        // Вызываем колбэк с обновленными данными (если он передан)
         onDataUpdateRef.current?.(dataBuffersRef.current);
       }
 
-      // Планируем следующий кадр обновления, если компонент еще смонтирован и страница видима
       if (isMountedRef.current && !document.hidden) {
         dataUpdateFrameIdRef.current = requestAnimationFrame(updateDataBuffer);
       }
     };
 
-    /**
-     * Обработчик изменения видимости страницы
-     * Останавливает генерацию при скрытии и возобновляет при показе
-     */
     const handleVisibilityChange = () => {
       if (document.hidden) {
-        // Страница скрыта: останавливаем генерацию данных
         wasHiddenRef.current = true;
         if (dataUpdateFrameIdRef.current !== null) {
           cancelAnimationFrame(dataUpdateFrameIdRef.current);
           dataUpdateFrameIdRef.current = null;
         }
-      } else if (isMountedRef.current) {
-        // Страница снова видима: возобновляем генерацию
+      } else if (isMountedRef.current && dataUpdateFrameIdRef.current === null) {
         if (wasHiddenRef.current) {
-          // Если страница была скрыта, сбрасываем данные (чтобы не было разрыва во времени)
           wasHiddenRef.current = false;
           resetData();
         }
-        // Запускаем обновление данных, если оно еще не запущено
-        if (dataUpdateFrameIdRef.current === null) {
-          lastDataUpdateTimeRef.current = performance.now();
-          dataUpdateFrameIdRef.current = requestAnimationFrame(updateDataBuffer);
-        }
+        lastDataUpdateTimeRef.current = performance.now();
+        dataUpdateFrameIdRef.current = requestAnimationFrame(updateDataBuffer);
       }
     };
 
-    // Подписываемся на события изменения видимости страницы
     document.addEventListener('visibilitychange', handleVisibilityChange);
-
-    // Запускаем цикл обновления данных
     lastDataUpdateTimeRef.current = performance.now();
     dataUpdateFrameIdRef.current = requestAnimationFrame(updateDataBuffer);
 
-    // Очистка при размонтировании компонента
     return () => {
       isMountedRef.current = false;
-      // Отменяем запланированный кадр обновления
       if (dataUpdateFrameIdRef.current !== null) {
         cancelAnimationFrame(dataUpdateFrameIdRef.current);
       }
-      // Удаляем обработчик события видимости
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, [delay, bufferSize, initialCount, generators, createInitialData]);

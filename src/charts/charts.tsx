@@ -2,11 +2,11 @@ import { Typography } from '@/components/basic/typography/typography';
 import { ChartContainer } from '@/components/basic/charts';
 
 import { MultiLineChartD3 } from './components/multiline-chart-d3/multi-line-chart';
-import { MultiLineChartD3Canvas } from './components/multiline-chart-d3-canvas/multi-line-chart-canvas';
 import { BarChartD3 } from './components/bar-chart-d3/bar-chart-d3';
 import { PieChartD3 } from './components/pie-chart-d3/pie-chart-d3';
 import { ScatterChartD3 } from './components/scatter-chart-d3/scatter-chart-d3';
 import { GaugeChartD3 } from './components/gauge-chart-d3/gauge-chart-d3';
+import RealTimeChart from './components/canvas/Canvas';
 
 import styles from './charts.module.scss';
 
@@ -22,10 +22,10 @@ export const Charts = () => {
             <MultiLineChartD3 />
           </ChartContainer>
           <ChartContainer
-            header="d3.js Multi Line Chart (Canvas)"
+            header="Multi Line Chart (Canvas) 1000 points / sec"
             subtitle="data update every second"
           >
-            <MultiLineChartD3Canvas />
+            <RealTimeChart />
           </ChartContainer>
           <ChartContainer header="Weekly Statistics" subtitle="Daily breakdown">
             <BarChartD3 />
