@@ -103,8 +103,9 @@ export const renderSingleLineChart = ({
     });
   }
 
-  const resolvedStrokeColor =
-    strokeColor || resolveCSSVariable(resolvedChartColors.primary, canvas, cssVariableCache);
+  const resolvedStrokeColor = strokeColor
+    ? resolveCSSVariable(strokeColor, canvas, cssVariableCache)
+    : resolveCSSVariable(resolvedChartColors.primary, canvas, cssVariableCache);
 
   ctx.save();
   ctx.translate(margin.left, margin.top);

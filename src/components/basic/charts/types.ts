@@ -17,7 +17,7 @@ export interface ScatterDataPoint {
   x: number;
   y: number;
   category: string;
-  size?: number; // Размер точки для создания глубины
+  size?: number; // Point size for depth visualization
 }
 
 export type ChartVariant = 'normal' | 'accent';

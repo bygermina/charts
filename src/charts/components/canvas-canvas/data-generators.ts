@@ -1,16 +1,16 @@
-const maxVelocity = 5; // Maximum change per step
-const velocityDecay = 0.9; // Slow down velocity over time
-const noiseStrength = 8; // Maximum random deviation from trend
-const valueSpreadMargin = maxVelocity + noiseStrength / 2; // ~9 единиц
-const boundaryInfluenceZone = 30; // Зона влияния границ на направление движения
-const boundaryForce = 0.3; // Сила влияния границ на velocity
+const maxVelocity = 5;
+const velocityDecay = 0.9;
+const noiseStrength = 8;
+const valueSpreadMargin = maxVelocity + noiseStrength / 2;
+const boundaryInfluenceZone = 30; // Zone where boundaries influence movement direction
+const boundaryForce = 0.3; // Force applied by boundaries to velocity
 
 export const createTrendGenerator = (
   initialValue: number = 75,
   baseRange: [number, number] = [30, 170],
 ) => {
   let currentValue = initialValue;
-  let velocity = 0; // Rate of change per update - каждый генератор имеет свою velocity
+  let velocity = 0; // Rate of change per update - each generator has its own velocity
 
   const [min, max] = baseRange;
   const expandedMin = min - valueSpreadMargin;

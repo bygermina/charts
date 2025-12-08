@@ -184,7 +184,6 @@ const createXAxis = (
     .attr('font-size', CHART_FONT_SIZE)
     .attr('font-family', CHART_FONT_FAMILY);
 
-  // Используем цвет из дизайн-системы для осей
   const axisColor = chartColors.grid;
   g.selectAll('path').attr('stroke', axisColor).attr('stroke-width', 1).attr('stroke-opacity', 1);
 
@@ -217,7 +216,6 @@ const createYAxis = (
     .attr('font-family', CHART_FONT_FAMILY)
     .attr('opacity', 1);
 
-  // Используем цвет из дизайн-системы для осей
   const axisColor = chartColors.grid;
   axisGroup
     .selectAll('path')

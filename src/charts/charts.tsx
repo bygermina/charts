@@ -6,7 +6,8 @@ import { BarChartD3 } from './components/bar-chart-d3/bar-chart-d3';
 import { PieChartD3 } from './components/pie-chart-d3/pie-chart-d3';
 import { ScatterChartD3 } from './components/scatter-chart-d3/scatter-chart-d3';
 import { GaugeChartD3 } from './components/gauge-chart-d3/gauge-chart-d3';
-import RealTimeChart from './components/canvas-canvas/Canvas';
+import { IoTSensors } from './components/iot-sensors/iot-sensors';
+import RealTimeChart from './components/canvas-canvas/canvas';
 
 import styles from './charts.module.scss';
 
@@ -22,8 +23,8 @@ export const Charts = () => {
             <MultiLineChartD3 />
           </ChartContainer>
           <ChartContainer
-            header="Multi Line Chart (Canvas) 1000 points / sec"
-            subtitle="data update every second"
+            header="Canvas chart 1000 points / sec"
+            subtitle="data update every millisecond"
           >
             <RealTimeChart />
           </ChartContainer>
@@ -36,8 +37,13 @@ export const Charts = () => {
           <ChartContainer header="Distribution" subtitle="Data correlation">
             <ScatterChartD3 />
           </ChartContainer>
-          <ChartContainer header="Gauge Meter" subtitle="Interactive gauge with input">
+          <ChartContainer
+            header="Svg sensor (change value in input)"
+            subtitle="I can draw any svg shape and add any animation to it"
+            className={styles.sensorContainer}
+          >
             <GaugeChartD3 />
+            <IoTSensors />
           </ChartContainer>
         </div>
       </div>

@@ -170,8 +170,15 @@ export const drawAxes = ({
   yTicks,
 }: DrawAxesConfig): void => {
   try {
-    const axisColor = resolvedChartColors.grid || '#e0e0e0';
-    const textColor = resolvedChartColors.textSecondary || '#666';
+    const getFallbackColor = (cssVar: string): string => {
+      if (typeof window !== 'undefined') {
+        return getComputedStyle(document.documentElement).getPropertyValue(cssVar).trim() || 'rgb(51, 65, 85)';
+      }
+      return 'rgb(51, 65, 85)';
+    };
+
+    const axisColor = resolvedChartColors.grid || getFallbackColor('--color-slate-700');
+    const textColor = resolvedChartColors.textSecondary || getFallbackColor('--color-slate-400');
 
     ctx.save();
     ctx.strokeStyle = axisColor;

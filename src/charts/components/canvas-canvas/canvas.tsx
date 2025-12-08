@@ -4,6 +4,7 @@ import {
   RealTimeSingleLineChartCanvas,
   type RealTimeSingleLineDataRef,
   type ChartVariant,
+  getChartColors,
 } from '@/components/basic/charts';
 
 import { createTrendGenerator } from './data-generators';
@@ -14,6 +15,7 @@ const DATA_UPDATE_INTERVAL_MS = 1; // Интервал обновления да
 const Y_DOMAIN: [number, number] = [0, 200]; // Диапазон отображения графика
 
 export default function RealTimeChart({ variant = 'normal' }: { variant?: ChartVariant }) {
+  const chartColors = getChartColors(variant);
   const valuesRef = useRef(new Float32Array(MAX_POINTS));
   const timesRef = useRef(new Float64Array(MAX_POINTS));
   const headRef = useRef(0);
@@ -70,7 +72,7 @@ export default function RealTimeChart({ variant = 'normal' }: { variant?: ChartV
       variant={variant}
       yDomain={Y_DOMAIN}
       timeWindowMs={TIME_WINDOW_MS}
-      strokeColor="rgb(168, 85, 247)"
+      strokeColor={chartColors.tertiary}
       strokeWidth={1}
       xTicks={3}
       yTicks={5}

@@ -5,21 +5,22 @@ import { type ChartVariant, getChartColors } from '../types';
 import styles from './gauge-chart.module.scss';
 
 interface GaugeChartProps {
-  value: number; // 0-100
-  width?: number;
-  height?: number;
+  value: number;
   variant?: ChartVariant;
   min?: number;
   max?: number;
-  scale?: number; // Scale factor for the gauge (default: 1)
 }
 
 const GAUGE_RADIUS = 80;
-const GAUGE_START_ANGLE = -Math.PI; // -180 degrees (left)
-const GAUGE_END_ANGLE = 0; // 0 degrees (right)
-const TICK_COUNT = 11; // 0, 10, 20, ..., 100
+const GAUGE_START_ANGLE = -Math.PI;
+const GAUGE_END_ANGLE = 0;
+const TICK_COUNT = 11;
 const NEEDLE_LENGTH = 60;
 const NEEDLE_WIDTH = 3;
+const LABEL_OFFSET = 15;
+const PADDING = 30;
+const VIEWBOX_SIZE = (GAUGE_RADIUS + LABEL_OFFSET + PADDING) * 2;
+const CENTER = VIEWBOX_SIZE / 2;
 
 const valueToAngle = (value: number, min: number, max: number): number => {
   const normalizedValue = (value - min) / (max - min);
@@ -30,19 +31,8 @@ const radiansToDegrees = (radians: number): number => {
   return (radians * 180) / Math.PI;
 };
 
-export const GaugeChart = ({
-  value,
-  width = 250,
-  height = 200,
-  variant = 'normal',
-  min = 0,
-  max = 100,
-  scale = 1,
-}: GaugeChartProps) => {
+export const GaugeChart = ({ value, variant = 'normal', min = 0, max = 100 }: GaugeChartProps) => {
   const chartColors = getChartColors(variant);
-
-  const centerX = width / 2;
-  const centerY = height / 2;
 
   const clampedValue = Math.max(min, Math.min(max, value));
   const needleAngle = valueToAngle(clampedValue, min, max);
@@ -76,9 +66,14 @@ export const GaugeChart = ({
   }, [min, max]);
 
   return (
-    <div className={styles.container} style={{ width, height }}>
-      <svg width={width} height={height} className={styles.svg}>
-        <g transform={`translate(${centerX}, ${centerY}) scale(${scale})`}>
+    <div className={styles.container}>
+      <svg
+        viewBox={`0 0 ${VIEWBOX_SIZE} ${VIEWBOX_SIZE}`}
+        className={styles.svg}
+        preserveAspectRatio="xMidYMid meet"
+        style={{ width: '100%', height: '100%' }}
+      >
+        <g transform={`translate(${CENTER}, ${CENTER})`}>
           <path
             d="M -80 0 A 80 80 0 1 1 80 0 L 60 0 A 60 60 0 1 0 -60 0 Z"
             fill={chartColors.grid}

@@ -34,14 +34,7 @@ export const GaugeChartD3 = () => {
       />
       <div className={styles.chartContainer}>
         <ResponsiveChartWrapper>
-          {({ width, height }) => {
-            const chartSize = Math.min(width, height || 200);
-            const chartWidth = chartSize > 0 ? chartSize : 250;
-            const chartHeight = chartSize > 0 ? chartSize : 200;
-            return (
-              <GaugeChart value={value} width={chartWidth} height={chartHeight} variant="normal" />
-            );
-          }}
+          {() => <GaugeChart value={value} variant="normal" />}
         </ResponsiveChartWrapper>
       </div>
     </div>

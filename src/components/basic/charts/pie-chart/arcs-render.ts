@@ -36,7 +36,7 @@ export const createArcs = ({
     .append('path')
     .attr('class', 'shadow-arc')
     .attr('d', arc)
-    .attr('fill', '#000000')
+    .attr('fill', 'var(--color-slate-900)')
     .attr('opacity', 0);
 
   const arcs = g
@@ -50,7 +50,7 @@ export const createArcs = ({
     .append('path')
     .attr('d', arc)
     .attr('fill', (_d, i) => `url(#pie-gradient-${i % colors.length})`)
-    .attr('stroke', '#1e293b')
+    .attr('stroke', 'var(--color-slate-800)')
     .attr('stroke-width', STROKE_WIDTH)
     .attr('stroke-opacity', STROKE_OPACITY)
     .attr('opacity', 0)
