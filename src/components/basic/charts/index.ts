@@ -16,5 +16,4 @@ export type {
 } from './types';
 export { getChartColors } from './types';
 export { useChartBase } from './use-chart-base';
-export { useRealTimeDataStream } from './use-real-time-data-stream';
 export { useCanvasRenderLoop } from './use-canvas-render-loop';
