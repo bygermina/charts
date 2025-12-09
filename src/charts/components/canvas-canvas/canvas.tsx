@@ -11,8 +11,8 @@ import { createTrendGenerator } from './data-generators';
 
 const MAX_POINTS = 2000;
 const TIME_WINDOW_MS = 8000;
-const DATA_UPDATE_INTERVAL_MS = 1; // Интервал обновления данных в миллисекундах
-const Y_DOMAIN: [number, number] = [0, 200]; // Диапазон отображения графика
+const DATA_UPDATE_INTERVAL_MS = 1;
+const Y_DOMAIN: [number, number] = [0, 200];
 
 export default function RealTimeChart({ variant = 'normal' }: { variant?: ChartVariant }) {
   const chartColors = getChartColors(variant);

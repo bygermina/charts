@@ -3,10 +3,9 @@ import { ChartContainer } from '@/components/basic/charts';
 
 import { MultiLineChartD3 } from './components/multiline-chart-d3/multi-line-chart';
 import { BarChartD3 } from './components/bar-chart-d3/bar-chart-d3';
-import { PieChartD3 } from './components/pie-chart-d3/pie-chart-d3';
-import { ScatterChartD3 } from './components/scatter-chart-d3/scatter-chart-d3';
 import { GaugeChartD3 } from './components/gauge-chart-d3/gauge-chart-d3';
 import { IoTSensors } from './components/iot-sensors/iot-sensors';
+import { IoTNetworkGraph } from './components/iot-network-graph/iot-network-graph';
 import RealTimeChart from './components/canvas-canvas/canvas';
 
 import styles from './charts.module.scss';
@@ -31,12 +30,6 @@ export const Charts = () => {
           <ChartContainer header="Weekly Statistics" subtitle="Daily breakdown">
             <BarChartD3 />
           </ChartContainer>
-          <ChartContainer header="Category Distribution" subtitle="Percentage breakdown">
-            <PieChartD3 />
-          </ChartContainer>
-          <ChartContainer header="Distribution" subtitle="Data correlation">
-            <ScatterChartD3 />
-          </ChartContainer>
           <ChartContainer
             header="Svg sensor (change value in input)"
             subtitle="I can draw any svg shape and add any animation to it"
@@ -44,6 +37,12 @@ export const Charts = () => {
           >
             <GaugeChartD3 />
             <IoTSensors />
+          </ChartContainer>
+          <ChartContainer
+            header="IoT Network Graph"
+            subtitle="Drag nodes, scroll to zoom, drag background to pan. Hover to highlight connections"
+          >
+            <IoTNetworkGraph />
           </ChartContainer>
         </div>
       </div>
