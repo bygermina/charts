@@ -158,6 +158,19 @@ interface DrawAxesConfig {
 const CHART_FONT_SIZE = '12px';
 const CHART_FONT_FAMILY = 'Arial, sans-serif';
 
+export const drawLine = (
+  ctx: CanvasRenderingContext2D,
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number,
+): void => {
+  ctx.beginPath();
+  ctx.moveTo(x1, y1);
+  ctx.lineTo(x2, y2);
+  ctx.stroke();
+};
+
 export const drawAxes = ({
   ctx,
   xAxisScale,
@@ -170,65 +183,39 @@ export const drawAxes = ({
   yTicks,
 }: DrawAxesConfig): void => {
   try {
-    const getFallbackColor = (cssVar: string): string => {
-      if (typeof window !== 'undefined') {
-        return (
-          getComputedStyle(document.documentElement).getPropertyValue(cssVar).trim() ||
-          'rgb(51, 65, 85)'
-        );
-      }
-      return 'rgb(51, 65, 85)';
-    };
-
-    const axisColor = resolvedColors.grid || getFallbackColor('--color-slate-700');
-    const textColor = resolvedColors.textSecondary || getFallbackColor('--color-slate-400');
-
     ctx.save();
-    ctx.strokeStyle = axisColor;
-    ctx.fillStyle = textColor;
+    ctx.strokeStyle = resolvedColors.grid;
+    ctx.fillStyle = resolvedColors.textSecondary;
     ctx.font = `${CHART_FONT_SIZE} ${CHART_FONT_FAMILY}`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
-    ctx.beginPath();
-    ctx.moveTo(0, chartHeight);
-    ctx.lineTo(chartWidth - margin.right, chartHeight);
-    ctx.stroke();
+    drawLine(ctx, 0, chartHeight, chartWidth - margin.right, chartHeight);
+    drawLine(ctx, 0, 0, 0, chartHeight);
 
-    ctx.beginPath();
-    ctx.moveTo(0, 0);
-    ctx.lineTo(0, chartHeight);
-    ctx.stroke();
-
-    const xTickCount = xTicks !== undefined ? xTicks : 10;
-    const xTickValues = xAxisScale.ticks(xTickCount);
-    const xTickFormat = xAxisScale.tickFormat(xTickCount);
+    const xTickValues = xAxisScale.ticks(xTicks);
+    const xTickFormat = xAxisScale.tickFormat(xTicks);
 
     xTickValues.forEach((tickValue) => {
       const x = xAxisScale(tickValue);
+
       if (x >= 0 && x <= chartWidth - margin.right) {
-        ctx.beginPath();
-        ctx.moveTo(x, chartHeight);
-        ctx.lineTo(x, chartHeight + 5);
-        ctx.stroke();
+        drawLine(ctx, x, chartHeight, x, chartHeight + 5);
 
         const label = xTickFormat(tickValue);
         ctx.fillText(label, x, chartHeight + 15);
       }
     });
 
-    const yTickCount = yTicks !== undefined ? yTicks : 10;
-    const yTickValues = yScale.ticks(yTickCount);
-    const yTickFormat = yScale.tickFormat(yTickCount);
+    const yTickValues = yScale.ticks(yTicks);
+    const yTickFormat = yScale.tickFormat(yTicks);
 
     ctx.textAlign = 'right';
     yTickValues.forEach((tickValue) => {
       const y = yScale(tickValue);
+
       if (y >= 0 && y <= chartHeight) {
-        ctx.beginPath();
-        ctx.moveTo(0, y);
-        ctx.lineTo(-5, y);
-        ctx.stroke();
+        drawLine(ctx, 0, y, -5, y);
 
         const label = yTickFormat(tickValue);
         ctx.fillText(label, -10, y);

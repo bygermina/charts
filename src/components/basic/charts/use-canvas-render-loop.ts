@@ -35,29 +35,21 @@ export const useCanvasRenderLoop = ({
 
       if (!shouldContinue()) return;
 
-      if (document.hidden) return;
-
       const canvas = canvasRef.current;
       if (!canvas) {
-        if (shouldContinue()) {
-          renderFrameIdRef.current = requestAnimationFrame(renderLoop);
-        }
+        renderFrameIdRef.current = requestAnimationFrame(renderLoop);
         return;
       }
 
       const setupResult = setupCanvas(canvas, width, height);
       if (!setupResult) {
-        if (shouldContinue()) {
-          renderFrameIdRef.current = requestAnimationFrame(renderLoop);
-        }
+        renderFrameIdRef.current = requestAnimationFrame(renderLoop);
         return;
       }
 
       renderRef.current(setupResult.ctx, canvas);
 
-      if (shouldContinue() && !document.hidden) {
-        renderFrameIdRef.current = requestAnimationFrame(renderLoop);
-      }
+      renderFrameIdRef.current = requestAnimationFrame(renderLoop);
     };
 
     const handleVisibilityChange = () => {
