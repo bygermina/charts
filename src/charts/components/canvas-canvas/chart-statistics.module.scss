@@ -1,0 +1,44 @@
+@use 'styles/design-system' as *;
+
+.statistics {
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgb(51, 65, 85);
+  border-radius: 8px;
+  padding: 12px;
+  min-width: 180px;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.statisticsHeader {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgb(203, 213, 225);
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgb(51, 65, 85);
+}
+
+.statisticsContent {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.statRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+}
+
+.statLabel {
+  color: rgb(148, 163, 184);
+}
+
+.statValue {
+  color: rgb(203, 213, 225);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+

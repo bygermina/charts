@@ -126,23 +126,6 @@ export const setupCanvas = (
   return { ctx, dpr, needsResize };
 };
 
-interface LineSeries {
-  data: Array<{ time: number }>;
-}
-
-export const hasDataChanged = (current: LineSeries[], previous: LineSeries[]): boolean => {
-  if (!previous.length) return true;
-  if (current.length !== previous.length) return true;
-
-  return current.some((line, idx) => {
-    const prevLine = previous[idx];
-    if (!prevLine) return true;
-    const lastPoint = line.data.at(-1);
-    const prevLastPoint = prevLine.data.at(-1);
-    return line.data.length !== prevLine.data.length || lastPoint?.time !== prevLastPoint?.time;
-  });
-};
-
 interface DrawAxesConfig {
   ctx: CanvasRenderingContext2D;
   xAxisScale: d3.ScaleTime<number, number>;
@@ -158,7 +141,7 @@ interface DrawAxesConfig {
 const CHART_FONT_SIZE = '12px';
 const CHART_FONT_FAMILY = 'Arial, sans-serif';
 
-export const drawLine = (
+const drawLine = (
   ctx: CanvasRenderingContext2D,
   x1: number,
   y1: number,

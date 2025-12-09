@@ -1,5 +1,4 @@
 import * as d3 from 'd3';
-import type React from 'react';
 
 import { getChartColors } from './types';
 
@@ -275,57 +274,9 @@ export const createAxes = (
   return { xAxisGroup, yAxisGroup };
 };
 
-export const initChart = (
-  svgRef: React.RefObject<SVGSVGElement | null>,
-  margin: { top: number; right: number; bottom: number; left: number },
-): d3.Selection<SVGGElement, unknown, null, undefined> | null => {
-  if (!svgRef.current) return null;
-
-  const svg = d3.select(svgRef.current);
-  svg.selectAll('*').remove();
-
-  return svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
-};
-
-export const createXAxisLabel = (
-  g: d3.Selection<SVGGElement, unknown, null, undefined>,
-  label: string,
-  chartWidth: number,
-  chartHeight: number,
-  chartColors: ChartColors,
-  offset = 35,
-) => {
-  g.append('text')
-    .attr('transform', `translate(${chartWidth / 2}, ${chartHeight + offset})`)
-    .style('text-anchor', 'middle')
-    .attr('fill', chartColors.textSecondary)
-    .attr('font-size', CHART_FONT_SIZE)
-    .attr('font-family', CHART_FONT_FAMILY)
-    .text(label);
-};
-
-export const createYAxisLabel = (
-  g: d3.Selection<SVGGElement, unknown, null, undefined>,
-  label: string,
-  chartHeight: number,
-  chartColors: ChartColors,
-  offset = 40,
-) => {
-  g.append('text')
-    .attr('transform', 'rotate(-90)')
-    .attr('y', -offset)
-    .attr('x', -chartHeight / 2)
-    .style('text-anchor', 'middle')
-    .attr('fill', chartColors.textSecondary)
-    .attr('font-size', CHART_FONT_SIZE)
-    .attr('font-family', CHART_FONT_FAMILY)
-    .text(label);
-};
-
 export interface LegendItem {
   label: string;
   color: string;
-  type?: 'line' | 'circle' | 'rect';
 }
 
 export const createLineLegend = (
@@ -364,65 +315,3 @@ export const createLineLegend = (
   });
 };
 
-export const createCircleLegend = (
-  g: d3.Selection<SVGGElement, unknown, null, undefined>,
-  items: LegendItem[],
-  chartWidth: number,
-  chartColors: ChartColors,
-  position = { x: 100, y: 10 },
-  itemHeight = 20,
-  radius = 5,
-) => {
-  const legend = g
-    .append('g')
-    .attr('transform', `translate(${chartWidth - position.x}, ${position.y})`);
-
-  items.forEach((item, i) => {
-    const legendRow = legend.append('g').attr('transform', `translate(0, ${i * itemHeight})`);
-
-    legendRow.append('circle').attr('r', radius).attr('fill', item.color).attr('opacity', 0.7);
-
-    legendRow
-      .append('text')
-      .attr('x', radius * 2 + 2)
-      .attr('y', 4)
-      .attr('fill', chartColors.text)
-      .attr('font-size', CHART_FONT_SIZE)
-      .attr('font-family', CHART_FONT_FAMILY)
-      .text(item.label);
-  });
-};
-
-export const createRectLegend = (
-  svg: d3.Selection<SVGSVGElement, unknown, null, undefined>,
-  items: LegendItem[],
-  width: number,
-  chartColors: ChartColors,
-  position = { x: 150, y: 20 },
-  itemHeight = 25,
-  rectSize = { width: 15, height: 15 },
-) => {
-  const legend = svg
-    .append('g')
-    .attr('transform', `translate(${width - position.x}, ${position.y})`);
-
-  items.forEach((item, i) => {
-    const legendRow = legend.append('g').attr('transform', `translate(0, ${i * itemHeight})`);
-
-    legendRow
-      .append('rect')
-      .attr('width', rectSize.width)
-      .attr('height', rectSize.height)
-      .attr('fill', item.color)
-      .attr('rx', 2);
-
-    legendRow
-      .append('text')
-      .attr('x', rectSize.width + 5)
-      .attr('y', rectSize.height - 3)
-      .attr('fill', chartColors.text)
-      .attr('font-size', CHART_FONT_SIZE)
-      .attr('font-family', CHART_FONT_FAMILY)
-      .text(item.label);
-  });
-};

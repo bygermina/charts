@@ -9,6 +9,7 @@ import { IoTNetworkGraph } from './components/iot-network-graph/iot-network-grap
 import RealTimeChart from './components/canvas-canvas/canvas';
 
 import styles from './charts.module.scss';
+import BoilerDiagram from './components/flow/flow';
 
 export const Charts = () => {
   return (
@@ -43,6 +44,9 @@ export const Charts = () => {
             subtitle="Drag nodes, scroll to zoom, drag background to pan. Hover to highlight connections"
           >
             <IoTNetworkGraph />
+          </ChartContainer>
+          <ChartContainer header="Flow Diagram" subtitle="Simulates data flow between nodes">
+            <BoilerDiagram />
           </ChartContainer>
         </div>
       </div>

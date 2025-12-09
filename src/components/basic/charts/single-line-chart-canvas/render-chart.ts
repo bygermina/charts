@@ -7,6 +7,8 @@ interface RenderSingleLineChartConfig {
   dataRef: React.RefObject<RealTimeSingleLineDataRef>;
   resolvedColors: Record<string, string>;
   resolvedStrokeColor: string;
+  resolvedHighlightStrokeColor?: string;
+  highlightThreshold?: number;
   margin: { top: number; right: number; bottom: number; left: number };
   chartWidth: number;
   chartHeight: number;
@@ -23,6 +25,8 @@ export const renderSingleLineChart = ({
   dataRef,
   resolvedColors,
   resolvedStrokeColor,
+  resolvedHighlightStrokeColor,
+  highlightThreshold,
   margin,
   chartWidth,
   chartHeight,
@@ -72,26 +76,48 @@ export const renderSingleLineChart = ({
   ctx.save();
   ctx.translate(margin.left, margin.top);
 
-  ctx.strokeStyle = resolvedStrokeColor;
   ctx.lineWidth = strokeWidth;
   ctx.beginPath();
 
   let isFirstPoint = true;
+  let isHighlight = false;
+  let prevX = 0;
+  let prevY = 0;
+
   for (let i = 0; i < size; i++) {
     const idx = (head - size + i + maxPoints) % maxPoints;
     const pointTime = times[idx];
 
-    if (pointTime >= t0 && pointTime <= t1) {
-      const x = scales.xAxisScale(new Date(pointTime));
-      const y = scales.yScale(values[idx]);
+    if (pointTime < t0 || pointTime > t1) continue;
 
-      if (isFirstPoint) {
-        ctx.moveTo(x, y);
-        isFirstPoint = false;
-      } else {
-        ctx.lineTo(x, y);
-      }
+    const value = values[idx];
+    const x = scales.xAxisScale(new Date(pointTime));
+    const y = scales.yScale(value);
+    const nextHighlight = highlightThreshold !== undefined && value > highlightThreshold;
+
+    if (isFirstPoint) {
+      ctx.strokeStyle = nextHighlight && resolvedHighlightStrokeColor ? resolvedHighlightStrokeColor : resolvedStrokeColor;
+      ctx.moveTo(x, y);
+      prevX = x;
+      prevY = y;
+      isFirstPoint = false;
+      isHighlight = nextHighlight;
+      continue;
     }
+
+    if (nextHighlight !== isHighlight) {
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.strokeStyle = nextHighlight && resolvedHighlightStrokeColor ? resolvedHighlightStrokeColor : resolvedStrokeColor;
+      ctx.moveTo(prevX, prevY);
+      ctx.lineTo(x, y);
+      isHighlight = nextHighlight;
+    } else {
+      ctx.lineTo(x, y);
+    }
+
+    prevX = x;
+    prevY = y;
   }
 
   ctx.stroke();

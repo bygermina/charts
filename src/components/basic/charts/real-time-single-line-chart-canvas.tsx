@@ -29,6 +29,8 @@ interface RealTimeSingleLineChartCanvasProps {
   yDomain: [number, number]; // Диапазон значений по оси Y [мин, макс]
   timeWindowMs: number; // Временное окно отображения данных в миллисекундах
   strokeColor?: string; // Цвет линии графика
+  highlightStrokeColor?: string; // Цвет части линии выше порога
+  highlightThreshold?: number; // Порог, выше которого применяется highlightStrokeColor
   strokeWidth?: number; // Толщина линии
   xTicks?: number; // Количество делений на оси X
   yTicks?: number; // Количество делений на оси Y
@@ -42,7 +44,9 @@ export const RealTimeSingleLineChartCanvas = ({
   yDomain,
   timeWindowMs,
   strokeColor,
-  strokeWidth = 2,
+  highlightStrokeColor,
+  highlightThreshold,
+  strokeWidth = 1,
   xTicks = 3,
   yTicks = 5,
 }: RealTimeSingleLineChartCanvasProps) => {
@@ -72,11 +76,17 @@ export const RealTimeSingleLineChartCanvas = ({
         cssVariableCacheRef.current,
       );
 
+      const resolvedHighlightStrokeColor = highlightStrokeColor
+        ? resolveCSSVariable(highlightStrokeColor, canvas, cssVariableCacheRef.current)
+        : undefined;
+
       const result = renderSingleLineChart({
         ctx,
         dataRef,
         resolvedColors,
         resolvedStrokeColor,
+        resolvedHighlightStrokeColor,
+        highlightThreshold,
         margin,
         chartWidth,
         chartHeight,
@@ -94,6 +104,8 @@ export const RealTimeSingleLineChartCanvas = ({
       dataRef,
       chartColors,
       strokeColor,
+      highlightStrokeColor,
+      highlightThreshold,
       margin,
       chartWidth,
       chartHeight,
