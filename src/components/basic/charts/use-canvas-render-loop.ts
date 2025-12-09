@@ -31,10 +31,11 @@ export const useCanvasRenderLoop = ({
     const shouldContinue = () => isMountedRef.current && !document.hidden;
 
     const renderLoop = () => {
-      if (!shouldContinue()) {
-        renderFrameIdRef.current = null;
-        return;
-      }
+      renderFrameIdRef.current = null;
+
+      if (!shouldContinue()) return;
+
+      if (document.hidden) return;
 
       const canvas = canvasRef.current;
       if (!canvas) {
@@ -54,7 +55,7 @@ export const useCanvasRenderLoop = ({
 
       renderRef.current(setupResult.ctx, canvas);
 
-      if (shouldContinue()) {
+      if (shouldContinue() && !document.hidden) {
         renderFrameIdRef.current = requestAnimationFrame(renderLoop);
       }
     };
@@ -71,12 +72,16 @@ export const useCanvasRenderLoop = ({
     };
 
     document.addEventListener('visibilitychange', handleVisibilityChange);
-    renderFrameIdRef.current = requestAnimationFrame(renderLoop);
+
+    if (!document.hidden) {
+      renderFrameIdRef.current = requestAnimationFrame(renderLoop);
+    }
 
     return () => {
       isMountedRef.current = false;
       if (renderFrameIdRef.current !== null) {
         cancelAnimationFrame(renderFrameIdRef.current);
+        renderFrameIdRef.current = null;
       }
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };

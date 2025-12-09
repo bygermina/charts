@@ -150,7 +150,7 @@ interface DrawAxesConfig {
   chartWidth: number;
   chartHeight: number;
   margin: { top: number; right: number; bottom: number; left: number };
-  resolvedChartColors: Record<string, string>;
+  resolvedColors: Record<string, string>;
   xTicks: number;
   yTicks: number;
 }
@@ -165,20 +165,23 @@ export const drawAxes = ({
   chartWidth,
   chartHeight,
   margin,
-  resolvedChartColors,
+  resolvedColors,
   xTicks,
   yTicks,
 }: DrawAxesConfig): void => {
   try {
     const getFallbackColor = (cssVar: string): string => {
       if (typeof window !== 'undefined') {
-        return getComputedStyle(document.documentElement).getPropertyValue(cssVar).trim() || 'rgb(51, 65, 85)';
+        return (
+          getComputedStyle(document.documentElement).getPropertyValue(cssVar).trim() ||
+          'rgb(51, 65, 85)'
+        );
       }
       return 'rgb(51, 65, 85)';
     };
 
-    const axisColor = resolvedChartColors.grid || getFallbackColor('--color-slate-700');
-    const textColor = resolvedChartColors.textSecondary || getFallbackColor('--color-slate-400');
+    const axisColor = resolvedColors.grid || getFallbackColor('--color-slate-700');
+    const textColor = resolvedColors.textSecondary || getFallbackColor('--color-slate-400');
 
     ctx.save();
     ctx.strokeStyle = axisColor;

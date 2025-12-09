@@ -9,30 +9,32 @@ import { type Scales } from './multi-line-chart/index';
 
 import styles from './multi-line-chart-canvas.module.scss';
 
+// Интерфейс для данных графика в реальном времени
+// Используется для передачи данных между компонентами через ref
 export interface RealTimeSingleLineDataRef {
-  values: Float32Array;
-  times: Float64Array;
-  head: number;
-  size: number;
-  maxPoints: number;
+  values: Float32Array; // Массив значений для отрисовки
+  times: Float64Array; // Массив временных меток для каждой точки
+  head: number; // Индекс текущей позиции в циклическом буфере
+  size: number; // Текущий размер заполненной части буфера
+  maxPoints: number; // Максимальное количество точек в буфере
 }
 
 interface RealTimeSingleLineChartCanvasProps {
-  dataRef: React.RefObject<RealTimeSingleLineDataRef>;
-  width?: number;
-  height?: number;
-  variant?: ChartVariant;
-  yDomain: [number, number];
-  timeWindowMs: number;
-  strokeColor?: string;
-  strokeWidth?: number;
-  xTicks?: number;
-  yTicks?: number;
+  dataRef: React.RefObject<RealTimeSingleLineDataRef>; // Референс на данные графика
+  width?: number; // Ширина canvas
+  height?: number; // Высота canvas
+  variant?: ChartVariant; // Вариант цветовой схемы
+  yDomain: [number, number]; // Диапазон значений по оси Y [мин, макс]
+  timeWindowMs: number; // Временное окно отображения данных в миллисекундах
+  strokeColor?: string; // Цвет линии графика
+  strokeWidth?: number; // Толщина линии
+  xTicks?: number; // Количество делений на оси X
+  yTicks?: number; // Количество делений на оси Y
 }
 
 export const RealTimeSingleLineChartCanvas = ({
   dataRef,
-  width = 800,
+  width = 600,
   height = 300,
   variant = 'normal',
   yDomain,
@@ -48,13 +50,20 @@ export const RealTimeSingleLineChartCanvas = ({
     variant,
   });
 
+  // Референс на canvas элемент для отрисовки
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  // Кэш для CSS переменных (для оптимизации производительности)
   const cssVariableCacheRef = useRef(createCSSVariableCache());
+  // Кэш для масштабов осей (чтобы не пересчитывать при каждом рендере)
   const cachedScalesRef = useRef<Scales | null>(null);
-  const cachedResolvedColorsRef = useRef<Record<string, string> | null>(null);
+  // Кэш для разрешенных цветов (преобразованных из CSS переменных)
+  // Инициализируем пустым объектом, resolveChartColors будет модифицировать его напрямую
+  const cachedResolvedColorsRef = useRef<Record<string, string>>({});
 
+  // Функция отрисовки графика
   const renderChart = useCallback(
     (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {
+      // Вызываем функцию отрисовки графика с передачей всех необходимых параметров
       const result = renderSingleLineChart({
         ctx,
         canvas,
@@ -74,8 +83,10 @@ export const RealTimeSingleLineChartCanvas = ({
         cssVariableCache: cssVariableCacheRef.current,
       });
 
+      // Сохраняем кэшированные значения для следующего рендера
       cachedScalesRef.current = result.scales;
-      cachedResolvedColorsRef.current = result.resolvedColors;
+      // cachedResolvedColorsRef.current модифицируется напрямую в resolveChartColors,
+      // поэтому не нужно его переприсваивать
     },
     [
       dataRef,
@@ -92,12 +103,14 @@ export const RealTimeSingleLineChartCanvas = ({
     ],
   );
 
+  // Хук для запуска цикла отрисовки на canvas
+  // Автоматически вызывает renderChart при изменении зависимостей
   useCanvasRenderLoop({
     canvasRef,
     width,
     height,
     render: renderChart,
-    dependencies: [timeWindowMs],
+    dependencies: [timeWindowMs], // Перерисовка при изменении временного окна
   });
 
   return (
