@@ -27,7 +27,11 @@ const getTimeWindowData = ({ data, timeWindowMs }: GetTimeWindowDataParams) => {
   return dataPoints;
 };
 
-export const calculateCurrent = ({ data }: GetTimeWindowDataParams): number => {
+interface GetCurrentParams {
+  data: RealTimeSingleLineDataRef;
+}
+
+export const calculateCurrent = ({ data }: GetCurrentParams): number => {
   if (!data || data.size === 0) return 0;
 
   const { values, head, maxPoints } = data;
@@ -92,7 +96,7 @@ export const calculateStatistics = ({
   highlightThreshold,
 }: CalculateStatisticsParams): Statistics => {
   return {
-    current: calculateCurrent({ data, timeWindowMs }),
+    current: calculateCurrent({ data }),
     min: calculateMin({ data, timeWindowMs }),
     max: calculateMax({ data, timeWindowMs }),
     avg: calculateAvg({ data, timeWindowMs }),

@@ -37,34 +37,34 @@ interface StatItem {
 
 const STAT_ITEMS: StatItem[] = [
   {
-    label: 'Текущее:',
+    label: 'Current:',
     key: 'current',
     format: (v) => v.toFixed(1),
     getColor: (v, threshold) => (v > threshold ? '#ff4d4f' : undefined),
   },
   {
-    label: 'Мин:',
+    label: 'Min:',
     key: 'min',
     format: (v) => v.toFixed(1),
   },
   {
-    label: 'Макс:',
+    label: 'Max:',
     key: 'max',
     format: (v) => v.toFixed(1),
   },
   {
-    label: 'Среднее:',
+    label: 'Average:',
     key: 'avg',
     format: (v) => v.toFixed(1),
   },
   {
-    label: 'Превышений:',
+    label: 'Exceeded:',
     key: 'exceedCount',
     format: (v) => v.toString(),
     getColor: () => '#ff4d4f',
   },
   {
-    label: '% превышения:',
+    label: 'Exceed %:',
     key: 'exceedPercent',
     format: (v) => `${v.toFixed(1)}%`,
     getColor: () => '#ff4d4f',
@@ -97,7 +97,7 @@ export const ChartStatistics = ({
       }
 
       const stats = {
-        current: calculateCurrent({ data, timeWindowMs }),
+        current: calculateCurrent({ data }),
         min: calculateMin({ data, timeWindowMs }),
         max: calculateMax({ data, timeWindowMs }),
         avg: calculateAvg({ data, timeWindowMs }),
@@ -116,7 +116,7 @@ export const ChartStatistics = ({
 
   return (
     <div className={styles.statistics}>
-      <div className={styles.statisticsHeader}>Статистика</div>
+      <div className={styles.statisticsHeader}>Statistics</div>
       <div className={styles.statisticsContent}>
         {STAT_ITEMS.map((item) => {
           const value = statistics[item.key];
