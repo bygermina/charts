@@ -19,23 +19,27 @@
 }
 
 .chartsGrid {
-  display: grid;
-  grid-template-columns: 1fr;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
   gap: spacing(8);
 
-  @media (min-width: 1040px) {
-    grid-template-columns: repeat(2, 1fr);
-    gap: spacing(12);
-  }
-
   > * {
+    flex: 0 0 calc(50% - #{spacing(4)});
     min-width: 0;
-    overflow: hidden;
+    max-width: calc(50% - #{spacing(4)});
+    box-sizing: border-box;
+
+    @media (max-width: 988px) {
+      flex: 0 0 100%;
+      max-width: 100%;
+      width: 100%;
+    }
   }
 }
 
-@media (max-width: 555px) {
-  .sensorContainer {
+.sensorContainer {
+  @media (max-width: 555px) {
     display: flex;
     flex-direction: column;
   }

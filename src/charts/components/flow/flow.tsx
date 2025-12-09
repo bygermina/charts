@@ -172,17 +172,6 @@ const BoilerDiagram: React.FC<BoilerDiagramProps> = ({ width = 900, height = 500
         />
 
         <Sensor
-          x={boiler.x + boiler.w / 2 + 40}
-          y={boiler.y + 60}
-          type="temperature"
-          label="T Boiler"
-          value={82.3}
-          unit="°C"
-          color="rgb(239, 68, 68)"
-          pipeY={boiler.y}
-        />
-
-        <Sensor
           x={waterContainer.x - 80}
           y={boiler.y + boiler.h - 120}
           type="pressure"
