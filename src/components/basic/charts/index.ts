@@ -10,3 +10,5 @@ export type { DataPoint, BarDataPoint, ChartVariant } from './types';
 export { getChartColors } from './types';
 export { useChartBase } from './use-chart-base';
 export { useCanvasRenderLoop } from './use-canvas-render-loop';
+export { useVisibilityCleanup } from './use-visibility-cleanup';
+export { useVisibilityAwareTimer } from './use-visibility-aware-timer';

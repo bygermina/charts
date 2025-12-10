@@ -1,20 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 import { BarChart, type DataPoint, type ChartVariant } from '@/components/basic/charts';
 import { ResponsiveChartWrapper } from '@/components/basic/charts/utils/responsive-chart-wrapper';
+import { useVisibilityAwareTimer } from '@/components/basic/charts/use-visibility-aware-timer';
 import { generateTimeSeriesData } from '@/utils/data-generators';
 
 type BarDataPoint = DataPoint;
 
-const generateBarData = (count: number, startTime?: number, endTime?: number): BarDataPoint[] =>
-  generateTimeSeriesData({
-    count,
-    startTime,
-    endTime,
-    valueGenerator: () => Math.random() * 100 + 20,
-  });
-
 const chartVariant = 'normal';
+const VALUE_GENERATOR = () => Math.random() * 100 + 20;
 
 export const BarChartD3 = ({
   delay = 1000,
@@ -29,55 +23,37 @@ export const BarChartD3 = ({
   width?: number;
   height?: number;
 }) => {
-  const [barData, setBarData] = useState<BarDataPoint[]>(() => generateBarData(count));
+  const [barData, setBarData] = useState<BarDataPoint[]>(() =>
+    generateTimeSeriesData({
+      count,
+      valueGenerator: VALUE_GENERATOR,
+    }),
+  );
 
-  useEffect(() => {
-    let timeoutId: number;
-    let wasHidden = document.hidden;
-
-    const tick = () => {
-      if (document.hidden) return;
-
+  useVisibilityAwareTimer({
+    delay,
+    onTick: () => {
       const now = Date.now();
-
       setBarData((prev) => {
         const trimmed = prev.length >= count ? prev.slice(prev.length - count + 1) : prev.slice(1);
         trimmed.push({
           time: now,
-          value: Math.random() * 100 + 20,
+          value: VALUE_GENERATOR(),
         });
         return trimmed;
       });
-
-      timeoutId = setTimeout(tick, delay);
-    };
-
-    const startTick = () => {
-      if (!document.hidden) {
-        timeoutId = setTimeout(tick, delay);
-      }
-    };
-
-    const handleVisibilityChange = () => {
-      if (document.hidden) {
-        wasHidden = true;
-        clearTimeout(timeoutId);
-      } else if (wasHidden) {
-        wasHidden = false;
-        const now = Date.now();
-        setBarData(generateBarData(count, undefined, now));
-        startTick();
-      }
-    };
-
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    startTick();
-
-    return () => {
-      clearTimeout(timeoutId);
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-    };
-  }, [delay, count]);
+    },
+    onVisible: () => {
+      const now = Date.now();
+      setBarData(
+        generateTimeSeriesData({
+          count,
+          endTime: now,
+          valueGenerator: VALUE_GENERATOR,
+        }),
+      );
+    },
+  });
 
   return (
     <ResponsiveChartWrapper width={width} height={height}>

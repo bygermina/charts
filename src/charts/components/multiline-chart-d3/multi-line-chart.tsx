@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 
 import {
   MultiLineChart,
@@ -7,6 +7,7 @@ import {
   type ChartVariant,
 } from '@/components/basic/charts';
 import { ResponsiveChartWrapper } from '@/components/basic/charts/utils/responsive-chart-wrapper';
+import { useVisibilityAwareTimer } from '@/components/basic/charts/use-visibility-aware-timer';
 import { generateTimeSeriesData } from '@/utils/data-generators';
 
 const generateLineData = (count: number, startTime?: number, endTime?: number): DataPoint[] =>
@@ -76,15 +77,10 @@ export const MultiLineChartD3 = ({
     linesConfig.map(() => generateLineData(count)),
   );
 
-  useEffect(() => {
-    let timeoutId: number;
-    let wasHidden = document.hidden;
-
-    const tick = () => {
-      if (document.hidden) return;
-
+  useVisibilityAwareTimer({
+    delay,
+    onTick: () => {
       const now = Date.now();
-
       setLinesData((prev) => {
         if (prev.length !== linesWithColors.length) {
           return linesWithColors.map((_, index) => {
@@ -114,36 +110,12 @@ export const MultiLineChartD3 = ({
           return trimmed;
         });
       });
-
-      timeoutId = setTimeout(tick, delay);
-    };
-
-    const startTick = () => {
-      if (!document.hidden) {
-        timeoutId = setTimeout(tick, delay);
-      }
-    };
-
-    const handleVisibilityChange = () => {
-      if (document.hidden) {
-        wasHidden = true;
-        clearTimeout(timeoutId);
-      } else if (wasHidden) {
-        wasHidden = false;
-        const now = Date.now();
-        setLinesData(linesWithColors.map(() => generateLineData(count, undefined, now)));
-        startTick();
-      }
-    };
-
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    startTick();
-
-    return () => {
-      clearTimeout(timeoutId);
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-    };
-  }, [delay, count, linesWithColors]);
+    },
+    onVisible: () => {
+      const now = Date.now();
+      setLinesData(linesWithColors.map(() => generateLineData(count, undefined, now)));
+    },
+  });
 
   return (
     <ResponsiveChartWrapper width={width} height={height}>
