@@ -1,8 +1,7 @@
 import * as d3 from 'd3';
 
 import { type CreateScalesConfig, type Scales } from './types';
-
-const Y_SCALE_PADDING_MULTIPLIER = 1.1; // Adds 10% padding to top of Y axis
+import { Y_SCALE_PADDING_MULTIPLIER } from '../constants';
 
 export const createScalesForAxes = ({
   timeExtent,

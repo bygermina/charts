@@ -10,7 +10,7 @@ import {
   BAR_HOVER_OPACITY,
   BAR_FINAL_OPACITY,
   HOVER_TRANSLATE_Y,
-} from './constants';
+} from '../constants';
 
 const createTooltip = (
   g: d3.Selection<SVGGElement, unknown, null, undefined>,

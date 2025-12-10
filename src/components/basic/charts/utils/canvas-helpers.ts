@@ -71,8 +71,7 @@ interface DrawAxesConfig {
   yTicks?: number;
 }
 
-const CHART_FONT_SIZE = '12px';
-const CHART_FONT_FAMILY = 'Arial, sans-serif';
+import { CHART_FONT_SIZE, CHART_FONT_FAMILY } from '../constants';
 
 export const drawAxes = ({
   ctx,

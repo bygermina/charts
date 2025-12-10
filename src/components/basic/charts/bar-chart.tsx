@@ -18,6 +18,7 @@ import {
   BAR_WIDTH_RATIO,
   BAR_GAP,
 } from './bar-chart/index';
+import { BAR_GRADIENT_ID } from './constants';
 
 interface BarChartProps {
   data: BarDataPoint[];
@@ -26,8 +27,6 @@ interface BarChartProps {
   variant?: ChartVariant;
   showGrid?: boolean;
 }
-
-const GRADIENT_ID = 'bar-gradient';
 
 export const BarChart = ({
   data,
@@ -94,7 +93,7 @@ export const BarChart = ({
       defs,
       color: fillColor,
       chartHeight,
-      gradientId: GRADIENT_ID,
+      gradientId: BAR_GRADIENT_ID,
     });
 
     const timeExtent = xScale.domain();
@@ -110,7 +109,7 @@ export const BarChart = ({
       xScale,
       yScale,
       chartHeight,
-      gradientId: GRADIENT_ID,
+      gradientId: BAR_GRADIENT_ID,
       barWidth,
       chartColors,
     });

@@ -2,7 +2,7 @@ import * as d3 from 'd3';
 
 import { type BarDataPoint } from '../types';
 import { type AnimateBarsConfig } from './types';
-import { BAR_ANIMATION_DURATION, BAR_ANIMATION_DELAY, BAR_FINAL_OPACITY } from './constants';
+import { BAR_ANIMATION_DURATION, BAR_ANIMATION_DELAY, BAR_FINAL_OPACITY } from '../constants';
 
 export const animateBars = ({ bars, yScale, chartHeight }: AnimateBarsConfig): void => {
   bars
@@ -20,9 +20,7 @@ const updateBarPosition = (
   yScale: d3.ScaleLinear<number, number>,
   chartHeight: number,
 ): void => {
-  selection
-    .attr('y', (d) => yScale(d.value))
-    .attr('height', (d) => chartHeight - yScale(d.value));
+  selection.attr('y', (d) => yScale(d.value)).attr('height', (d) => chartHeight - yScale(d.value));
 };
 
 export const updateBars = ({

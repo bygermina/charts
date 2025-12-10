@@ -2,11 +2,9 @@ import * as d3 from 'd3';
 
 import { getChartColors } from './types';
 import { resolveCSSVariable } from './utils/canvas-helpers';
+import { CHART_FONT_SIZE, CHART_FONT_FAMILY, DEFAULT_MARGIN } from './constants';
 
 export type ChartColors = ReturnType<typeof getChartColors>;
-
-const CHART_FONT_SIZE = '12px';
-const CHART_FONT_FAMILY = 'Arial, sans-serif';
 
 export interface CreateChartGroupsConfig {
   svg: d3.Selection<SVGSVGElement, unknown, null, undefined>;
@@ -58,8 +56,6 @@ export interface ChartBaseConfig {
   height: number;
   margin?: { top: number; right: number; bottom: number; left: number };
 }
-
-export const DEFAULT_MARGIN = { top: 20, right: 20, bottom: 40, left: 50 };
 
 export const getChartDimensions = (config: ChartBaseConfig) => {
   const margin = config.margin || DEFAULT_MARGIN;
@@ -190,7 +186,7 @@ export const createGrid = (
 const getTimeFormatter = (min: number, max: number): ((date: Date) => string) => {
   const timeRange = max - min;
   const oneDay = 24 * 60 * 60 * 1000;
-  
+
   return timeRange > oneDay ? d3.timeFormat('%d.%m %H:%M') : d3.timeFormat('%H:%M:%S');
 };
 

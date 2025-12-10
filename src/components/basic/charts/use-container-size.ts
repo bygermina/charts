@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 
+import { DEBOUNCE_DELAY, DEFAULT_CHART_SIZE } from './constants';
+
 interface ContainerSize {
   width: number;
   height: number;
 }
 
-const DEFAULT_SIZE: ContainerSize = { width: 600, height: 250 };
-const DEBOUNCE_DELAY = 150;
+const DEFAULT_SIZE: ContainerSize = DEFAULT_CHART_SIZE;
 
 const debounce = <T extends (...args: unknown[]) => void>(fn: T, delay: number): T => {
   let timeoutId: ReturnType<typeof setTimeout> | null = null;

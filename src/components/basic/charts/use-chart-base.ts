@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 
 import { type ChartVariant, getChartColors } from './types';
-import { DEFAULT_MARGIN, getChartDimensions, type ChartBaseConfig } from './chart-utils';
+import { getChartDimensions, type ChartBaseConfig } from './chart-utils';
 
 export interface UseChartBaseResult {
   svgRef: React.RefObject<SVGSVGElement | null>;
@@ -23,7 +23,7 @@ export const useChartBase = (
   return {
     svgRef,
     chartColors,
-    margin: margin || DEFAULT_MARGIN,
+    margin,
     chartWidth,
     chartHeight,
   };

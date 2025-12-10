@@ -1,5 +1,5 @@
 import { type CreateGradientConfig } from './types';
-import { GRADIENT_START_OPACITY, GRADIENT_END_OPACITY } from './constants';
+import { GRADIENT_START_OPACITY, GRADIENT_END_OPACITY } from '../constants';
 
 export const createGradient = ({
   defs,

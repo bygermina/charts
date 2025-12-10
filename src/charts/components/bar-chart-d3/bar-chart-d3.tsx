@@ -1,26 +1,18 @@
 import { useState, useEffect } from 'react';
 
 import { BarChart, type DataPoint, type ChartVariant } from '@/components/basic/charts';
+import { ResponsiveChartWrapper } from '@/components/basic/charts/utils/responsive-chart-wrapper';
+import { generateTimeSeriesData } from '@/utils/data-generators';
 
 type BarDataPoint = DataPoint;
-import { ResponsiveChartWrapper } from '@/components/basic/charts/utils/responsive-chart-wrapper';
 
-const generateBarData = (count: number, startTime?: number, endTime?: number): BarDataPoint[] => {
-  const data: BarDataPoint[] = [];
-  const now = endTime ?? Date.now();
-  const start = startTime ?? now - (count - 1) * 1000;
-  const timeRange = now - start;
-  const interval = timeRange / (count - 1);
-
-  for (let i = 0; i < count; i++) {
-    data.push({
-      time: start + i * interval,
-      value: Math.random() * 100 + 20,
-    });
-  }
-
-  return data;
-};
+const generateBarData = (count: number, startTime?: number, endTime?: number): BarDataPoint[] =>
+  generateTimeSeriesData({
+    count,
+    startTime,
+    endTime,
+    valueGenerator: () => Math.random() * 100 + 20,
+  });
 
 const chartVariant = 'normal';
 

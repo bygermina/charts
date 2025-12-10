@@ -1,6 +1,18 @@
 import { useMemo } from 'react';
 
 import { type ChartVariant, getChartColors } from '../types';
+import {
+  GAUGE_RADIUS,
+  GAUGE_START_ANGLE,
+  GAUGE_END_ANGLE,
+  GAUGE_TICK_COUNT,
+  GAUGE_NEEDLE_LENGTH,
+  GAUGE_NEEDLE_WIDTH,
+  GAUGE_LABEL_OFFSET,
+  GAUGE_VIEWBOX_WIDTH,
+  GAUGE_VIEWBOX_HEIGHT,
+  GAUGE_CENTER,
+} from '../constants';
 
 import styles from './gauge-chart.module.scss';
 
@@ -10,18 +22,6 @@ interface GaugeChartProps {
   min?: number;
   max?: number;
 }
-
-const GAUGE_RADIUS = 80;
-const GAUGE_START_ANGLE = -Math.PI;
-const GAUGE_END_ANGLE = 0;
-const TICK_COUNT = 11;
-const NEEDLE_LENGTH = 60;
-const NEEDLE_WIDTH = 3;
-const LABEL_OFFSET = 15;
-const PADDING = 30;
-const VIEWBOX_WIDTH = (GAUGE_RADIUS + LABEL_OFFSET + PADDING) * 2;
-const VIEWBOX_HEIGHT = VIEWBOX_WIDTH * 0.7;
-const CENTER = VIEWBOX_WIDTH / 2;
 
 const valueToAngle = (value: number, min: number, max: number): number => {
   const normalizedValue = (value - min) / (max - min);
@@ -41,12 +41,12 @@ export const GaugeChart = ({ value, variant = 'normal', min = 0, max = 100 }: Ga
 
   const ticks = useMemo(() => {
     const tickArray = [];
-    for (let i = 0; i <= TICK_COUNT - 1; i++) {
-      const tickValue = min + (i / (TICK_COUNT - 1)) * (max - min);
+    for (let i = 0; i <= GAUGE_TICK_COUNT - 1; i++) {
+      const tickValue = min + (i / (GAUGE_TICK_COUNT - 1)) * (max - min);
       const angle = valueToAngle(tickValue, min, max);
-      const isMajorTick = i % (TICK_COUNT / 2) === 0 || i === TICK_COUNT - 1;
+      const isMajorTick = i % (GAUGE_TICK_COUNT / 2) === 0 || i === GAUGE_TICK_COUNT - 1;
 
-      const tickStartRadius = GAUGE_RADIUS - (isMajorTick ? 15 : 10);
+      const tickStartRadius = GAUGE_RADIUS - (isMajorTick ? GAUGE_LABEL_OFFSET : 10);
       const tickEndRadius = GAUGE_RADIUS;
       const tickStartX = Math.cos(angle) * tickStartRadius;
       const tickStartY = Math.sin(angle) * tickStartRadius;
@@ -69,12 +69,12 @@ export const GaugeChart = ({ value, variant = 'normal', min = 0, max = 100 }: Ga
   return (
     <div className={styles.container}>
       <svg
-        viewBox={`0 0 ${VIEWBOX_WIDTH} ${VIEWBOX_HEIGHT}`}
+        viewBox={`0 0 ${GAUGE_VIEWBOX_WIDTH} ${GAUGE_VIEWBOX_HEIGHT}`}
         className={styles.svg}
         preserveAspectRatio="xMidYMid meet"
         style={{ width: '100%', height: '100%' }}
       >
-        <g transform={`translate(${CENTER}, ${CENTER})`}>
+        <g transform={`translate(${GAUGE_CENTER}, ${GAUGE_CENTER})`}>
           <path
             d="M -80 0 A 80 80 0 1 1 80 0 L 60 0 A 60 60 0 1 0 -60 0 Z"
             fill={chartColors.grid}
@@ -94,8 +94,8 @@ export const GaugeChart = ({ value, variant = 'normal', min = 0, max = 100 }: Ga
               />
               {tick.isMajorTick && (
                 <text
-                  x={Math.cos(tick.angle) * (GAUGE_RADIUS + 15)}
-                  y={Math.sin(tick.angle) * (GAUGE_RADIUS + 15)}
+                  x={Math.cos(tick.angle) * (GAUGE_RADIUS + GAUGE_LABEL_OFFSET)}
+                  y={Math.sin(tick.angle) * (GAUGE_RADIUS + GAUGE_LABEL_OFFSET)}
                   textAnchor="middle"
                   dominantBaseline="middle"
                   fill={chartColors.textSecondary}
@@ -112,10 +112,10 @@ export const GaugeChart = ({ value, variant = 'normal', min = 0, max = 100 }: Ga
             <line
               x1={0}
               y1={0}
-              x2={NEEDLE_LENGTH}
+              x2={GAUGE_NEEDLE_LENGTH}
               y2={0}
               stroke={chartColors.primary}
-              strokeWidth={NEEDLE_WIDTH}
+              strokeWidth={GAUGE_NEEDLE_WIDTH}
               strokeLinecap="round"
             />
             <circle cx={0} cy={0} r={5} fill={chartColors.primary} />

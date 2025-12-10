@@ -25,9 +25,7 @@ import {
   animateGridAndAxis,
 } from './multi-line-chart/index';
 import { calculateAnimationSpeed } from './chart-animation';
-
-const DEFAULT_X_AXIS_TICKS = 5;
-const DEFAULT_Y_AXIS_TICKS = 5;
+import { DEFAULT_X_AXIS_TICKS, DEFAULT_Y_AXIS_TICKS } from './constants';
 
 interface MultiLineChartProps {
   lines: LineSeries[];

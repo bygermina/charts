@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
 
 import { type CreateScalesConfig, type Scales } from './types';
-import { Y_SCALE_PADDING_MULTIPLIER } from './constants';
+import { Y_SCALE_PADDING_MULTIPLIER } from '../constants';
 
 export const createScales = ({
   data,
