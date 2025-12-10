@@ -1,6 +1,7 @@
 import * as d3 from 'd3';
 
 import { getChartColors } from './types';
+import { resolveCSSVariable } from './utils/canvas-helpers';
 
 export type ChartColors = ReturnType<typeof getChartColors>;
 
@@ -73,8 +74,14 @@ const createHorizontalGrid = (
   yScale: YScale,
   chartWidth: number,
   chartColors: ChartColors,
+  svgElement?: SVGSVGElement,
 ) => {
-  g.append('g')
+  const gridColor = svgElement
+    ? resolveCSSVariable(chartColors.grid, svgElement)
+    : chartColors.grid;
+
+  const gridGroup = g
+    .append('g')
     .attr('class', 'grid')
     .call(
       d3
@@ -82,9 +89,18 @@ const createHorizontalGrid = (
         .ticks(5)
         .tickSize(-chartWidth)
         .tickFormat(() => ''),
-    )
-    .attr('stroke', chartColors.grid)
-    .attr('stroke-opacity', 0.3)
+    );
+
+  gridGroup
+    .selectAll('path')
+    .attr('stroke', 'none')
+    .attr('stroke-width', 0)
+    .attr('stroke-opacity', 0);
+
+  gridGroup
+    .selectAll('line')
+    .attr('stroke', gridColor)
+    .attr('stroke-opacity', 0.7)
     .attr('stroke-width', 0.5)
     .attr('stroke-dasharray', '2,2');
 };
@@ -94,7 +110,12 @@ const createVerticalGrid = (
   xScale: XScale,
   chartHeight: number,
   chartColors: ChartColors,
+  svgElement?: SVGSVGElement,
 ) => {
+  const gridColor = svgElement
+    ? resolveCSSVariable(chartColors.grid, svgElement)
+    : chartColors.grid;
+
   const verticalGridGroup = g
     .append('g')
     .attr('class', 'vertical-grid')
@@ -112,8 +133,8 @@ const createVerticalGrid = (
           .attr('x2', x)
           .attr('y1', 0)
           .attr('y2', -chartHeight)
-          .attr('stroke', chartColors.grid)
-          .attr('stroke-opacity', 0.3)
+          .attr('stroke', gridColor)
+          .attr('stroke-opacity', 0.5)
           .attr('stroke-width', 0.5)
           .attr('stroke-dasharray', '2,2');
       }
@@ -127,8 +148,14 @@ const createVerticalGrid = (
         .tickFormat(() => ''),
     );
     verticalGridGroup
-      .attr('stroke', chartColors.grid)
-      .attr('stroke-opacity', 0.3)
+      .selectAll('path')
+      .attr('stroke', 'none')
+      .attr('stroke-width', 0)
+      .attr('stroke-opacity', 0);
+    verticalGridGroup
+      .selectAll('line')
+      .attr('stroke', gridColor)
+      .attr('stroke-opacity', 0.5)
       .attr('stroke-width', 0.5)
       .attr('stroke-dasharray', '2,2');
   }
@@ -141,6 +168,7 @@ export const createGrid = (
   chartWidth: number,
   chartHeight: number,
   chartColors: ChartColors,
+  svgElement?: SVGSVGElement,
 ): d3.Selection<SVGGElement, unknown, null, undefined> => {
   let gridGroup = g.select<SVGGElement>('g.grid-group');
   if (gridGroup.empty()) {
@@ -153,8 +181,8 @@ export const createGrid = (
     }
   }
 
-  createHorizontalGrid(gridGroup, yScale, chartWidth, chartColors);
-  createVerticalGrid(gridGroup, xScale, chartHeight, chartColors);
+  createHorizontalGrid(gridGroup, yScale, chartWidth, chartColors, svgElement);
+  createVerticalGrid(gridGroup, xScale, chartHeight, chartColors, svgElement);
 
   return gridGroup;
 };
@@ -163,6 +191,7 @@ const createXAxis = (
   g: d3.Selection<SVGGElement, unknown, null, undefined>,
   xScale: XScale,
   chartHeight: number,
+  chartWidth: number,
   chartColors: ChartColors,
   ticks?: number,
 ) => {
@@ -175,35 +204,32 @@ const createXAxis = (
     const linearScale = xScale as d3.ScaleLinear<number, number>;
     const domain = linearScale.domain();
     const [min, max] = domain;
-    
-    // Проверяем, являются ли значения timestamp (больше чем 1000000000, что примерно 2001 год)
+
     const isTimestamp = typeof min === 'number' && typeof max === 'number' && min > 1000000000;
-    
+
     const axis = d3.axisBottom(linearScale);
-    
+
     if (isTimestamp) {
-      // Определяем формат в зависимости от диапазона времени
       const timeRange = max - min;
       const oneDay = 24 * 60 * 60 * 1000;
-      
+
       let timeFormat: (date: Date) => string;
       if (timeRange > oneDay) {
-        // Если диапазон больше дня, показываем дату и время
         timeFormat = d3.timeFormat('%d.%m %H:%M');
       } else {
-        // Если диапазон меньше дня, показываем только время
         timeFormat = d3.timeFormat('%H:%M:%S');
       }
-      
+
       axis.tickFormat((d) => {
         const value = typeof d === 'number' ? d : Number(d);
         return timeFormat(new Date(value));
       });
     }
-    
+
     if (ticks !== undefined) {
       axis.ticks(ticks);
     }
+    axis.tickSizeOuter(0);
     g.call(axis);
   }
 
@@ -212,7 +238,11 @@ const createXAxis = (
     .attr('font-family', CHART_FONT_FAMILY);
 
   const axisColor = chartColors.grid;
-  g.selectAll('path').attr('stroke', axisColor).attr('stroke-width', 1).attr('stroke-opacity', 1);
+  g.selectAll('path')
+    .attr('stroke', axisColor)
+    .attr('stroke-width', 1)
+    .attr('stroke-opacity', 1)
+    .attr('d', `M0,0H${chartWidth}`);
 
   g.selectAll('line').attr('stroke', axisColor).attr('stroke-width', 1).attr('stroke-opacity', 1);
 
@@ -227,6 +257,7 @@ const createXAxis = (
 const createYAxis = (
   g: d3.Selection<SVGGElement, unknown, null, undefined>,
   yScale: YScale,
+  chartHeight: number,
   chartColors: ChartColors,
   ticks?: number,
 ) => {
@@ -234,6 +265,7 @@ const createYAxis = (
   if (ticks !== undefined) {
     axis.ticks(ticks);
   }
+  axis.tickSizeOuter(0);
   g.call(axis);
   const axisGroup = g;
 
@@ -248,7 +280,8 @@ const createYAxis = (
     .selectAll('path')
     .attr('stroke', axisColor)
     .attr('stroke-width', 1)
-    .attr('stroke-opacity', 1);
+    .attr('stroke-opacity', 1)
+    .attr('d', `M0,${chartHeight}V0`);
 
   axisGroup
     .selectAll('line')
@@ -270,6 +303,7 @@ export const createAxes = (
   xScale: XScale,
   yScale: YScale,
   chartHeight: number,
+  chartWidth: number,
   chartColors: ChartColors,
   xTicks?: number,
   yTicks?: number,
@@ -296,8 +330,8 @@ export const createAxes = (
     }
   }
 
-  createXAxis(xAxisGroup, xScale, chartHeight, chartColors, xTicks);
-  createYAxis(yAxisGroup, yScale, chartColors, yTicks);
+  createXAxis(xAxisGroup, xScale, chartHeight, chartWidth, chartColors, xTicks);
+  createYAxis(yAxisGroup, yScale, chartHeight, chartColors, yTicks);
 
   return { xAxisGroup, yAxisGroup };
 };

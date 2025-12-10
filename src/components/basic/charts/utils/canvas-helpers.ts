@@ -1,6 +1,6 @@
 import * as d3 from 'd3';
 
-export const resolveCSSVariable = (variable: string, element: HTMLElement): string => {
+export const resolveCSSVariable = (variable: string, element: Element): string => {
   if (!variable.startsWith('var(')) return variable;
 
   const match = variable.match(/var\(([^)]+)\)/);
@@ -19,7 +19,7 @@ export const resolveCSSVariable = (variable: string, element: HTMLElement): stri
 
 export const resolveChartColors = (
   chartColors: Record<string, string>,
-  element: HTMLElement,
+  element: Element,
 ): Record<string, string> => {
   const resolved: Record<string, string> = {};
 
@@ -110,7 +110,8 @@ export const drawAxes = ({
     if (isTimestamp) {
       const timeRange = max - min;
       const oneDay = 24 * 60 * 60 * 1000;
-      const timeFormat = timeRange > oneDay ? d3.timeFormat('%d.%m %H:%M') : d3.timeFormat('%H:%M:%S');
+      const timeFormat =
+        timeRange > oneDay ? d3.timeFormat('%d.%m %H:%M') : d3.timeFormat('%H:%M:%S');
       xTickFormat = (value: number) => timeFormat(new Date(value));
     } else {
       xTickFormat = (value: number) => String(value);
@@ -168,5 +169,80 @@ export const drawAxes = ({
   } catch (error) {
     ctx.restore();
     console.error('Error drawing axes:', error);
+  }
+};
+
+interface DrawGridConfig {
+  ctx: CanvasRenderingContext2D;
+  xAxisScale: d3.ScaleLinear<number, number>;
+  yScale: d3.ScaleLinear<number, number>;
+  chartWidth: number;
+  chartHeight: number;
+  margin: { top: number; right: number; bottom: number; left: number };
+  resolvedColors: Record<string, string>;
+  xTicks?: number;
+  yTicks?: number;
+}
+
+export const drawGrid = ({
+  ctx,
+  xAxisScale,
+  yScale,
+  chartWidth,
+  chartHeight,
+  margin,
+  resolvedColors,
+  xTicks = 5,
+  yTicks = 5,
+}: DrawGridConfig): void => {
+  try {
+    ctx.save();
+    ctx.strokeStyle = resolvedColors.grid;
+    ctx.lineWidth = 0.5;
+    ctx.setLineDash([2, 2]);
+    ctx.globalAlpha = 0.5;
+
+    const yTickValues = yScale.ticks(yTicks);
+    ctx.beginPath();
+    for (let i = 0; i < yTickValues.length; i++) {
+      const tickValue = yTickValues[i];
+      const y = yScale(tickValue);
+
+      if (y >= 0 && y <= chartHeight) {
+        ctx.moveTo(0, y);
+        ctx.lineTo(chartWidth - margin.right, y);
+      }
+    }
+    ctx.stroke();
+
+    const domain = xAxisScale.domain();
+    const [min, max] = domain;
+    const isTimestamp = typeof min === 'number' && typeof max === 'number' && min > 1000000000;
+
+    let xTickValues: number[];
+    if (isTimestamp) {
+      const timeRange = max - min;
+      const tickCount = Math.min(xTicks, Math.floor(timeRange / 1000));
+      xTickValues = xAxisScale.ticks(tickCount);
+    } else {
+      xTickValues = xAxisScale.ticks(xTicks);
+    }
+
+    ctx.beginPath();
+    for (let i = 0; i < xTickValues.length; i++) {
+      const tickValue = xTickValues[i];
+      const x = xAxisScale(tickValue);
+
+      if (x >= 0 && x <= chartWidth - margin.right) {
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, chartHeight);
+      }
+    }
+    ctx.stroke();
+
+    ctx.restore();
+  } catch (error) {
+    ctx.restore();
+    console.error('Error drawing grid:', error);
   }
 };

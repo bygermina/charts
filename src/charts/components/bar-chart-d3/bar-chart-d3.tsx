@@ -88,7 +88,13 @@ export const BarChartD3 = ({
   return (
     <ResponsiveChartWrapper width={width} height={height}>
       {({ width: chartWidth, height: chartHeight }) => (
-        <BarChart data={barData} width={chartWidth} height={chartHeight} variant={variant} />
+        <BarChart
+          data={barData}
+          width={chartWidth}
+          height={chartHeight}
+          variant={variant}
+          showGrid={true}
+        />
       )}
     </ResponsiveChartWrapper>
   );

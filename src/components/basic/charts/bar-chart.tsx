@@ -64,7 +64,7 @@ export const BarChart = ({
     });
 
     if (showGrid) {
-      createGrid(mainGroup, xScale, yScale, chartWidth, chartHeight, chartColors);
+      createGrid(mainGroup, xScale, yScale, chartWidth, chartHeight, chartColors, svgElement);
     }
 
     createAxes(
@@ -72,6 +72,7 @@ export const BarChart = ({
       xAxisScale,
       yScale,
       chartHeight,
+      chartWidth,
       chartColors,
       DEFAULT_X_AXIS_TICKS,
       DEFAULT_Y_AXIS_TICKS,
@@ -96,9 +97,11 @@ export const BarChart = ({
       g: mainGroup,
       data,
       xScale,
+      yScale,
       chartHeight,
       gradientId: GRADIENT_ID,
       barWidth,
+      chartColors,
     });
 
     if (isInitialRenderRef.current) {

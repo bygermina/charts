@@ -130,6 +130,7 @@ export const MultiLineChart = ({
             margin,
             gridLeftShift,
             chartColors,
+            svgElement,
           })
         : null;
 
@@ -138,6 +139,7 @@ export const MultiLineChart = ({
         xAxisScale,
         yScale,
         chartHeight,
+        chartWidth,
         chartColors,
         DEFAULT_X_AXIS_TICKS,
         DEFAULT_Y_AXIS_TICKS,

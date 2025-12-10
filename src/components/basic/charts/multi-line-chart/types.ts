@@ -134,6 +134,7 @@ export interface ManageGridConfig {
   margin: { right: number };
   gridLeftShift: number;
   chartColors: ChartColors;
+  svgElement?: SVGSVGElement;
 }
 
 export interface AnimateGridAndAxisConfig {

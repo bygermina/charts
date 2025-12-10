@@ -26,9 +26,11 @@ export interface CreateBarsConfig {
   g: d3.Selection<SVGGElement, unknown, null, undefined>;
   data: BarDataPoint[];
   xScale: d3.ScaleTime<number, number>;
+  yScale: d3.ScaleLinear<number, number>;
   chartHeight: number;
   gradientId: string;
   barWidth: number;
+  chartColors: Record<string, string>;
 }
 
 export interface BarsSelection {

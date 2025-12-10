@@ -15,15 +15,19 @@ export const createBars = ({
   g,
   data,
   xScale,
+  yScale,
   chartHeight,
   gradientId,
   barWidth,
+  chartColors,
 }: CreateBarsConfig): BarsSelection => {
   const bars = g
     .selectAll<SVGRectElement, BarDataPoint>('.bar')
     .data(data, (d) => d.time.toString());
 
   const barsExit = bars.exit();
+
+  g.selectAll('.bar-tooltip').remove();
 
   const barsEnter = bars
     .enter()
@@ -38,12 +42,31 @@ export const createBars = ({
     .attr('rx', BAR_BORDER_RADIUS)
     .attr('ry', BAR_BORDER_RADIUS)
     .style('cursor', 'pointer')
-    .on('mouseenter', function () {
+    .on('mouseenter', function (event, d) {
       d3.select(this)
         .transition()
         .duration(HOVER_ANIMATION_DURATION)
         .attr('opacity', BAR_HOVER_OPACITY)
         .attr('transform', `translate(0, ${HOVER_TRANSLATE_Y})`);
+
+      g.selectAll('.bar-tooltip').remove();
+
+      const x = xScale(new Date(d.time));
+      const y = yScale(d.value) - 10;
+
+      const tooltipGroup = g
+        .append('g')
+        .attr('class', 'bar-tooltip')
+        .attr('transform', `translate(${x}, ${y})`);
+
+      tooltipGroup
+        .append('text')
+        .attr('text-anchor', 'middle')
+        .attr('fill', chartColors.text)
+        .attr('font-size', '12px')
+        .attr('font-weight', 'bold')
+        .attr('pointer-events', 'none')
+        .text(d.value.toFixed(1));
     })
     .on('mouseleave', function () {
       d3.select(this)
@@ -51,11 +74,50 @@ export const createBars = ({
         .duration(HOVER_ANIMATION_DURATION)
         .attr('opacity', BAR_FINAL_OPACITY)
         .attr('transform', 'translate(0, 0)');
+
+      g.selectAll('.bar-tooltip').remove();
     });
 
   const barsUpdate = barsEnter.merge(bars);
 
-  barsUpdate.attr('x', (d) => xScale(new Date(d.time)) - barWidth / 2).attr('width', barWidth);
+  barsUpdate
+    .attr('x', (d) => xScale(new Date(d.time)) - barWidth / 2)
+    .attr('width', barWidth)
+    .on('mouseenter', function (event, d) {
+      d3.select(this)
+        .transition()
+        .duration(HOVER_ANIMATION_DURATION)
+        .attr('opacity', BAR_HOVER_OPACITY)
+        .attr('transform', `translate(0, ${HOVER_TRANSLATE_Y})`);
+
+      g.selectAll('.bar-tooltip').remove();
+
+      const x = xScale(new Date(d.time));
+      const y = yScale(d.value) - 10;
+
+      const tooltipGroup = g
+        .append('g')
+        .attr('class', 'bar-tooltip')
+        .attr('transform', `translate(${x}, ${y})`);
+
+      tooltipGroup
+        .append('text')
+        .attr('text-anchor', 'middle')
+        .attr('fill', chartColors.text)
+        .attr('font-size', '12px')
+        .attr('font-weight', 'bold')
+        .attr('pointer-events', 'none')
+        .text(d.value.toFixed(1));
+    })
+    .on('mouseleave', function () {
+      d3.select(this)
+        .transition()
+        .duration(HOVER_ANIMATION_DURATION)
+        .attr('opacity', BAR_FINAL_OPACITY)
+        .attr('transform', 'translate(0, 0)');
+
+      g.selectAll('.bar-tooltip').remove();
+    });
 
   return {
     barsEnter,

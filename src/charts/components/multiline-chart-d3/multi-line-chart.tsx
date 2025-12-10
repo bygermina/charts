@@ -166,6 +166,7 @@ export const MultiLineChartD3 = ({
           width={chartWidth}
           height={chartHeight}
           variant={variant}
+          showGrid={true}
           showLegend={showLegend}
           yDomain={[0, 200]}
         />

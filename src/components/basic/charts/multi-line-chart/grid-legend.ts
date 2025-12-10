@@ -37,6 +37,7 @@ export const manageGrid = ({
   margin,
   gridLeftShift,
   chartColors,
+  svgElement,
 }: ManageGridConfig): d3.Selection<SVGGElement, unknown, null, undefined> | null => {
   const existingGridGroup = mainGroup.select<SVGGElement>('g.grid-group');
   const savedTransform = existingGridGroup.empty() ? '' : existingGridGroup.attr('transform') || '';
@@ -48,6 +49,7 @@ export const manageGrid = ({
     chartWidth - margin.right,
     chartHeight,
     chartColors,
+    svgElement,
   );
 
   const transform = savedTransform || `translate(${-gridLeftShift}, 0)`;
