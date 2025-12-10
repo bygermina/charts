@@ -1,18 +1,4 @@
-import * as d3 from 'd3';
-
 import { type CreateClipPathsConfig } from './types';
-
-const updateClipPathRect = (
-  clipPath: d3.Selection<SVGClipPathElement, unknown, null, undefined>,
-  width: number,
-  height: number,
-): void => {
-  let rect = clipPath.select<SVGRectElement>('rect');
-  if (rect.empty()) {
-    rect = clipPath.append('rect');
-  }
-  rect.attr('x', 0).attr('y', 0).attr('width', width).attr('height', height);
-};
 
 export const createClipPaths = ({
   svg,
@@ -31,5 +17,10 @@ export const createClipPaths = ({
   if (clipPath.empty()) {
     clipPath = defs.append('clipPath').attr('id', 'chart-clip');
   }
-  updateClipPathRect(clipPath, clippedWidth, chartHeight);
+
+  let rect = clipPath.select<SVGRectElement>('rect');
+  if (rect.empty()) {
+    rect = clipPath.append('rect');
+  }
+  rect.attr('x', 0).attr('y', 0).attr('width', clippedWidth).attr('height', chartHeight);
 };
