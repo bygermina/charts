@@ -187,6 +187,13 @@ export const createGrid = (
   return gridGroup;
 };
 
+const getTimeFormatter = (min: number, max: number): ((date: Date) => string) => {
+  const timeRange = max - min;
+  const oneDay = 24 * 60 * 60 * 1000;
+  
+  return timeRange > oneDay ? d3.timeFormat('%d.%m %H:%M') : d3.timeFormat('%H:%M:%S');
+};
+
 const createXAxis = (
   g: d3.Selection<SVGGElement, unknown, null, undefined>,
   xScale: XScale,
@@ -205,65 +212,37 @@ const createXAxis = (
     const domain = xScale.domain();
     const firstValue = domain[0];
     const isTimeScale = firstValue instanceof Date;
+    const linearScale = xScale as d3.ScaleLinear<number, number> | d3.ScaleTime<number, number>;
+    const [min, max] = domain as [number | Date, number | Date];
+
+    const axis = d3.axisBottom(linearScale as d3.AxisScale<d3.NumberValue>);
 
     if (isTimeScale) {
-      const timeScale = xScale as d3.ScaleTime<number, number>;
-      const [min, max] = domain as [Date, Date];
-
-      const axis = d3.axisBottom(timeScale);
-
-      const timeRange = max.getTime() - min.getTime();
-      const oneDay = 24 * 60 * 60 * 1000;
-
-      let timeFormat: (date: Date) => string;
-      if (timeRange > oneDay) {
-        timeFormat = d3.timeFormat('%d.%m %H:%M');
-      } else {
-        timeFormat = d3.timeFormat('%H:%M:%S');
-      }
-
+      const timeFormat = getTimeFormatter((min as Date).getTime(), (max as Date).getTime());
       axis.tickFormat((d) => {
         const date = d instanceof Date ? d : new Date(d as number);
         return timeFormat(date);
       });
-
-      if (ticks !== undefined) {
-        axis.ticks(ticks);
-      }
-      axis.tickSizeOuter(0);
-      g.call(axis);
     } else {
-      const linearScale = xScale as d3.ScaleLinear<number, number>;
-      const domain = linearScale.domain();
-      const [min, max] = domain;
-
-      const isTimestamp = typeof min === 'number' && typeof max === 'number' && min > 1000000000;
-
-      const axis = d3.axisBottom(linearScale);
+      const minNum = min as number;
+      const maxNum = max as number;
+      const isTimestamp =
+        typeof minNum === 'number' && typeof maxNum === 'number' && minNum > 1000000000;
 
       if (isTimestamp) {
-        const timeRange = max - min;
-        const oneDay = 24 * 60 * 60 * 1000;
-
-        let timeFormat: (date: Date) => string;
-        if (timeRange > oneDay) {
-          timeFormat = d3.timeFormat('%d.%m %H:%M');
-        } else {
-          timeFormat = d3.timeFormat('%H:%M:%S');
-        }
-
+        const timeFormat = getTimeFormatter(minNum, maxNum);
         axis.tickFormat((d) => {
           const value = typeof d === 'number' ? d : Number(d);
           return timeFormat(new Date(value));
         });
       }
-
-      if (ticks !== undefined) {
-        axis.ticks(ticks);
-      }
-      axis.tickSizeOuter(0);
-      g.call(axis);
     }
+
+    if (ticks !== undefined) {
+      axis.ticks(ticks);
+    }
+    axis.tickSizeOuter(0);
+    g.call(axis);
   }
 
   g.attr('color', chartColors.text)

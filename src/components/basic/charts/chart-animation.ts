@@ -20,8 +20,11 @@ export const calculateShiftAnimation = ({
     return { shouldAnimate: false, shiftOffset: 0 };
   }
 
-  const prevXScale = d3.scaleTime().domain(prevTimeExtent).range([0, chartWidth]);
-  const currentXScale = d3.scaleTime().domain(currentTimeExtent).range([0, chartWidth]);
+  const prevXScale = d3.scaleLinear<number, number>().domain(prevTimeExtent).range([0, chartWidth]);
+  const currentXScale = d3
+    .scaleLinear<number, number>()
+    .domain(currentTimeExtent)
+    .range([0, chartWidth]);
 
   if (currentTimeExtent[1] > prevTimeExtent[1]) {
     const oldFirstX = prevXScale(prevTimeExtent[0]);

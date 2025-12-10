@@ -3,15 +3,10 @@ import * as d3 from 'd3';
 import { type GetOrCreateLineGroupConfig, type GetOrCreateLinePathConfig } from './types';
 import { createChartGroups as createChartGroupsUtil } from '../chart-utils';
 
-export const createChartGroups = ({
-  svg,
-  margin,
-}: {
+export const createChartGroups = (config: {
   svg: d3.Selection<SVGSVGElement, unknown, null, undefined>;
   margin: { left: number; top: number };
-}) => {
-  return createChartGroupsUtil({ svg, margin, useClipPath: true });
-};
+}) => createChartGroupsUtil({ ...config, useClipPath: true });
 
 export const getOrCreateLineGroup = ({
   mainGroup,

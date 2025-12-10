@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 
-import { BarChart, type BarDataPoint, type ChartVariant } from '@/components/basic/charts';
+import { BarChart, type DataPoint, type ChartVariant } from '@/components/basic/charts';
+
+type BarDataPoint = DataPoint;
 import { ResponsiveChartWrapper } from '@/components/basic/charts/utils/responsive-chart-wrapper';
 
 const generateBarData = (count: number, startTime?: number, endTime?: number): BarDataPoint[] => {

@@ -42,7 +42,7 @@ export const createBars = ({
     .attr('rx', BAR_BORDER_RADIUS)
     .attr('ry', BAR_BORDER_RADIUS)
     .style('cursor', 'pointer')
-    .on('mouseenter', function (event, d) {
+    .on('mouseenter', function (_event, d) {
       d3.select(this)
         .transition()
         .duration(HOVER_ANIMATION_DURATION)
@@ -83,7 +83,7 @@ export const createBars = ({
   barsUpdate
     .attr('x', (d) => xScale(new Date(d.time)) - barWidth / 2)
     .attr('width', barWidth)
-    .on('mouseenter', function (event, d) {
+    .on('mouseenter', function (_event, d) {
       d3.select(this)
         .transition()
         .duration(HOVER_ANIMATION_DURATION)

@@ -4,11 +4,10 @@ import { calculateTimeExtent } from './time-extent';
 import { calculateMaxValue } from './values';
 import { calculateShiftAnimation } from '../chart-animation';
 
-const calculateTimeStep = (data: DataPoint[], cache?: number[]): number => {
+const calculateTimeStep = (data: DataPoint[]): number => {
   if (data.length < 2) return 0;
 
-  const timeIntervals = cache || [];
-  timeIntervals.length = 0;
+  const timeIntervals: number[] = [];
 
   for (let i = 1; i < data.length; i++) {
     const interval = data[i].time - data[i - 1].time;
@@ -31,7 +30,6 @@ export interface PrepareChartDataConfig {
   };
   isInitialRender: boolean;
   chartWidth: number;
-  timeExtentCache?: { allTimes: number[]; timeIntervals: number[] };
 }
 
 export interface ChartData {
@@ -47,9 +45,8 @@ export const prepareChartData = ({
   prevMetadata,
   isInitialRender,
   chartWidth,
-  timeExtentCache,
 }: PrepareChartDataConfig): ChartData => {
-  const { timeExtent, timeStep } = calculateTimeExtent({ lines }, timeExtentCache);
+  const { timeExtent, timeStep } = calculateTimeExtent({ lines });
   const maxValue = calculateMaxValue({ lines });
 
   let shouldAnimateShift = false;

@@ -21,13 +21,6 @@ export const createLineGenerator = ({
     .defined((d) => d != null && !isNaN(d.time) && !isNaN(d.value));
 };
 
-export const updateLineGenerator = (
-  line: d3.Line<DataPoint>,
-  { xScale, yScale }: CreateLineGeneratorConfig,
-): void => {
-  line.x((d) => xScale(d.time)).y((d) => yScale(d.value));
-};
-
 export const updateLinePath = ({
   path,
   line,

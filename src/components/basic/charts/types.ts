@@ -3,10 +3,7 @@ export interface DataPoint {
   value: number;
 }
 
-export interface BarDataPoint {
-  time: number;
-  value: number;
-}
+export type BarDataPoint = DataPoint;
 
 export type ChartVariant = 'normal' | 'accent';
 

@@ -8,7 +8,7 @@ export { createScalesForAxes, updateScalesForAxes } from './scales';
 
 export { createClipPaths } from './clip-paths';
 
-export { createLineGenerator, updateLineGenerator, updateLine } from './line-generator';
+export { createLineGenerator, updateLine } from './line-generator';
 
 export { updateDotsCoordinates, createAndAnimateDots } from './dots';
 

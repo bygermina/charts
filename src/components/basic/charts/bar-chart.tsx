@@ -1,7 +1,9 @@
 import { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 
-import { type BarDataPoint, type ChartVariant } from './types';
+import { type DataPoint, type ChartVariant } from './types';
+
+type BarDataPoint = DataPoint;
 import { useChartBase } from './use-chart-base';
 import { createGrid, createAxes, createChartGroups } from './chart-utils';
 import { createClipPaths } from './multi-line-chart/index';
@@ -40,7 +42,7 @@ export const BarChart = ({
     variant,
   });
 
-  const prevDataRef = useRef<BarDataPoint[]>([]);
+  const prevDataRef = useRef<DataPoint[]>([]);
   const isInitialRenderRef = useRef(true);
   const fillColor = chartColors.secondary;
 

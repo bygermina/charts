@@ -1,6 +1,8 @@
 import * as d3 from 'd3';
 
-import { type BarDataPoint } from '../types';
+import { type DataPoint } from '../types';
+
+type BarDataPoint = DataPoint;
 
 export interface CreateScalesConfig {
   data: BarDataPoint[];
