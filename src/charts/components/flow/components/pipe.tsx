@@ -28,6 +28,15 @@ export const Pipe: React.FC<PipeProps> = ({
         y1={y1}
         x2={x2}
         y2={y2}
+        stroke="rgba(128, 128, 128, 0.15)"
+        strokeWidth={lineWidth * 5}
+        strokeLinecap="round"
+      />
+      <line
+        x1={x1}
+        y1={y1}
+        x2={x2}
+        y2={y2}
         stroke={color}
         strokeWidth={lineWidth}
         strokeLinecap="round"
