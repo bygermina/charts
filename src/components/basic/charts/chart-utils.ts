@@ -172,7 +172,35 @@ const createXAxis = (
     const axis = d3.axisBottom(xScale as d3.ScaleBand<string>);
     g.call(axis);
   } else {
-    const axis = d3.axisBottom(xScale as d3.AxisScale<Date | d3.NumberValue>);
+    const linearScale = xScale as d3.ScaleLinear<number, number>;
+    const domain = linearScale.domain();
+    const [min, max] = domain;
+    
+    // Проверяем, являются ли значения timestamp (больше чем 1000000000, что примерно 2001 год)
+    const isTimestamp = typeof min === 'number' && typeof max === 'number' && min > 1000000000;
+    
+    const axis = d3.axisBottom(linearScale);
+    
+    if (isTimestamp) {
+      // Определяем формат в зависимости от диапазона времени
+      const timeRange = max - min;
+      const oneDay = 24 * 60 * 60 * 1000;
+      
+      let timeFormat: (date: Date) => string;
+      if (timeRange > oneDay) {
+        // Если диапазон больше дня, показываем дату и время
+        timeFormat = d3.timeFormat('%d.%m %H:%M');
+      } else {
+        // Если диапазон меньше дня, показываем только время
+        timeFormat = d3.timeFormat('%H:%M:%S');
+      }
+      
+      axis.tickFormat((d) => {
+        const value = typeof d === 'number' ? d : Number(d);
+        return timeFormat(new Date(value));
+      });
+    }
+    
     if (ticks !== undefined) {
       axis.ticks(ticks);
     }

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 
 import {
   MultiLineChart,
@@ -27,6 +27,38 @@ const generateLineData = (count: number, startTime?: number, endTime?: number): 
 
 const chartVariant = 'normal';
 
+interface LineConfig {
+  color?: string;
+  label: string;
+  showDots?: boolean;
+  generateValue: () => number;
+}
+
+interface MultiLineChartD3Props {
+  delay?: number;
+  count?: number;
+  variant?: ChartVariant;
+  showLegend?: boolean;
+  width?: number;
+  height?: number;
+  linesConfig?: LineConfig[];
+}
+
+const DEFAULT_LINES_CONFIG: LineConfig[] = [
+  {
+    color: '',
+    label: 'Line 1',
+    showDots: true,
+    generateValue: () => Math.random() * 100 + 50,
+  },
+  {
+    color: '',
+    label: 'Line 2',
+    showDots: true,
+    generateValue: () => Math.random() * 80 + 30,
+  },
+];
+
 export const MultiLineChartD3 = ({
   delay = 1000,
   count = 30,
@@ -34,18 +66,22 @@ export const MultiLineChartD3 = ({
   showLegend = true,
   width,
   height,
-}: {
-  delay?: number;
-  count?: number;
-  variant?: ChartVariant;
-  showLegend?: boolean;
-  width?: number;
-  height?: number;
-}) => {
-  const [lineData, setLineData] = useState<DataPoint[]>(() => generateLineData(count));
-  const [areaData, setAreaData] = useState<DataPoint[]>(() => generateLineData(count));
-
+  linesConfig = DEFAULT_LINES_CONFIG,
+}: MultiLineChartD3Props) => {
   const chartColors = getChartColors(chartVariant);
+
+  const linesWithColors = useMemo(
+    () =>
+      linesConfig.map((config, index) => ({
+        ...config,
+        color: config.color || (index === 0 ? chartColors.primary : chartColors.tertiary),
+      })),
+    [linesConfig, chartColors.primary, chartColors.tertiary],
+  );
+
+  const [linesData, setLinesData] = useState<DataPoint[][]>(() =>
+    linesConfig.map(() => generateLineData(count)),
+  );
 
   useEffect(() => {
     let timeoutId: number;
@@ -56,24 +92,34 @@ export const MultiLineChartD3 = ({
 
       const now = Date.now();
 
-      setLineData((prev) => {
-        const trimmed = prev.length >= count ? prev.slice(prev.length - count + 1) : prev.slice(1);
+      setLinesData((prev) => {
+        if (prev.length !== linesWithColors.length) {
+          return linesWithColors.map((_, index) => {
+            if (index < prev.length) {
+              const lineData = prev[index];
+              const trimmed = lineData.slice(1);
 
-        trimmed.push({
-          time: now,
-          value: Math.random() * 100 + 50,
+              trimmed.push({
+                time: now,
+                value: linesWithColors[index].generateValue(),
+              });
+              return trimmed;
+            }
+            return generateLineData(count, undefined, now);
+          });
+        }
+
+        return prev.map((lineData, index) => {
+          if (index >= linesWithColors.length) return lineData;
+
+          const trimmed = lineData.slice(1);
+
+          trimmed.push({
+            time: now,
+            value: linesWithColors[index].generateValue(),
+          });
+          return trimmed;
         });
-        return trimmed;
-      });
-
-      setAreaData((prev) => {
-        const trimmed = prev.length >= count ? prev.slice(prev.length - count + 1) : prev.slice(1);
-
-        trimmed.push({
-          time: now,
-          value: Math.random() * 80 + 30,
-        });
-        return trimmed;
       });
 
       timeoutId = setTimeout(tick, delay);
@@ -92,8 +138,7 @@ export const MultiLineChartD3 = ({
       } else if (wasHidden) {
         wasHidden = false;
         const now = Date.now();
-        setLineData(generateLineData(count, undefined, now));
-        setAreaData(generateLineData(count, undefined, now));
+        setLinesData(linesWithColors.map(() => generateLineData(count, undefined, now)));
         startTick();
       }
     };
@@ -105,26 +150,18 @@ export const MultiLineChartD3 = ({
       clearTimeout(timeoutId);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
-  }, [delay, count]);
+  }, [delay, count, linesWithColors]);
 
   return (
     <ResponsiveChartWrapper width={width} height={height}>
       {({ width: chartWidth, height: chartHeight }) => (
         <MultiLineChart
-          lines={[
-            {
-              data: lineData,
-              color: chartColors.primary,
-              label: 'Line 1',
-              showDots: true,
-            },
-            {
-              data: areaData,
-              color: chartColors.tertiary,
-              label: 'Line 2',
-              showDots: true,
-            },
-          ]}
+          lines={linesData.map((data, index) => ({
+            data,
+            color: linesWithColors[index].color,
+            label: linesWithColors[index].label,
+            showDots: linesWithColors[index].showDots,
+          }))}
           width={chartWidth}
           height={chartHeight}
           variant={variant}
