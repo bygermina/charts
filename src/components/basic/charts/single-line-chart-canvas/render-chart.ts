@@ -77,12 +77,16 @@ export const renderSingleLineChart = ({
   ctx.translate(margin.left, margin.top);
 
   ctx.lineWidth = strokeWidth;
-  ctx.beginPath();
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
 
   let isFirstPoint = true;
   let isHighlight = false;
   let prevX = 0;
   let prevY = 0;
+
+  // Start new path
+  ctx.beginPath();
 
   for (let i = 0; i < size; i++) {
     const idx = (head - size + i + maxPoints) % maxPoints;
@@ -121,6 +125,9 @@ export const renderSingleLineChart = ({
   }
 
   ctx.stroke();
+  
+  // Clear the current path to free memory
+  ctx.beginPath();
 
   drawAxes({
     ctx,

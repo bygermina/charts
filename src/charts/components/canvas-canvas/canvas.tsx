@@ -14,7 +14,7 @@ import styles from './canvas.module.scss';
 
 const MAX_POINTS = 2000;
 const TIME_WINDOW_MS = 8000;
-const DATA_UPDATE_INTERVAL_MS = 1;
+const DATA_UPDATE_INTERVAL_MS = 16; // ~60 FPS instead of 1000 FPS
 const Y_DOMAIN: [number, number] = [0, 200];
 const HIGHLIGHT_THRESHOLD = 130;
 

@@ -1,4 +1,4 @@
-import { useRef, useCallback } from 'react';
+import { useRef, useCallback, useEffect } from 'react';
 
 import { type ChartVariant } from './types';
 import { useChartBase } from './use-chart-base';
@@ -60,6 +60,22 @@ export const RealTimeSingleLineChartCanvas = ({
   const cssVariableCacheRef = useRef(createCSSVariableCache());
   const cachedScalesRef = useRef<Scales | null>(null);
   const cachedResolvedColorsRef = useRef<Record<string, string>>({});
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      // Clear CSS cache to prevent memory leaks
+      if (cssVariableCacheRef.current) {
+        cssVariableCacheRef.current.cache.clear();
+        cssVariableCacheRef.current.computedStyle = null;
+        cssVariableCacheRef.current.element = null;
+      }
+      // Clear cached scales
+      cachedScalesRef.current = null;
+      // Clear resolved colors
+      cachedResolvedColorsRef.current = {};
+    };
+  }, []);
 
   const renderChart = useCallback(
     (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {
