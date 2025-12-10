@@ -201,6 +201,34 @@ const createXAxis = (
     const axis = d3.axisBottom(xScale as d3.ScaleBand<string>);
     g.call(axis);
   } else {
+    const domain = xScale.domain();
+    const firstValue = domain[0];
+    const isTimeScale = firstValue instanceof Date;
+
+    if (isTimeScale) {
+      const timeScale = xScale as d3.ScaleTime<number, number>;
+      const [min, max] = domain as [Date, Date];
+
+      const axis = d3.axisBottom(timeScale);
+
+      const timeRange = max.getTime() - min.getTime();
+      const oneDay = 24 * 60 * 60 * 1000;
+
+      let timeFormat: (date: Date) => string;
+      if (timeRange > oneDay) {
+        timeFormat = d3.timeFormat('%d.%m %H:%M');
+      } else {
+        timeFormat = d3.timeFormat('%H:%M:%S');
+      }
+
+      axis.tickFormat(timeFormat);
+
+      if (ticks !== undefined) {
+        axis.ticks(ticks);
+      }
+      axis.tickSizeOuter(0);
+      g.call(axis);
+    } else {
     const linearScale = xScale as d3.ScaleLinear<number, number>;
     const domain = linearScale.domain();
     const [min, max] = domain;
@@ -231,6 +259,7 @@ const createXAxis = (
     }
     axis.tickSizeOuter(0);
     g.call(axis);
+    }
   }
 
   g.attr('color', chartColors.text)
