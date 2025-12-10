@@ -9,6 +9,8 @@ import { Legend } from './components/legend';
 import type { Segment, Particle } from './types';
 import { getParticleColor, getLegendEntries } from './flow-config';
 import { getInitialParticles, updateParticles } from './particle-utils';
+import { FLOW_COLORS } from './flow-colors';
+import styles from './flow.module.scss';
 
 type BoilerDiagramProps = {
   width?: number;
@@ -98,19 +100,11 @@ const BoilerDiagram: React.FC<BoilerDiagramProps> = ({ width = 900, height = 500
   const legendEntries = getLegendEntries();
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: '100%',
-        height: '100%',
-      }}
-    >
+    <div className={styles.container}>
       <svg
         viewBox={`0 0 ${width} ${height}`}
         preserveAspectRatio="xMidYMid meet"
-        style={{ width: '100%', height: '100%', maxWidth: '100%', maxHeight: '100%' }}
+        className={styles.svg}
       >
         {segments.map((seg, segIndex) => {
           const segmentParticles = particles
@@ -167,7 +161,7 @@ const BoilerDiagram: React.FC<BoilerDiagramProps> = ({ width = 900, height = 500
           label="T Out"
           value={75.5}
           unit="°C"
-          color="rgb(239, 68, 68)"
+          color={FLOW_COLORS.sensorTemperature}
           pipeY={waterContainer.y}
         />
 
@@ -178,7 +172,7 @@ const BoilerDiagram: React.FC<BoilerDiagramProps> = ({ width = 900, height = 500
           label="P"
           value={2.5}
           unit="bar"
-          color="rgb(103, 232, 249)"
+          color={FLOW_COLORS.sensorPressure}
           pipeY={boiler.y + boiler.h - 45}
         />
 

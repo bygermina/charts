@@ -77,11 +77,14 @@ export const updateParticles = (
 
     const distance = distancePx / totalLengthPx;
     let currentPosition = 0;
+
     for (let i = 0; i < chain.length; i++) {
       if (chain[i] === segmentIndex) {
         const segLength = getSegmentLength(segments[chain[i]]);
         const totalLength = getChainLength(chain, segments);
+
         currentPosition = t * (segLength / totalLength);
+
         for (let j = 0; j < i; j++) {
           currentPosition += getSegmentLength(segments[chain[j]]) / totalLength;
         }

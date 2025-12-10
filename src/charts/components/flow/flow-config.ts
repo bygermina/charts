@@ -1,4 +1,5 @@
 import { type FlowType } from './types';
+import { FLOW_COLORS } from './flow-colors';
 
 export const getBaseSpeed = (type: FlowType): number => {
   switch (type) {
@@ -18,23 +19,23 @@ export const getBaseSpeed = (type: FlowType): number => {
 export const getParticleColor = (type: FlowType): string => {
   switch (type) {
     case 'water_cold':
-      return 'rgb(59, 130, 246)';
+      return FLOW_COLORS.waterCold;
     case 'water_hot':
-      return 'rgb(239, 68, 68)';
+      return FLOW_COLORS.waterHot;
     case 'gas':
-      return 'rgb(234, 179, 8)';
+      return FLOW_COLORS.gas;
     case 'air':
-      return 'rgb(148, 163, 184)';
+      return FLOW_COLORS.air;
     default:
-      return 'rgb(203, 213, 225)';
+      return FLOW_COLORS.default;
   }
 };
 
 export const getLegendEntries = (): { label: string; color: string }[] => {
   return [
-    { label: 'Cold Water', color: 'rgb(59, 130, 246)' },
-    { label: 'Hot Water', color: 'rgb(239, 68, 68)' },
-    { label: 'Gas', color: 'rgb(234, 179, 8)' },
-    { label: 'Air / Smoke', color: 'rgb(148, 163, 184)' },
+    { label: 'Cold Water', color: FLOW_COLORS.waterCold },
+    { label: 'Hot Water', color: FLOW_COLORS.waterHot },
+    { label: 'Gas', color: FLOW_COLORS.gas },
+    { label: 'Air / Smoke', color: FLOW_COLORS.air },
   ];
 };
