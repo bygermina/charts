@@ -19,8 +19,9 @@ const NEEDLE_LENGTH = 60;
 const NEEDLE_WIDTH = 3;
 const LABEL_OFFSET = 15;
 const PADDING = 30;
-const VIEWBOX_SIZE = (GAUGE_RADIUS + LABEL_OFFSET + PADDING) * 2;
-const CENTER = VIEWBOX_SIZE / 2;
+const VIEWBOX_WIDTH = (GAUGE_RADIUS + LABEL_OFFSET + PADDING) * 2;
+const VIEWBOX_HEIGHT = VIEWBOX_WIDTH * 0.7;
+const CENTER = VIEWBOX_WIDTH / 2;
 
 const valueToAngle = (value: number, min: number, max: number): number => {
   const normalizedValue = (value - min) / (max - min);
@@ -68,7 +69,7 @@ export const GaugeChart = ({ value, variant = 'normal', min = 0, max = 100 }: Ga
   return (
     <div className={styles.container}>
       <svg
-        viewBox={`0 0 ${VIEWBOX_SIZE} ${VIEWBOX_SIZE}`}
+        viewBox={`0 0 ${VIEWBOX_WIDTH} ${VIEWBOX_HEIGHT}`}
         className={styles.svg}
         preserveAspectRatio="xMidYMid meet"
         style={{ width: '100%', height: '100%' }}
