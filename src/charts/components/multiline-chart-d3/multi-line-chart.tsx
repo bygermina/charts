@@ -9,6 +9,7 @@ import {
 import { ResponsiveChartWrapper } from '@/components/basic/charts/utils/responsive-chart-wrapper';
 import { useVisibilityAwareTimer } from '@/components/basic/charts/use-visibility-aware-timer';
 import { generateTimeSeriesData } from '@/utils/data-generators';
+import { updateLinesData } from './update-lines-data';
 
 const generateLineData = (count: number, startTime?: number, endTime?: number): DataPoint[] =>
   generateTimeSeriesData({
@@ -81,35 +82,14 @@ export const MultiLineChartD3 = ({
     delay,
     onTick: () => {
       const now = Date.now();
-      setLinesData((prev) => {
-        if (prev.length !== linesWithColors.length) {
-          return linesWithColors.map((_, index) => {
-            if (index < prev.length) {
-              const lineData = prev[index];
-              const trimmed = lineData.slice(1);
-
-              trimmed.push({
-                time: now,
-                value: linesWithColors[index].generateValue(),
-              });
-              return trimmed;
-            }
-            return generateLineData(count, undefined, now);
-          });
-        }
-
-        return prev.map((lineData, index) => {
-          if (index >= linesWithColors.length) return lineData;
-
-          const trimmed = lineData.slice(1);
-
-          trimmed.push({
-            time: now,
-            value: linesWithColors[index].generateValue(),
-          });
-          return trimmed;
-        });
-      });
+      setLinesData((prev) =>
+        updateLinesData({
+          prevLinesData: prev,
+          linesWithColors,
+          count,
+          now,
+        }),
+      );
     },
     onVisible: () => {
       const now = Date.now();

@@ -6,9 +6,10 @@ import { Sensor } from './components/sensor';
 import { Pump } from './components/pump';
 import { GasValve } from './components/gas-valve';
 import { Legend } from './components/legend';
-import type { Segment, Particle } from './types';
+import type { Particle } from './types';
 import { getParticleColor, getLegendEntries } from './flow-config';
 import { getInitialParticles, updateParticles } from './particle-utils';
+import { createFlowSegments } from './flow-config-segments';
 import { FLOW_COLORS } from './flow-colors';
 import styles from './flow.module.scss';
 
@@ -32,48 +33,7 @@ const BoilerDiagram: React.FC<BoilerDiagramProps> = ({ width = 900, height = 500
     h: boiler.h - 60,
   };
 
-  const segments: Segment[] = [
-    {
-      type: 'water_cold',
-      from: { x: boiler.x - 300, y: boiler.y + boiler.h - 45 },
-      to: { x: waterContainer.x, y: boiler.y + boiler.h - 45 },
-    },
-    {
-      type: 'water_cold',
-      from: { x: waterContainer.x, y: boiler.y + boiler.h - 45 },
-      to: { x: waterContainer.x, y: waterContainer.y + waterContainer.h },
-    },
-    {
-      type: 'water_hot',
-      from: { x: waterContainer.x + waterContainer.w, y: waterContainer.y },
-      to: { x: boiler.x + boiler.w + 330, y: waterContainer.y },
-    },
-    {
-      type: 'gas',
-      from: { x: boiler.x - 300, y: boiler.y + boiler.h + 60 },
-      to: { x: boiler.x + boiler.w / 2 - 35, y: boiler.y + boiler.h + 60 },
-    },
-    {
-      type: 'gas',
-      from: { x: boiler.x + boiler.w / 2 - 35, y: boiler.y + boiler.h + 60 },
-      to: { x: boiler.x + boiler.w / 2 - 35, y: boiler.y + boiler.h - 5 },
-    },
-    {
-      type: 'air',
-      from: { x: boiler.x + boiler.w + 240, y: boiler.y + boiler.h + 60 },
-      to: { x: boiler.x + boiler.w / 2 + 35, y: boiler.y + boiler.h + 60 },
-    },
-    {
-      type: 'air',
-      from: { x: boiler.x + boiler.w / 2 + 35, y: boiler.y + boiler.h + 60 },
-      to: { x: boiler.x + boiler.w / 2 + 35, y: boiler.y + boiler.h - 5 },
-    },
-    {
-      type: 'air',
-      from: { x: boiler.x + boiler.w / 2, y: boiler.y },
-      to: { x: boiler.x + boiler.w / 2, y: boiler.y - 180 },
-    },
-  ];
+  const segments = createFlowSegments(boiler, waterContainer);
 
   const [particles, setParticles] = useState<Particle[]>(() => getInitialParticles(segments));
 

@@ -12,3 +12,5 @@ export { useChartBase } from './use-chart-base';
 export { useCanvasRenderLoop } from './use-canvas-render-loop';
 export { useVisibilityCleanup } from './use-visibility-cleanup';
 export { useVisibilityAwareTimer } from './use-visibility-aware-timer';
+
+export type { ChartColors } from './chart-utils';

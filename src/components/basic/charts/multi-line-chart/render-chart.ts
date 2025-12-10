@@ -1,0 +1,200 @@
+import * as d3 from 'd3';
+
+import { type ChartColors } from '../chart-utils';
+import { createAxes } from '../chart-utils';
+import { calculateAnimationSpeed } from '../chart-animation';
+import { DEFAULT_X_AXIS_TICKS, DEFAULT_Y_AXIS_TICKS } from '../constants';
+import type { LineSeries } from './types';
+import {
+  createClipPaths,
+  createChartGroups,
+  prepareChartData,
+  createScalesForAxes,
+  calculateGridLeftShift,
+  createLineGenerator,
+  updateLine,
+  updateDotsCoordinates,
+  createAndAnimateDots,
+  getOrCreateLineGroup,
+  getOrCreateLinePath,
+  manageGrid,
+  manageLegend,
+  animateGridAndAxis,
+} from './index';
+
+interface RenderChartConfig {
+  svgElement: SVGSVGElement;
+  lines: LineSeries[];
+  prevMetadataRef: React.RefObject<{
+    timeExtent: [number, number] | null;
+    timeStep: number;
+  }>;
+  isInitialRender: boolean;
+  chartWidth: number;
+  chartHeight: number;
+  margin: { top: number; right: number; bottom: number; left: number };
+  chartColors: ChartColors;
+  showGrid: boolean;
+  showLegend: boolean;
+  strokeWidth: number;
+  animationSpeed?: number;
+  yDomain?: [number, number];
+  setIsInitialRender: (value: boolean) => void;
+}
+
+export const renderMultiLineChart = ({
+  svgElement,
+  lines,
+  prevMetadataRef,
+  isInitialRender,
+  chartWidth,
+  chartHeight,
+  margin,
+  chartColors,
+  showGrid,
+  showLegend,
+  strokeWidth,
+  animationSpeed,
+  yDomain,
+  setIsInitialRender,
+}: RenderChartConfig): void => {
+  const svg = d3.select(svgElement);
+
+  createClipPaths({
+    svg,
+    chartWidth,
+    chartHeight,
+    margin,
+  });
+
+  const { mainGroup: g, axesGroup } = createChartGroups({
+    svg,
+    margin: { left: margin.left, top: margin.top },
+  });
+
+  const chartData = prepareChartData({
+    lines,
+    prevMetadata: prevMetadataRef.current,
+    isInitialRender,
+    chartWidth,
+  });
+
+  const { timeExtent, timeStep, maxValue, shouldAnimateShift, shiftOffset } = chartData;
+
+  const { xScale, xAxisScale, yScale } = createScalesForAxes({
+    timeExtent,
+    maxValue,
+    chartWidth,
+    chartHeight,
+    margin,
+    yDomain,
+  });
+
+  const gridLeftShift = calculateGridLeftShift({
+    timeStep,
+    timeExtent,
+    chartWidth,
+  });
+
+  const gridGroup = showGrid
+    ? manageGrid({
+        mainGroup: g,
+        xScale: xAxisScale,
+        yScale,
+        chartWidth,
+        chartHeight,
+        margin,
+        gridLeftShift,
+        chartColors,
+        svgElement,
+      })
+    : null;
+
+  const { xAxisGroup } = createAxes(
+    axesGroup,
+    xAxisScale,
+    yScale,
+    chartHeight,
+    chartWidth,
+    chartColors,
+    margin,
+    DEFAULT_X_AXIS_TICKS,
+    DEFAULT_Y_AXIS_TICKS,
+  );
+
+  const shouldShift = shouldAnimateShift && !document.hidden;
+  const speed = shouldShift
+    ? calculateAnimationSpeed({
+        data: lines[0].data,
+        xScale,
+        customSpeed: animationSpeed,
+        fallbackSpeed: chartWidth / 10,
+      })
+    : undefined;
+
+  lines.forEach((lineSeries, lineIndex) => {
+    const { data, color, showDots } = lineSeries;
+    const line = createLineGenerator({ xScale, yScale });
+    const lineGroup = getOrCreateLineGroup({ mainGroup: g, lineIndex });
+    const path = getOrCreateLinePath({
+      lineGroup,
+      color,
+      strokeWidth,
+      isInitialRender,
+    });
+
+    updateLine({
+      path,
+      line,
+      lineGroup,
+      data,
+      isInitialRender,
+      shouldShift,
+      shiftOffset,
+      speed,
+    });
+
+    if (showDots ?? true) {
+      updateDotsCoordinates({
+        lineGroup,
+        lineIndex,
+        data,
+        xScale,
+        yScale,
+      });
+
+      createAndAnimateDots({
+        lineGroup,
+        lineIndex,
+        data,
+        color,
+        isInitialRender,
+      });
+    }
+  });
+
+  if (shouldShift && gridGroup && speed !== undefined) {
+    animateGridAndAxis({
+      gridGroup,
+      xAxisGroup,
+      shiftOffset,
+      speed,
+      gridLeftShift,
+      chartHeight,
+    });
+  }
+
+  manageLegend({
+    mainGroup: g,
+    lines,
+    chartWidth,
+    showLegend,
+    chartColors,
+  });
+
+  prevMetadataRef.current = {
+    timeExtent,
+    timeStep,
+  };
+  setIsInitialRender(false);
+};
