@@ -4,14 +4,7 @@ import { type TimeExtentConfig, type TimeExtentResult } from './types';
 import { calculateTimeStep } from './data-calculations';
 
 export const calculateTimeExtent = ({ lines }: TimeExtentConfig): TimeExtentResult => {
-  const allTimes: number[] = [];
-
-  for (const line of lines) {
-    if (!line?.data) continue;
-    for (const point of line.data) {
-      allTimes.push(point.time);
-    }
-  }
+  const allTimes = lines.flatMap((line) => (line?.data || []).map((point) => point.time));
 
   const rawTimeExtent = d3.extent(allTimes);
 

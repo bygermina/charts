@@ -57,19 +57,13 @@ export const calculateAnimationSpeed = ({
   }
 
   if (data.length >= 2) {
-    const distances: number[] = [];
-    for (let i = 1; i < data.length; i++) {
-      const prevX = xScale(data[i - 1].time);
-      const currX = xScale(data[i].time);
-      const distance = Math.abs(currX - prevX);
-      if (distance > 0) {
-        distances.push(distance);
-      }
-    }
+    const distances = data
+      .slice(1)
+      .map((d, i) => Math.abs(xScale(d.time) - xScale(data[i].time)))
+      .filter((d) => d > 0);
 
     if (distances.length > 0) {
-      const avgDistance = distances.reduce((sum, d) => sum + d, 0) / distances.length;
-      return avgDistance;
+      return distances.reduce((sum, d) => sum + d, 0) / distances.length;
     }
   }
 

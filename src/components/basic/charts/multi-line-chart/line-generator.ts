@@ -35,7 +35,7 @@ export const updateLinePath = ({
 
     path.attr('d', emptyPathD).attr('opacity', 0);
 
-    setTimeout(() => {
+    requestAnimationFrame(() => {
       const node = path.node();
       if (node && node.ownerDocument) {
         path
@@ -47,7 +47,7 @@ export const updateLinePath = ({
             return d3.interpolateString(emptyPathD, finalPathD);
           });
       }
-    }, 10);
+    });
   } else {
     path.attr('opacity', 1).attr('d', line(data));
   }

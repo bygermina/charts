@@ -49,24 +49,20 @@ export const prepareChartData = ({
   const { timeExtent, timeStep } = calculateTimeExtent({ lines });
   const maxValue = calculateMaxValue({ lines });
 
-  let shouldAnimateShift = false;
-  let shiftOffset = 0;
-
-  if (!isInitialRender && prevMetadata.timeExtent !== null) {
-    const animationResult = calculateShiftAnimation({
-      prevTimeExtent: prevMetadata.timeExtent,
-      currentTimeExtent: timeExtent,
-      chartWidth,
-    });
-    shouldAnimateShift = animationResult.shouldAnimate;
-    shiftOffset = animationResult.shiftOffset;
-  }
+  const { shouldAnimate, shiftOffset } =
+    !isInitialRender && prevMetadata.timeExtent !== null
+      ? calculateShiftAnimation({
+          prevTimeExtent: prevMetadata.timeExtent,
+          currentTimeExtent: timeExtent,
+          chartWidth,
+        })
+      : { shouldAnimate: false, shiftOffset: 0 };
 
   return {
     timeExtent,
     timeStep,
     maxValue,
-    shouldAnimateShift,
+    shouldAnimateShift: shouldAnimate,
     shiftOffset,
   };
 };

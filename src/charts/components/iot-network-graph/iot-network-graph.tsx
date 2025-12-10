@@ -27,6 +27,37 @@ interface Link {
   target: string | Node;
 }
 
+const NODE_RADIUS = {
+  server: 14,
+  gateway: 12,
+  sensor: 10,
+  actuator: 10,
+} as const;
+
+const NODE_RADIUS_HOVER = {
+  server: 18,
+  gateway: 16,
+  sensor: 14,
+  actuator: 14,
+} as const;
+
+const getNodeRadius = (type: Node['type']): number => NODE_RADIUS[type] ?? 10;
+
+const getNodeRadiusHover = (type: Node['type']): number => NODE_RADIUS_HOVER[type] ?? 14;
+
+const getNodeColor = (
+  type: Node['type'],
+  chartColors: ReturnType<typeof getChartColors>,
+): string => {
+  const colorMap: Record<Node['type'], string> = {
+    server: chartColors.primary,
+    gateway: chartColors.secondary,
+    sensor: chartColors.tertiary,
+    actuator: chartColors.quaternary,
+  };
+  return colorMap[type] ?? chartColors.quaternary;
+};
+
 const generateIoTNetwork = (): { nodes: Node[]; links: Link[] } => {
   const nodes: Node[] = [
     { id: 'server-1', type: 'server', label: 'Server' },
@@ -142,31 +173,14 @@ const NetworkGraphContent = ({
     // Circles for nodes
     node
       .append('circle')
-      .attr('r', (d) => {
-        if (d.type === 'server') return 14;
-        if (d.type === 'gateway') return 12;
-        return 10;
-      })
-      .attr('fill', (d) => {
-        if (d.type === 'server') return chartColors.primary;
-        if (d.type === 'gateway') return chartColors.secondary;
-        if (d.type === 'sensor') return chartColors.tertiary;
-        return chartColors.quaternary;
-      })
+      .attr('r', (d) => getNodeRadius(d.type))
+      .attr('fill', (d) => getNodeColor(d.type, chartColors))
       .style('cursor', 'grab')
       .on('mouseenter', function (_event, d) {
-        d3.select(this).attr('r', () => {
-          if (d.type === 'server') return 18;
-          if (d.type === 'gateway') return 16;
-          return 14;
-        });
+        d3.select(this).attr('r', getNodeRadiusHover(d.type));
       })
       .on('mouseleave', function (_event, d) {
-        d3.select(this).attr('r', () => {
-          if (d.type === 'server') return 14;
-          if (d.type === 'gateway') return 12;
-          return 10;
-        });
+        d3.select(this).attr('r', getNodeRadius(d.type));
       });
 
     // Text labels
@@ -180,29 +194,17 @@ const NetworkGraphContent = ({
       .attr('pointer-events', 'none')
       .style('user-select', 'none');
 
+    const getNodeById = (id: string | Node): Node => {
+      return typeof id === 'string' ? nodes.find((n) => n.id === id)! : id;
+    };
+
     // Update positions during simulation
     simulation.on('tick', () => {
       link
-        .attr('x1', (d) => {
-          const source =
-            typeof d.source === 'string' ? nodes.find((n) => n.id === d.source)! : d.source;
-          return source.x ?? 0;
-        })
-        .attr('y1', (d) => {
-          const source =
-            typeof d.source === 'string' ? nodes.find((n) => n.id === d.source)! : d.source;
-          return source.y ?? 0;
-        })
-        .attr('x2', (d) => {
-          const target =
-            typeof d.target === 'string' ? nodes.find((n) => n.id === d.target)! : d.target;
-          return target.x ?? 0;
-        })
-        .attr('y2', (d) => {
-          const target =
-            typeof d.target === 'string' ? nodes.find((n) => n.id === d.target)! : d.target;
-          return target.y ?? 0;
-        });
+        .attr('x1', (d) => getNodeById(d.source).x ?? 0)
+        .attr('y1', (d) => getNodeById(d.source).y ?? 0)
+        .attr('x2', (d) => getNodeById(d.target).x ?? 0)
+        .attr('y2', (d) => getNodeById(d.target).y ?? 0);
 
       node.attr('transform', (d) => `translate(${d.x ?? 0},${d.y ?? 0})`);
     });

@@ -1,6 +1,7 @@
 import * as d3 from 'd3';
 
 import { type DataPoint } from '../types';
+import { type ChartColors } from '../chart-utils';
 
 type BarDataPoint = DataPoint;
 
@@ -32,7 +33,7 @@ export interface CreateBarsConfig {
   chartHeight: number;
   gradientId: string;
   barWidth: number;
-  chartColors: Record<string, string>;
+  chartColors: ChartColors;
 }
 
 export interface BarsSelection {

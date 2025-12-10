@@ -15,6 +15,16 @@ export const animateBars = ({ bars, yScale, chartHeight }: AnimateBarsConfig): v
     .attr('opacity', BAR_FINAL_OPACITY);
 };
 
+const updateBarPosition = (
+  selection: d3.Selection<SVGRectElement, BarDataPoint, SVGGElement, unknown>,
+  yScale: d3.ScaleLinear<number, number>,
+  chartHeight: number,
+): void => {
+  selection
+    .attr('y', (d) => yScale(d.value))
+    .attr('height', (d) => chartHeight - yScale(d.value));
+};
+
 export const updateBars = ({
   barsEnter,
   barsUpdate,
@@ -32,6 +42,7 @@ export const updateBars = ({
   if (barsEnterData.length > 0) {
     const maxTime = Math.max(...barsEnterData.map((d) => d.time));
     const rightmostBar = barsEnter.filter((d) => d.time === maxTime);
+    const otherBars = barsEnter.filter((d) => d.time !== maxTime);
 
     rightmostBar
       .transition()
@@ -41,21 +52,13 @@ export const updateBars = ({
       .attr('height', (d) => chartHeight - yScale(d.value))
       .attr('opacity', BAR_FINAL_OPACITY);
 
-    barsEnter
-      .filter((d) => d.time !== maxTime)
-      .attr('y', (d) => yScale(d.value))
-      .attr('height', (d) => chartHeight - yScale(d.value))
-      .attr('opacity', BAR_FINAL_OPACITY);
+    updateBarPosition(otherBars, yScale, chartHeight);
+    otherBars.attr('opacity', BAR_FINAL_OPACITY);
   }
 
   const enterNodes = new Set(barsEnter.nodes());
-  barsUpdate
-    .filter((_d, i, nodes) => {
-      const node = nodes[i];
-      return !enterNodes.has(node);
-    })
-    .attr('y', (d) => yScale(d.value))
-    .attr('height', (d) => chartHeight - yScale(d.value));
+  const barsToUpdate = barsUpdate.filter((_d, i, nodes) => !enterNodes.has(nodes[i]));
+  updateBarPosition(barsToUpdate, yScale, chartHeight);
 
   barsExit
     .transition()
