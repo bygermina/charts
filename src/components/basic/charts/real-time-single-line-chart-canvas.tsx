@@ -72,6 +72,7 @@ export const RealTimeSingleLineChartCanvas = ({
         timeWindowMs,
         strokeWidth,
         cachedScales: scalesRef.current,
+        resolvedColors: resolvedColors,
       });
 
       scalesRef.current = result.scales;

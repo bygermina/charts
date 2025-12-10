@@ -1,5 +1,6 @@
 import { type RealTimeSingleLineDataRef } from '../real-time-single-line-chart-canvas';
 import { createScalesForAxes, updateScalesForAxes, type Scales } from '../multi-line-chart/index';
+import { drawAxes } from '../utils/canvas-helpers';
 
 interface RenderSingleLineChartConfig {
   ctx: CanvasRenderingContext2D;
@@ -14,6 +15,7 @@ interface RenderSingleLineChartConfig {
   timeWindowMs: number;
   strokeWidth: number;
   cachedScales?: Scales | null;
+  resolvedColors?: Record<string, string>;
 }
 
 export const renderSingleLineChart = ({
@@ -29,6 +31,7 @@ export const renderSingleLineChart = ({
   timeWindowMs,
   strokeWidth,
   cachedScales,
+  resolvedColors,
 }: RenderSingleLineChartConfig): {
   scales: Scales;
 } => {
@@ -126,6 +129,20 @@ export const renderSingleLineChart = ({
 
   if (!firstPoint) {
     ctx.stroke();
+  }
+
+  if (resolvedColors) {
+    drawAxes({
+      ctx,
+      xAxisScale: scales.xAxisScale,
+      yScale: scales.yScale,
+      chartWidth,
+      chartHeight,
+      margin,
+      resolvedColors,
+      xTicks: 5,
+      yTicks: 5,
+    });
   }
 
   ctx.restore();

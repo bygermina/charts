@@ -36,7 +36,7 @@ export const setupCanvas = (
   height: number,
 ): CanvasRenderingContext2D | null => {
   const ctx = canvas.getContext('2d', {
-    alpha: false,
+    alpha: true,
     desynchronized: true,
   });
   if (!ctx) return null;
@@ -61,14 +61,14 @@ export const setupCanvas = (
 
 interface DrawAxesConfig {
   ctx: CanvasRenderingContext2D;
-  xAxisScale: d3.ScaleTime<number, number>;
+  xAxisScale: d3.ScaleLinear<number, number>;
   yScale: d3.ScaleLinear<number, number>;
   chartWidth: number;
   chartHeight: number;
   margin: { top: number; right: number; bottom: number; left: number };
   resolvedColors: Record<string, string>;
-  xTicks: number;
-  yTicks: number;
+  xTicks?: number;
+  yTicks?: number;
 }
 
 const CHART_FONT_SIZE = '12px';
@@ -82,8 +82,8 @@ export const drawAxes = ({
   chartHeight,
   margin,
   resolvedColors,
-  xTicks,
-  yTicks,
+  xTicks = 5,
+  yTicks = 5,
 }: DrawAxesConfig): void => {
   try {
     ctx.save();
@@ -93,7 +93,6 @@ export const drawAxes = ({
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
-    // Draw axes lines
     ctx.beginPath();
     ctx.moveTo(0, chartHeight);
     ctx.lineTo(chartWidth - margin.right, chartHeight);
@@ -101,10 +100,22 @@ export const drawAxes = ({
     ctx.lineTo(0, chartHeight);
     ctx.stroke();
 
-    const xTickValues = xAxisScale.ticks(xTicks);
-    const xTickFormat = xAxisScale.tickFormat(xTicks);
+    const domain = xAxisScale.domain();
+    const [min, max] = domain;
+    const isTimestamp = typeof min === 'number' && typeof max === 'number' && min > 1000000000;
 
-    // Draw X ticks and labels
+    const xTickValues = xAxisScale.ticks(xTicks);
+    let xTickFormat: (value: number) => string;
+
+    if (isTimestamp) {
+      const timeRange = max - min;
+      const oneDay = 24 * 60 * 60 * 1000;
+      const timeFormat = timeRange > oneDay ? d3.timeFormat('%d.%m %H:%M') : d3.timeFormat('%H:%M:%S');
+      xTickFormat = (value: number) => timeFormat(new Date(value));
+    } else {
+      xTickFormat = (value: number) => String(value);
+    }
+
     ctx.beginPath();
     for (let i = 0; i < xTickValues.length; i++) {
       const tickValue = xTickValues[i];
@@ -117,7 +128,6 @@ export const drawAxes = ({
     }
     ctx.stroke();
 
-    // Draw X labels
     for (let i = 0; i < xTickValues.length; i++) {
       const tickValue = xTickValues[i];
       const x = xAxisScale(tickValue);
@@ -131,7 +141,6 @@ export const drawAxes = ({
     const yTickValues = yScale.ticks(yTicks);
     const yTickFormat = yScale.tickFormat(yTicks);
 
-    // Draw Y ticks
     ctx.beginPath();
     for (let i = 0; i < yTickValues.length; i++) {
       const tickValue = yTickValues[i];
@@ -144,7 +153,6 @@ export const drawAxes = ({
     }
     ctx.stroke();
 
-    // Draw Y labels
     ctx.textAlign = 'right';
     for (let i = 0; i < yTickValues.length; i++) {
       const tickValue = yTickValues[i];
