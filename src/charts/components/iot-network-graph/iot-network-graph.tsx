@@ -228,7 +228,11 @@ const NetworkGraphContent = ({
   );
 };
 
-export const IoTNetworkGraph = ({ width, height, variant = 'normal' }: IoTNetworkGraphProps) => {
+export const IoTNetworkGraph = ({
+  width,
+  height = 300,
+  variant = 'normal',
+}: IoTNetworkGraphProps) => {
   return (
     <ResponsiveChartWrapper width={width} height={height}>
       {({ width: chartWidth, height: chartHeight }) => (

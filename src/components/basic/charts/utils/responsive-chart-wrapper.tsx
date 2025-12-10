@@ -1,6 +1,7 @@
 import { useRef, type ReactNode } from 'react';
 
 import { useContainerSize } from '../use-container-size';
+import styles from './responsive-chart-wrapper.module.scss';
 
 interface ResponsiveChartWrapperProps {
   children: (size: { width: number; height: number }) => ReactNode;
@@ -18,5 +19,9 @@ export const ResponsiveChartWrapper = ({
   const chartWidth = width ?? containerSize.width;
   const chartHeight = height ?? containerSize.height;
 
-  return <div ref={containerRef}>{children({ width: chartWidth, height: chartHeight })}</div>;
+  return (
+    <div ref={containerRef} className={styles.wrapper}>
+      {children({ width: chartWidth, height: chartHeight })}
+    </div>
+  );
 };

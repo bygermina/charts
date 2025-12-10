@@ -27,7 +27,7 @@ export const BarChartD3 = ({
   count = 50,
   variant = chartVariant,
   width,
-  height,
+  height = 300,
 }: {
   delay?: number;
   count?: number;
