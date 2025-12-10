@@ -15,25 +15,25 @@ import styles from './multi-line-chart-canvas.module.scss';
 
 export interface RealTimeSingleLineDataRef {
   values: Float32Array;
-  times: Float64Array; // Массив временных меток для каждой точки
-  head: number; // Индекс текущей позиции в циклическом буфере
-  size: number; // Текущий размер заполненной части буфера
-  maxPoints: number; // Максимальное количество точек в буфере
+  times: Float64Array; // Array of timestamps for each point
+  head: number; // Index of current position in circular buffer
+  size: number; // Current size of filled part of buffer
+  maxPoints: number; // Maximum number of points in buffer
 }
 
 interface RealTimeSingleLineChartCanvasProps {
-  dataRef: React.RefObject<RealTimeSingleLineDataRef>; // Референс на данные графика
-  width?: number; // Ширина canvas
-  height?: number; // Высота canvas
-  variant?: ChartVariant; // Вариант цветовой схемы
-  yDomain: [number, number]; // Диапазон значений по оси Y [мин, макс]
-  timeWindowMs: number; // Временное окно отображения данных в миллисекундах
-  strokeColor?: string; // Цвет линии графика
-  highlightStrokeColor?: string; // Цвет части линии выше порога
-  highlightThreshold?: number; // Порог, выше которого применяется highlightStrokeColor
-  strokeWidth?: number; // Толщина линии
-  xTicks?: number; // Количество делений на оси X
-  yTicks?: number; // Количество делений на оси Y
+  dataRef: React.RefObject<RealTimeSingleLineDataRef>; // Reference to chart data
+  width?: number; // Canvas width
+  height?: number; // Canvas height
+  variant?: ChartVariant; // Color scheme variant
+  yDomain: [number, number]; // Y-axis value range [min, max]
+  timeWindowMs: number; // Time window for displaying data in milliseconds
+  strokeColor?: string; // Chart line color
+  highlightStrokeColor?: string; // Color of line part above threshold
+  highlightThreshold?: number; // Threshold above which highlightStrokeColor is applied
+  strokeWidth?: number; // Line width
+  xTicks?: number; // Number of divisions on X-axis
+  yTicks?: number; // Number of divisions on Y-axis
 }
 
 export const RealTimeSingleLineChartCanvas = ({

@@ -1,59 +1,59 @@
 # Charts - Real-time Analytics Dashboard
 
-React приложение для визуализации данных с использованием D3.js. Проект демонстрирует различные типы интерактивных графиков с поддержкой обновления данных в реальном времени.
+React application for data visualization using D3.js. The project demonstrates various types of interactive charts with real-time data updates support.
 
-## Технологии
+## Technologies
 
-- **React 19** - UI библиотека
-- **TypeScript** - типизация
-- **Vite** - сборщик и dev-сервер
-- **D3.js** - библиотека для визуализации данных
-- **SCSS** - стилизация с модулями
+- **React 19** - UI library
+- **TypeScript** - type system
+- **Vite** - build tool and dev server
+- **D3.js** - data visualization library
+- **SCSS** - styling with modules
 
-## Типы графиков
+## Chart Types
 
-Проект включает следующие типы графиков:
+The project includes the following chart types:
 
 ### 1. Multi-Line Chart (SVG)
 
-Многострочный график на SVG с поддержкой нескольких линий данных, обновляющийся каждую секунду.
+Multi-line chart on SVG with support for multiple data lines, updating every second.
 
 ### 2. Multi-Line Chart (Canvas)
 
-Оптимизированная версия многострочного графика на Canvas для лучшей производительности при большом количестве данных.
+Optimized version of multi-line chart on Canvas for better performance with large amounts of data.
 
 ### 3. Bar Chart
 
-Столбчатый график с анимацией, отображающий временные ряды данных.
+Animated bar chart displaying time series data.
 
 ### 4. Pie Chart
 
-Круговая диаграмма с градиентами, подписями и легендой. Поддерживает дырку в центре (donut chart).
+Pie chart with gradients, labels, and legend. Supports center hole (donut chart).
 
 ### 5. Scatter Chart
 
-Точечный график для отображения корреляций между двумя переменными с поддержкой категорий.
+Scatter plot for displaying correlations between two variables with category support.
 
 ### 6. Gauge Chart
 
-Интерактивный датчик (gauge meter) с возможностью ввода значения.
+Interactive gauge meter with value input capability.
 
-## Структура проекта
+## Project Structure
 
 ```
 src/
 ├── components/
 │   └── basic/
-│       ├── charts/          # Базовые компоненты графиков
+│       ├── charts/          # Basic chart components
 │       │   ├── bar-chart/
 │       │   ├── pie-chart/
 │       │   ├── scatter-chart/
 │       │   ├── multi-line-chart/
 │       │   └── multi-line-chart-canvas/
-│       ├── chart-container/ # Контейнер для графиков
-│       └── typography/      # Типографика
+│       ├── chart-container/ # Chart container
+│       └── typography/      # Typography
 ├── charts/
-│   └── components/          # D3.js демо-компоненты с реал-тайм данными
+│   └── components/          # D3.js demo components with real-time data
 │       ├── bar-chart-d3/
 │       ├── pie-chart-d3/
 │       ├── scatter-chart-d3/
@@ -61,73 +61,73 @@ src/
 │       ├── multiline-chart-d3-canvas/
 │       └── gauge-chart-d3/
 ├── styles/
-│   └── design-system/       # Дизайн-система (токены, миксины, анимации)
-└── utils/                   # Утилиты
+│   └── design-system/       # Design system (tokens, mixins, animations)
+└── utils/                   # Utilities
 ```
 
-## Установка и запуск
+## Installation and Running
 
 ```bash
-# Установка зависимостей
+# Install dependencies
 npm install
 
-# Запуск dev-сервера
+# Run dev server
 npm run dev
 
-# Сборка для продакшена
+# Build for production
 npm run build
 
-# Превью продакшен сборки
+# Preview production build
 npm run preview
 
-# Линтинг
+# Linting
 npm run lint
 ```
 
-## Особенности
+## Features
 
-- ✅ **Реал-тайм обновления** - данные обновляются каждую секунду
-- ✅ **Оптимизация памяти** - автоматическое ограничение размера данных для предотвращения утечек памяти
-- ✅ **Visibility API** - пауза обновлений при скрытии вкладки браузера
-- ✅ **Анимации** - плавные переходы при обновлении данных
-- ✅ **Адаптивность** - поддержка различных размеров графиков
-- ✅ **Темы** - поддержка вариантов оформления (normal, accent)
-- ✅ **TypeScript** - полная типизация всех компонентов
-- ✅ **Модульная архитектура** - переиспользуемые компоненты и утилиты
+- ✅ **Real-time updates** - data updates every second
+- ✅ **Memory optimization** - automatic data size limiting to prevent memory leaks
+- ✅ **Visibility API** - pause updates when browser tab is hidden
+- ✅ **Animations** - smooth transitions when updating data
+- ✅ **Responsiveness** - support for various chart sizes
+- ✅ **Themes** - support for design variants (normal, accent)
+- ✅ **TypeScript** - full typing for all components
+- ✅ **Modular architecture** - reusable components and utilities
 
-## Компоненты
+## Components
 
-### Базовые графики
+### Basic Charts
 
-Все базовые компоненты графиков находятся в `src/components/basic/charts/`:
+All basic chart components are located in `src/components/basic/charts/`:
 
-- `BarChart` - столбчатый график
-- `PieChart` - круговая диаграмма
-- `ScatterChart` - точечный график
-- `MultiLineChart` - многострочный график (SVG)
-- `MultiLineChartCanvas` - многострочный график (Canvas)
-- `GaugeChart` - датчик
+- `BarChart` - bar chart
+- `PieChart` - pie chart
+- `ScatterChart` - scatter chart
+- `MultiLineChart` - multi-line chart (SVG)
+- `MultiLineChartCanvas` - multi-line chart (Canvas)
+- `GaugeChart` - gauge meter
 
-### D3.js демо-компоненты
+### D3.js Demo Components
 
-Демонстрационные компоненты с реал-тайм данными в `src/charts/components/`:
+Demo components with real-time data in `src/charts/components/`:
 
-- `BarChartD3` - столбчатый график с автообновлением
-- `PieChartD3` - круговая диаграмма
-- `ScatterChartD3` - точечный график
-- `MultiLineChartD3` - многострочный график (SVG)
-- `MultiLineChartD3Canvas` - многострочный график (Canvas)
-- `GaugeChartD3` - интерактивный датчик
+- `BarChartD3` - bar chart with auto-update
+- `PieChartD3` - pie chart
+- `ScatterChartD3` - scatter chart
+- `MultiLineChartD3` - multi-line chart (SVG)
+- `MultiLineChartD3Canvas` - multi-line chart (Canvas)
+- `GaugeChartD3` - interactive gauge meter
 
-## Дизайн-система
+## Design System
 
-Проект использует модульную SCSS архитектуру с дизайн-токенами:
+The project uses a modular SCSS architecture with design tokens:
 
-- Цветовые переменные
-- Типографика
-- Анимации
-- Миксины и функции
+- Color variables
+- Typography
+- Animations
+- Mixins and functions
 
-## Лицензия
+## License
 
-Приватный проект для изучения.
+Private project for learning purposes.

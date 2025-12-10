@@ -22,5 +22,5 @@ export default defineConfig({
       },
     },
   },
-  // base: '/folio/', // Uncomment if deploying to subdirectory
+  base: '/charts/',
 });

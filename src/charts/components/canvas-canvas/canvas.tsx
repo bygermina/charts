@@ -63,7 +63,7 @@ export default function RealTimeChart({ variant = 'normal' }: { variant?: ChartV
 
   return (
     <div className={styles.container}>
-      <TogglePanel buttonLabel="Статистика" position="top-right">
+      <TogglePanel buttonLabel="Statistics" position="top-right">
         <ChartStatistics
           dataRef={dataRef}
           timeWindowMs={TIME_WINDOW_MS}

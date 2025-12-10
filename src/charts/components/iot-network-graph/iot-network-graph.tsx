@@ -85,7 +85,7 @@ const NetworkGraphContent = ({
     const centerX = width / 2;
     const centerY = height / 2;
 
-    // Симуляция физики
+    // Physics simulation
     const simulation = d3
       .forceSimulation<Node>(nodes)
       .force(
@@ -99,7 +99,7 @@ const NetworkGraphContent = ({
       .force('center', d3.forceCenter(centerX, centerY))
       .force('collision', d3.forceCollide<Node>().radius(25));
 
-    // Создание линий
+    // Create links
     const link = g
       .append('g')
       .attr('class', 'links')
@@ -111,7 +111,7 @@ const NetworkGraphContent = ({
       .attr('stroke-width', 2)
       .attr('stroke-opacity', 0.4);
 
-    // Создание узлов
+    // Create nodes
     const node = g
       .append('g')
       .attr('class', 'nodes')
@@ -139,7 +139,7 @@ const NetworkGraphContent = ({
           }),
       );
 
-    // Круги для узлов
+    // Circles for nodes
     node
       .append('circle')
       .attr('r', (d) => {
@@ -171,7 +171,7 @@ const NetworkGraphContent = ({
         });
       });
 
-    // Текстовые метки
+    // Text labels
     node
       .append('text')
       .text((d) => d.label)
@@ -182,7 +182,7 @@ const NetworkGraphContent = ({
       .attr('pointer-events', 'none')
       .style('user-select', 'none');
 
-    // Обновление позиций при симуляции
+    // Update positions during simulation
     simulation.on('tick', () => {
       link
         .attr('x1', (d) => {
@@ -209,7 +209,7 @@ const NetworkGraphContent = ({
       node.attr('transform', (d) => `translate(${d.x ?? 0},${d.y ?? 0})`);
     });
 
-    // Установка начального масштаба
+    // Set initial scale
     const initialTransform = d3.zoomIdentity
       .translate(width / 2 - centerX, height / 2 - centerY)
       .scale(0.8);
