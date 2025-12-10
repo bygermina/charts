@@ -4,6 +4,7 @@ import * as d3 from 'd3';
 import { type BarDataPoint, type ChartVariant } from './types';
 import { useChartBase } from './use-chart-base';
 import { createGrid, createAxes, createChartGroups } from './chart-utils';
+import { createClipPaths } from './multi-line-chart/index';
 import {
   createScales,
   createGradient,
@@ -50,10 +51,17 @@ export const BarChart = ({
 
     const svg = d3.select(svgElement);
 
+    createClipPaths({
+      svg,
+      chartWidth,
+      chartHeight,
+      margin,
+    });
+
     const { mainGroup, axesGroup } = createChartGroups({
       svg,
       margin,
-      useClipPath: false,
+      useClipPath: true,
     });
 
     const { xScale, xAxisScale, yScale } = createScales({
