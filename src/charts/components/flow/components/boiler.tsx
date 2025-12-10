@@ -56,8 +56,16 @@ export const Boiler: React.FC<BoilerProps> = ({
   const drop2X = centerX;
   const drop3X = centerX + spacing;
 
+  const gradientId = `water-gradient-${x}-${y}`;
+
   return (
     <g>
+      <defs>
+        <linearGradient id={gradientId} x1="0%" y1="100%" x2="0%" y2="0%">
+          <stop offset="0%" stopColor="rgb(59, 130, 246)" stopOpacity="0.8" />
+          <stop offset="100%" stopColor="rgb(239, 68, 68)" stopOpacity="0.8" />
+        </linearGradient>
+      </defs>
       <rect
         x={x}
         y={y}
@@ -74,7 +82,7 @@ export const Boiler: React.FC<BoilerProps> = ({
         width={waterContainerWidth}
         height={waterContainerHeight}
         rx={12}
-        fill="rgba(59, 130, 246, 0.3)"
+        fill={`url(#${gradientId})`}
         stroke="rgba(6, 182, 212, 0.5)"
         strokeWidth={2}
       />
