@@ -33,8 +33,8 @@ export interface CreateScalesConfig {
 }
 
 export interface Scales {
-  xScale: d3.ScaleTime<number, number>;
-  xAxisScale: d3.ScaleTime<number, number>;
+  xScale: d3.ScaleLinear<number, number>;
+  xAxisScale: d3.ScaleLinear<number, number>;
   yScale: d3.ScaleLinear<number, number>;
 }
 
@@ -49,7 +49,7 @@ export interface CalculateGridLeftShiftConfig {
 }
 
 export interface CreateLineGeneratorConfig {
-  xScale: d3.ScaleTime<number, number>;
+  xScale: d3.ScaleLinear<number, number>;
   yScale: d3.ScaleLinear<number, number>;
 }
 
@@ -62,7 +62,7 @@ export interface UpdateLinePathConfig {
 
 export interface CalculateAnimationSpeedConfig {
   data: Array<{ time: number }>;
-  xScale: d3.ScaleTime<number, number>;
+  xScale: d3.ScaleLinear<number, number>;
   customSpeed?: number;
   fallbackSpeed: number;
 }
@@ -91,7 +91,7 @@ export interface UpdateDotsConfig {
   lineGroup: d3.Selection<SVGGElement, unknown, null, undefined>;
   lineIndex: number;
   data: DataPoint[];
-  xScale: d3.ScaleTime<number, number>;
+  xScale: d3.ScaleLinear<number, number>;
   yScale: d3.ScaleLinear<number, number>;
 }
 
@@ -127,7 +127,7 @@ export interface ManageLegendConfig {
 
 export interface ManageGridConfig {
   mainGroup: d3.Selection<SVGGElement, unknown, null, undefined>;
-  xScale: d3.ScaleTime<number, number>;
+  xScale: d3.ScaleLinear<number, number>;
   yScale: d3.ScaleLinear<number, number>;
   chartWidth: number;
   chartHeight: number;

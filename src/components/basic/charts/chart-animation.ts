@@ -38,7 +38,7 @@ export const calculateShiftAnimation = ({
 
 export interface CalculateSpeedConfig {
   data: Array<{ time: number }>;
-  xScale: d3.ScaleTime<number, number>;
+  xScale: d3.ScaleLinear<number, number> | d3.ScaleTime<number, number>;
   customSpeed?: number;
   fallbackSpeed?: number;
 }

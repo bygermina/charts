@@ -17,8 +17,7 @@ export const useCanvasRenderLoop = ({
   render,
   dependencies = [],
 }: UseCanvasRenderLoopConfig): void => {
-  const renderFrameIdRef = useRef<number | null>(null);
-  const isMountedRef = useRef(true);
+  const frameIdRef = useRef<number | null>(null);
   const renderRef = useRef(render);
 
   useEffect(() => {
@@ -26,54 +25,47 @@ export const useCanvasRenderLoop = ({
   }, [render]);
 
   useEffect(() => {
-    isMountedRef.current = true;
-
-    const shouldContinue = () => isMountedRef.current && !document.hidden;
+    let isRunning = true;
 
     const renderLoop = () => {
-      renderFrameIdRef.current = null;
-
-      if (!shouldContinue()) return;
+      frameIdRef.current = null;
+      if (!isRunning || document.hidden) return;
 
       const canvas = canvasRef.current;
       if (!canvas) {
-        renderFrameIdRef.current = requestAnimationFrame(renderLoop);
+        frameIdRef.current = requestAnimationFrame(renderLoop);
         return;
       }
 
-      const setupResult = setupCanvas(canvas, width, height);
-      if (!setupResult) {
-        renderFrameIdRef.current = requestAnimationFrame(renderLoop);
+      const ctx = setupCanvas(canvas, width, height);
+      if (!ctx) {
+        frameIdRef.current = requestAnimationFrame(renderLoop);
         return;
       }
 
-      renderRef.current(setupResult.ctx, canvas);
-
-      renderFrameIdRef.current = requestAnimationFrame(renderLoop);
+      renderRef.current(ctx, canvas);
+      frameIdRef.current = requestAnimationFrame(renderLoop);
     };
 
     const handleVisibilityChange = () => {
       if (document.hidden) {
-        if (renderFrameIdRef.current !== null) {
-          cancelAnimationFrame(renderFrameIdRef.current);
-          renderFrameIdRef.current = null;
+        if (frameIdRef.current !== null) {
+          cancelAnimationFrame(frameIdRef.current);
+          frameIdRef.current = null;
         }
-      } else if (isMountedRef.current && renderFrameIdRef.current === null) {
-        renderFrameIdRef.current = requestAnimationFrame(renderLoop);
+      } else if (isRunning && frameIdRef.current === null) {
+        frameIdRef.current = requestAnimationFrame(renderLoop);
       }
     };
 
     document.addEventListener('visibilitychange', handleVisibilityChange);
-
-    if (!document.hidden) {
-      renderFrameIdRef.current = requestAnimationFrame(renderLoop);
-    }
+    frameIdRef.current = requestAnimationFrame(renderLoop);
 
     return () => {
-      isMountedRef.current = false;
-      if (renderFrameIdRef.current !== null) {
-        cancelAnimationFrame(renderFrameIdRef.current);
-        renderFrameIdRef.current = null;
+      isRunning = false;
+      if (frameIdRef.current !== null) {
+        cancelAnimationFrame(frameIdRef.current);
+        frameIdRef.current = null;
       }
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };

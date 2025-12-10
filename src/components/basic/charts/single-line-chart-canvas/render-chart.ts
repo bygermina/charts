@@ -1,11 +1,9 @@
 import { type RealTimeSingleLineDataRef } from '../real-time-single-line-chart-canvas';
 import { createScalesForAxes, updateScalesForAxes, type Scales } from '../multi-line-chart/index';
-import { drawAxes } from '../utils/canvas-helpers';
 
 interface RenderSingleLineChartConfig {
   ctx: CanvasRenderingContext2D;
   dataRef: React.RefObject<RealTimeSingleLineDataRef>;
-  resolvedColors: Record<string, string>;
   resolvedStrokeColor: string;
   resolvedHighlightStrokeColor?: string;
   highlightThreshold?: number;
@@ -15,15 +13,12 @@ interface RenderSingleLineChartConfig {
   yDomain: [number, number];
   timeWindowMs: number;
   strokeWidth: number;
-  xTicks: number;
-  yTicks: number;
   cachedScales?: Scales | null;
 }
 
 export const renderSingleLineChart = ({
   ctx,
   dataRef,
-  resolvedColors,
   resolvedStrokeColor,
   resolvedHighlightStrokeColor,
   highlightThreshold,
@@ -33,8 +28,6 @@ export const renderSingleLineChart = ({
   yDomain,
   timeWindowMs,
   strokeWidth,
-  xTicks,
-  yTicks,
   cachedScales,
 }: RenderSingleLineChartConfig): {
   scales: Scales;
@@ -75,71 +68,65 @@ export const renderSingleLineChart = ({
 
   ctx.save();
   ctx.translate(margin.left, margin.top);
-
   ctx.lineWidth = strokeWidth;
   ctx.lineCap = 'round';
   ctx.lineJoin = 'round';
 
-  let isFirstPoint = true;
-  let isHighlight = false;
+  const hasHighlight =
+    highlightThreshold !== undefined && resolvedHighlightStrokeColor !== undefined;
+
+  const highlightThresholdValue = highlightThreshold ?? 0;
+
+  const getColor = (isHighlight: boolean) =>
+    isHighlight && hasHighlight ? resolvedHighlightStrokeColor! : resolvedStrokeColor;
+
+  const maxPointsToDraw = Math.max(1, Math.floor(chartWidth * 2)); // до ~2 точек на пиксель
+  const step = size > maxPointsToDraw ? Math.floor(size / maxPointsToDraw) : 1;
+
+  let firstPoint = true;
+  let currentIsHighlight = false;
   let prevX = 0;
   let prevY = 0;
 
-  // Start new path
-  ctx.beginPath();
-
-  for (let i = 0; i < size; i++) {
+  for (let i = 0; i < size; i += step) {
     const idx = (head - size + i + maxPoints) % maxPoints;
     const pointTime = times[idx];
 
     if (pointTime < t0 || pointTime > t1) continue;
 
     const value = values[idx];
-    const x = scales.xAxisScale(new Date(pointTime));
+    // xAxisScale теперь линейный по числам → без new Date
+    const x = scales.xAxisScale(pointTime);
     const y = scales.yScale(value);
-    const nextHighlight = highlightThreshold !== undefined && value > highlightThreshold;
+    const isHighlight = hasHighlight && value > highlightThresholdValue;
 
-    if (isFirstPoint) {
-      ctx.strokeStyle = nextHighlight && resolvedHighlightStrokeColor ? resolvedHighlightStrokeColor : resolvedStrokeColor;
+    if (firstPoint) {
+      ctx.strokeStyle = getColor(isHighlight);
+      ctx.beginPath();
       ctx.moveTo(x, y);
+      currentIsHighlight = isHighlight;
+      firstPoint = false;
       prevX = x;
       prevY = y;
-      isFirstPoint = false;
-      isHighlight = nextHighlight;
       continue;
     }
 
-    if (nextHighlight !== isHighlight) {
+    if (isHighlight !== currentIsHighlight) {
       ctx.stroke();
       ctx.beginPath();
-      ctx.strokeStyle = nextHighlight && resolvedHighlightStrokeColor ? resolvedHighlightStrokeColor : resolvedStrokeColor;
+      ctx.strokeStyle = getColor(isHighlight);
       ctx.moveTo(prevX, prevY);
-      ctx.lineTo(x, y);
-      isHighlight = nextHighlight;
-    } else {
-      ctx.lineTo(x, y);
+      currentIsHighlight = isHighlight;
     }
 
+    ctx.lineTo(x, y);
     prevX = x;
     prevY = y;
   }
 
-  ctx.stroke();
-  
-  // Clear the current path to free memory
-  ctx.beginPath();
-
-  drawAxes({
-    ctx,
-    xAxisScale: scales.xAxisScale,
-    yScale: scales.yScale,
-    chartWidth,
-    chartHeight,
-    margin,
-    resolvedColors,
-    xTicks,
-    yTicks,
-  });
+  if (!firstPoint) {
+    ctx.stroke();
+  }
 
   ctx.restore();
 

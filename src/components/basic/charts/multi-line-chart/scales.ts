@@ -12,37 +12,37 @@ export const createScalesForAxes = ({
   margin,
   yDomain,
 }: CreateScalesConfig): Scales => {
-  const xScale = d3.scaleTime().domain(timeExtent).range([0, chartWidth]);
+  const [t0, t1] = timeExtent; // числа: [timestamp0, timestamp1]
+
+  const xScale = d3.scaleLinear<number, number>().domain([t0, t1]).range([0, chartWidth]);
 
   const xAxisScale = d3
-    .scaleTime()
-    .domain(timeExtent)
+    .scaleLinear<number, number>()
+    .domain([t0, t1])
     .range([0, chartWidth - margin.right]);
 
-  const yScale = d3
-    .scaleLinear()
-    .domain(yDomain ?? [0, maxValue * Y_SCALE_PADDING_MULTIPLIER])
-    .nice()
-    .range([chartHeight, 0]);
+  const yDomainBase = yDomain ?? [0, maxValue * Y_SCALE_PADDING_MULTIPLIER];
+
+  const yScale = d3.scaleLinear().domain(yDomainBase).nice().range([chartHeight, 0]);
 
   return { xScale, xAxisScale, yScale };
 };
 
 export const updateScalesForAxes = (
   scales: Scales,
-  {
-    timeExtent,
-    maxValue,
-    chartWidth,
-    chartHeight,
-    margin,
-    yDomain,
-  }: CreateScalesConfig,
+  { timeExtent, maxValue, chartWidth, chartHeight, margin, yDomain }: CreateScalesConfig,
 ): void => {
-  scales.xScale.domain(timeExtent).range([0, chartWidth]);
-  scales.xAxisScale.domain(timeExtent).range([0, chartWidth - margin.right]);
-  scales.yScale
-    .domain(yDomain ?? [0, maxValue * Y_SCALE_PADDING_MULTIPLIER])
-    .nice()
-    .range([chartHeight, 0]);
+  const [t0, t1] = timeExtent;
+
+  scales.xScale.domain([t0, t1]).range([0, chartWidth]);
+  scales.xAxisScale.domain([t0, t1]).range([0, chartWidth - margin.right]);
+
+  if (yDomain) {
+    scales.yScale.domain(yDomain).range([chartHeight, 0]);
+  } else {
+    scales.yScale
+      .domain([0, maxValue * Y_SCALE_PADDING_MULTIPLIER])
+      .nice()
+      .range([chartHeight, 0]);
+  }
 };

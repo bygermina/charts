@@ -1,13 +1,9 @@
-import { useRef, useCallback, useEffect } from 'react';
+import { useRef, useCallback } from 'react';
 
 import { type ChartVariant } from './types';
 import { useChartBase } from './use-chart-base';
 import { useCanvasRenderLoop } from './use-canvas-render-loop';
-import {
-  createCSSVariableCache,
-  resolveChartColors,
-  resolveCSSVariable,
-} from './utils/canvas-helpers';
+import { resolveChartColors, resolveCSSVariable } from './utils/canvas-helpers';
 import { renderSingleLineChart } from './single-line-chart-canvas/render-chart';
 import { type Scales } from './multi-line-chart/index';
 
@@ -15,25 +11,23 @@ import styles from './multi-line-chart-canvas.module.scss';
 
 export interface RealTimeSingleLineDataRef {
   values: Float32Array;
-  times: Float64Array; // Array of timestamps for each point
-  head: number; // Index of current position in circular buffer
-  size: number; // Current size of filled part of buffer
-  maxPoints: number; // Maximum number of points in buffer
+  times: Float64Array;
+  head: number;
+  size: number;
+  maxPoints: number;
 }
 
 interface RealTimeSingleLineChartCanvasProps {
-  dataRef: React.RefObject<RealTimeSingleLineDataRef>; // Reference to chart data
-  width?: number; // Canvas width
-  height?: number; // Canvas height
-  variant?: ChartVariant; // Color scheme variant
-  yDomain: [number, number]; // Y-axis value range [min, max]
-  timeWindowMs: number; // Time window for displaying data in milliseconds
-  strokeColor?: string; // Chart line color
-  highlightStrokeColor?: string; // Color of line part above threshold
-  highlightThreshold?: number; // Threshold above which highlightStrokeColor is applied
-  strokeWidth?: number; // Line width
-  xTicks?: number; // Number of divisions on X-axis
-  yTicks?: number; // Number of divisions on Y-axis
+  dataRef: React.RefObject<RealTimeSingleLineDataRef>;
+  width?: number;
+  height?: number;
+  variant?: ChartVariant;
+  yDomain: [number, number];
+  timeWindowMs: number;
+  strokeColor?: string;
+  highlightStrokeColor?: string;
+  highlightThreshold?: number;
+  strokeWidth?: number;
 }
 
 export const RealTimeSingleLineChartCanvas = ({
@@ -47,8 +41,6 @@ export const RealTimeSingleLineChartCanvas = ({
   highlightStrokeColor,
   highlightThreshold,
   strokeWidth = 1,
-  xTicks = 3,
-  yTicks = 5,
 }: RealTimeSingleLineChartCanvasProps) => {
   const { chartColors, margin, chartWidth, chartHeight } = useChartBase({
     width,
@@ -57,49 +49,19 @@ export const RealTimeSingleLineChartCanvas = ({
   });
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const cssVariableCacheRef = useRef(createCSSVariableCache());
-  const cachedScalesRef = useRef<Scales | null>(null);
-  const cachedResolvedColorsRef = useRef<Record<string, string>>({});
-
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      // Clear CSS cache to prevent memory leaks
-      if (cssVariableCacheRef.current) {
-        cssVariableCacheRef.current.cache.clear();
-        cssVariableCacheRef.current.computedStyle = null;
-        cssVariableCacheRef.current.element = null;
-      }
-      // Clear cached scales
-      cachedScalesRef.current = null;
-      // Clear resolved colors
-      cachedResolvedColorsRef.current = {};
-    };
-  }, []);
+  const scalesRef = useRef<Scales | null>(null);
 
   const renderChart = useCallback(
     (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {
-      const resolvedColors = resolveChartColors(
-        chartColors,
-        canvas,
-        cssVariableCacheRef.current,
-        cachedResolvedColorsRef.current,
-      );
-
-      const resolvedStrokeColor = resolveCSSVariable(
-        strokeColor || resolvedColors.primary,
-        canvas,
-        cssVariableCacheRef.current,
-      );
-
+      const resolvedColors = resolveChartColors(chartColors, canvas);
+      const resolvedStrokeColor = resolveCSSVariable(strokeColor || resolvedColors.primary, canvas);
       const resolvedHighlightStrokeColor = highlightStrokeColor
-        ? resolveCSSVariable(highlightStrokeColor, canvas, cssVariableCacheRef.current)
+        ? resolveCSSVariable(highlightStrokeColor, canvas)
         : undefined;
 
       const result = renderSingleLineChart({
         ctx,
         dataRef,
-        resolvedColors,
         resolvedStrokeColor,
         resolvedHighlightStrokeColor,
         highlightThreshold,
@@ -109,12 +71,10 @@ export const RealTimeSingleLineChartCanvas = ({
         yDomain,
         timeWindowMs,
         strokeWidth,
-        xTicks,
-        yTicks,
-        cachedScales: cachedScalesRef.current,
+        cachedScales: scalesRef.current,
       });
 
-      cachedScalesRef.current = result.scales;
+      scalesRef.current = result.scales;
     },
     [
       dataRef,
@@ -128,8 +88,6 @@ export const RealTimeSingleLineChartCanvas = ({
       yDomain,
       timeWindowMs,
       strokeWidth,
-      xTicks,
-      yTicks,
     ],
   );
 

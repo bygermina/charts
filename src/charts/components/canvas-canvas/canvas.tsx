@@ -20,10 +20,6 @@ const HIGHLIGHT_THRESHOLD = 130;
 
 export default function RealTimeChart({ variant = 'normal' }: { variant?: ChartVariant }) {
   const chartColors = getChartColors(variant);
-
-  const headRef = useRef(0);
-  const sizeRef = useRef(0);
-
   const valueGeneratorRef = useRef(createTrendGenerator(75, [30, 170]));
 
   const dataRef = useRef<RealTimeSingleLineDataRef>({
@@ -40,18 +36,13 @@ export default function RealTimeChart({ variant = 'normal' }: { variant?: ChartV
     const updateData = () => {
       const t = Date.now();
       const v = valueGeneratorRef.current();
+      const data = dataRef.current;
 
-      const head = headRef.current;
-      const size = sizeRef.current;
+      data.values[data.head] = v;
+      data.times[data.head] = t;
 
-      dataRef.current.values[head] = v;
-      dataRef.current.times[head] = t;
-
-      headRef.current = (head + 1) % MAX_POINTS;
-      sizeRef.current = Math.min(size + 1, MAX_POINTS);
-
-      dataRef.current.head = headRef.current;
-      dataRef.current.size = sizeRef.current;
+      data.head = (data.head + 1) % MAX_POINTS;
+      data.size = Math.min(data.size + 1, MAX_POINTS);
 
       timeoutId = setTimeout(updateData, DATA_UPDATE_INTERVAL_MS);
     };
@@ -79,8 +70,6 @@ export default function RealTimeChart({ variant = 'normal' }: { variant?: ChartV
         highlightStrokeColor="#ff4d4f"
         highlightThreshold={HIGHLIGHT_THRESHOLD}
         strokeWidth={1}
-        xTicks={3}
-        yTicks={5}
       />
     </div>
   );

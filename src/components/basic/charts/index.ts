@@ -6,11 +6,7 @@ export { GaugeChart } from './gauge-chart/gauge-chart';
 export { IoTSensor } from './iot-sensor/iot-sensor';
 export { ChartContainer } from './utils/chart-container';
 export { ResponsiveChartWrapper } from './utils/responsive-chart-wrapper';
-export type {
-  DataPoint,
-  BarDataPoint,
-  ChartVariant,
-} from './types';
+export type { DataPoint, BarDataPoint, ChartVariant } from './types';
 export { getChartColors } from './types';
 export { useChartBase } from './use-chart-base';
 export { useCanvasRenderLoop } from './use-canvas-render-loop';
