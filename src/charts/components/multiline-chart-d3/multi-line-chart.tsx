@@ -26,6 +26,7 @@ const generateLineData = (count: number, startTime?: number, endTime?: number): 
 };
 
 const chartVariant = 'normal';
+const DEFAULT_CHART_HEIGHT = 300;
 
 interface LineConfig {
   color?: string;
@@ -65,7 +66,7 @@ export const MultiLineChartD3 = ({
   variant = chartVariant,
   showLegend = true,
   width,
-  height,
+  height = DEFAULT_CHART_HEIGHT,
   linesConfig = DEFAULT_LINES_CONFIG,
 }: MultiLineChartD3Props) => {
   const chartColors = getChartColors(chartVariant);

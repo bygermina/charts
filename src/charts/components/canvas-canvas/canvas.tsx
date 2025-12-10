@@ -14,9 +14,10 @@ import styles from './canvas.module.scss';
 
 const MAX_POINTS = 2000;
 const TIME_WINDOW_MS = 8000;
-const DATA_UPDATE_INTERVAL_MS = 16; // ~60 FPS instead of 1000 FPS
+const DATA_UPDATE_INTERVAL_MS = 16;
 const Y_DOMAIN: [number, number] = [0, 200];
 const HIGHLIGHT_THRESHOLD = 130;
+const DEFAULT_CHART_HEIGHT = 300;
 
 export default function RealTimeChart({ variant = 'normal' }: { variant?: ChartVariant }) {
   const chartColors = getChartColors(variant);
@@ -70,6 +71,7 @@ export default function RealTimeChart({ variant = 'normal' }: { variant?: ChartV
         highlightStrokeColor="#ff4d4f"
         highlightThreshold={HIGHLIGHT_THRESHOLD}
         strokeWidth={1}
+        height={DEFAULT_CHART_HEIGHT}
       />
     </div>
   );
