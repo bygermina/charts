@@ -193,6 +193,7 @@ const createXAxis = (
   chartHeight: number,
   chartWidth: number,
   chartColors: ChartColors,
+  margin: { right: number },
   ticks?: number,
 ) => {
   g.attr('transform', `translate(0,${chartHeight})`);
@@ -221,7 +222,10 @@ const createXAxis = (
         timeFormat = d3.timeFormat('%H:%M:%S');
       }
 
-      axis.tickFormat(timeFormat);
+      axis.tickFormat((d) => {
+        const date = d instanceof Date ? d : new Date(d as number);
+        return timeFormat(date);
+      });
 
       if (ticks !== undefined) {
         axis.ticks(ticks);
@@ -229,36 +233,36 @@ const createXAxis = (
       axis.tickSizeOuter(0);
       g.call(axis);
     } else {
-    const linearScale = xScale as d3.ScaleLinear<number, number>;
-    const domain = linearScale.domain();
-    const [min, max] = domain;
+      const linearScale = xScale as d3.ScaleLinear<number, number>;
+      const domain = linearScale.domain();
+      const [min, max] = domain;
 
-    const isTimestamp = typeof min === 'number' && typeof max === 'number' && min > 1000000000;
+      const isTimestamp = typeof min === 'number' && typeof max === 'number' && min > 1000000000;
 
-    const axis = d3.axisBottom(linearScale);
+      const axis = d3.axisBottom(linearScale);
 
-    if (isTimestamp) {
-      const timeRange = max - min;
-      const oneDay = 24 * 60 * 60 * 1000;
+      if (isTimestamp) {
+        const timeRange = max - min;
+        const oneDay = 24 * 60 * 60 * 1000;
 
-      let timeFormat: (date: Date) => string;
-      if (timeRange > oneDay) {
-        timeFormat = d3.timeFormat('%d.%m %H:%M');
-      } else {
-        timeFormat = d3.timeFormat('%H:%M:%S');
+        let timeFormat: (date: Date) => string;
+        if (timeRange > oneDay) {
+          timeFormat = d3.timeFormat('%d.%m %H:%M');
+        } else {
+          timeFormat = d3.timeFormat('%H:%M:%S');
+        }
+
+        axis.tickFormat((d) => {
+          const value = typeof d === 'number' ? d : Number(d);
+          return timeFormat(new Date(value));
+        });
       }
 
-      axis.tickFormat((d) => {
-        const value = typeof d === 'number' ? d : Number(d);
-        return timeFormat(new Date(value));
-      });
-    }
-
-    if (ticks !== undefined) {
-      axis.ticks(ticks);
-    }
-    axis.tickSizeOuter(0);
-    g.call(axis);
+      if (ticks !== undefined) {
+        axis.ticks(ticks);
+      }
+      axis.tickSizeOuter(0);
+      g.call(axis);
     }
   }
 
@@ -267,20 +271,39 @@ const createXAxis = (
     .attr('font-family', CHART_FONT_FAMILY);
 
   const axisColor = chartColors.grid;
+  const clippedWidth = chartWidth - margin.right;
   g.selectAll('path')
     .attr('stroke', axisColor)
     .attr('stroke-width', 1)
     .attr('stroke-opacity', 1)
-    .attr('d', `M0,0H${chartWidth}`);
+    .attr('d', `M0,0H${clippedWidth}`);
 
-  g.selectAll('line').attr('stroke', axisColor).attr('stroke-width', 1).attr('stroke-opacity', 1);
+  g.selectAll('line')
+    .attr('stroke', axisColor)
+    .attr('stroke-width', 1)
+    .attr('stroke-opacity', 1)
+    .each(function () {
+      const line = this as SVGLineElement;
+      const x1 = parseFloat(line.getAttribute('x1') || '0');
+      if (x1 > clippedWidth) {
+        line.setAttribute('stroke-opacity', '0');
+      }
+    });
 
   g.selectAll('text')
     .attr('fill', chartColors.textSecondary)
     .attr('font-size', CHART_FONT_SIZE)
     .attr('font-family', CHART_FONT_FAMILY)
     .attr('opacity', 1)
-    .style('pointer-events', 'none');
+    .style('pointer-events', 'none')
+    .each(function () {
+      const text = this as SVGTextElement;
+      const x = parseFloat(text.getAttribute('x') || '0');
+      const textWidth = text.getBBox().width;
+      if (x + textWidth / 2 > clippedWidth) {
+        text.setAttribute('opacity', '0');
+      }
+    });
 };
 
 const createYAxis = (
@@ -334,6 +357,7 @@ export const createAxes = (
   chartHeight: number,
   chartWidth: number,
   chartColors: ChartColors,
+  margin: { right: number },
   xTicks?: number,
   yTicks?: number,
 ): {
@@ -359,7 +383,7 @@ export const createAxes = (
     }
   }
 
-  createXAxis(xAxisGroup, xScale, chartHeight, chartWidth, chartColors, xTicks);
+  createXAxis(xAxisGroup, xScale, chartHeight, chartWidth, chartColors, margin, xTicks);
   createYAxis(yAxisGroup, yScale, chartHeight, chartColors, yTicks);
 
   return { xAxisGroup, yAxisGroup };

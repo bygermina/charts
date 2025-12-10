@@ -28,7 +28,7 @@ export const Charts = () => {
           >
             <RealTimeChart />
           </ChartContainer>
-          <ChartContainer header="Bar Chart" subtitle="Daily breakdown">
+          <ChartContainer header="Bar Chart" subtitle="Hover to see the value">
             <BarChartD3 />
           </ChartContainer>
           <ChartContainer

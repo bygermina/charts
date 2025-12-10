@@ -82,6 +82,7 @@ export const BarChart = ({
       chartHeight,
       chartWidth,
       chartColors,
+      margin,
       DEFAULT_X_AXIS_TICKS,
       DEFAULT_Y_AXIS_TICKS,
     );
