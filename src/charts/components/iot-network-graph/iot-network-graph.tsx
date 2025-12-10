@@ -153,8 +153,6 @@ const NetworkGraphContent = ({
         if (d.type === 'sensor') return chartColors.tertiary;
         return chartColors.quaternary;
       })
-      .attr('stroke', '#fff')
-      .attr('stroke-width', 2)
       .style('cursor', 'grab')
       .on('mouseenter', function (_event, d) {
         d3.select(this).attr('r', () => {
