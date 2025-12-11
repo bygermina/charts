@@ -13,6 +13,8 @@ export const updateDotsCoordinates = ({
 }: UpdateDotsConfig): void => {
   const dots = lineGroup.selectAll<SVGCircleElement, DataPoint>(`.dot-${lineIndex}`).data(data);
 
+  dots.exit().remove();
+
   dots.attr('cx', (d) => xScale(d.time)).attr('cy', (d) => yScale(d.value));
 };
 
@@ -23,7 +25,7 @@ export const createAndAnimateDots = ({
   color,
   isInitialRender,
 }: CreateDotsConfig): void => {
-  lineGroup.selectAll<SVGCircleElement, DataPoint>(`.dot-${lineIndex}`).interrupt();
+  lineGroup.selectAll('*').interrupt();
 
   const dots = lineGroup.selectAll<SVGCircleElement, DataPoint>(`.dot-${lineIndex}`).data(data);
 
@@ -45,10 +47,6 @@ export const createAndAnimateDots = ({
     dotsUpdate
       .attr('r', 0)
       .attr('opacity', 0)
-      .transition()
-      .duration(1000)
-      .ease(d3.easeCubicOut)
-      .delay((_, i) => (i / data.length) * 1000)
       .attr('r', 2.5)
       .attr('opacity', 0.9)
       .on('end', function () {

@@ -78,13 +78,12 @@ export const MultiLineChart = ({
       setIsInitialRender,
     });
 
-    // return () => {
-    //   //?
-    //   if (svgElement) {
-    //     const svg = d3.select(svgElement);
-    //     svg.selectAll('*').interrupt();
-    //   }
-    // };
+    return () => {
+      if (svgElement) {
+        const svg = d3.select(svgElement);
+        svg.selectAll('*').interrupt();
+      }
+    };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [

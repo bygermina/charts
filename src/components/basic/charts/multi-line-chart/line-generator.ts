@@ -43,14 +43,7 @@ export const updateLinePath = ({
 
       const node = path.node();
       if (node && node.ownerDocument) {
-        path
-          .transition()
-          .duration(1000)
-          .ease(d3.easeCubicOut)
-          .attr('opacity', 1)
-          .attrTween('d', function () {
-            return d3.interpolateString(emptyPathD, finalPathD);
-          });
+        path.attr('opacity', 1);
       }
     });
   } else {

@@ -1,4 +1,4 @@
-import { useState, useMemo, memo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 
 import {
   MultiLineChart,
@@ -79,35 +79,45 @@ export const MultiLineChartD3 = ({
     linesConfig.map(() => generateLineData(count)),
   );
 
+  const onTick = useCallback(() => {
+    const now = Date.now();
+    setLinesData((prev) =>
+      updateLinesData({
+        prevLinesData: prev,
+        linesWithColors,
+        count,
+        now,
+      }),
+    );
+  }, [linesWithColors, count]);
+
+  const onVisible = useCallback(() => {
+    const now = Date.now();
+    setLinesData(linesWithColors.map(() => generateLineData(count, undefined, now)));
+  }, [linesWithColors, count]);
+
   useVisibilityAwareTimer({
     delay,
-    onTick: () => {
-      const now = Date.now();
-      setLinesData((prev) =>
-        updateLinesData({
-          prevLinesData: prev,
-          linesWithColors,
-          count,
-          now,
-        }),
-      );
-    },
-    onVisible: () => {
-      const now = Date.now();
-      setLinesData(linesWithColors.map(() => generateLineData(count, undefined, now)));
-    },
+    onTick,
+    onVisible,
   });
+
+  const mappedLines = useMemo(
+    () =>
+      linesData.map((data, index) => ({
+        data,
+        color: linesWithColors[index].color,
+        label: linesWithColors[index].label,
+        showDots: linesWithColors[index].showDots,
+      })),
+    [linesData, linesWithColors],
+  );
 
   return (
     <ResponsiveChartWrapper width={width} height={height}>
       {({ width: chartWidth, height: chartHeight }) => (
         <MultiLineChart
-          lines={linesData.map((data, index) => ({
-            data,
-            color: linesWithColors[index].color,
-            label: linesWithColors[index].label,
-            showDots: linesWithColors[index].showDots,
-          }))}
+          lines={mappedLines}
           width={chartWidth}
           height={chartHeight}
           variant={variant}
