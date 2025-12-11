@@ -54,7 +54,10 @@ export const setupCanvas = (
 
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.scale(dpr, dpr);
+
   ctx.clearRect(0, 0, width, height);
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
 
   return ctx;
 };
@@ -205,7 +208,8 @@ export const drawGrid = ({
     ctx.beginPath();
     for (let i = 0; i < yTickValues.length; i++) {
       const tickValue = yTickValues[i];
-      const y = yScale(tickValue);
+      const rawY = yScale(tickValue);
+      const y = Math.floor(rawY) + 0.5;
 
       if (y >= 0 && y <= chartHeight) {
         ctx.moveTo(0, y);
@@ -230,7 +234,8 @@ export const drawGrid = ({
     ctx.beginPath();
     for (let i = 0; i < xTickValues.length; i++) {
       const tickValue = xTickValues[i];
-      const x = xAxisScale(tickValue);
+      const rawX = xAxisScale(tickValue);
+      const x = Math.floor(rawX) + 0.5;
 
       if (x >= 0 && x <= chartWidth - margin.right) {
         ctx.moveTo(x, 0);

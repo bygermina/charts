@@ -50,7 +50,12 @@ export const createAndAnimateDots = ({
       .ease(d3.easeCubicOut)
       .delay((_, i) => (i / data.length) * 1000)
       .attr('r', 2.5)
-      .attr('opacity', 0.9);
+      .attr('opacity', 0.9)
+      .on('end', function () {
+        if (document.hidden) {
+          d3.select(this).interrupt();
+        }
+      });
   } else {
     dotsUpdate.attr('r', 2.5).attr('opacity', 0.9);
   }

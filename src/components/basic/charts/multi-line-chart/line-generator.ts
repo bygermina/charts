@@ -36,6 +36,11 @@ export const updateLinePath = ({
     path.attr('d', emptyPathD).attr('opacity', 0);
 
     requestAnimationFrame(() => {
+      if (document.hidden) {
+        path.attr('opacity', 1).attr('d', finalPathD);
+        return;
+      }
+
       const node = path.node();
       if (node && node.ownerDocument) {
         path

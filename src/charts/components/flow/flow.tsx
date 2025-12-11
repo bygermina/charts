@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { Pipe } from './components/pipe';
 import { Boiler } from './components/boiler';
@@ -36,12 +36,17 @@ const BoilerDiagram: React.FC<BoilerDiagramProps> = ({ width = 900, height = 500
   const segments = createFlowSegments(boiler, waterContainer);
 
   const [particles, setParticles] = useState<Particle[]>(() => getInitialParticles(segments));
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     let lastTime = performance.now();
-    let animationId: number;
+    let animationId: number | null = null;
+    let isVisible = true;
 
     const loop = (now: number) => {
+      animationId = null;
+      if (document.hidden || !isVisible) return;
+
       const dt = now - lastTime;
       lastTime = now;
 
@@ -50,17 +55,49 @@ const BoilerDiagram: React.FC<BoilerDiagramProps> = ({ width = 900, height = 500
       animationId = requestAnimationFrame(loop);
     };
 
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        if (animationId !== null) {
+          cancelAnimationFrame(animationId);
+          animationId = null;
+        }
+      } else if (isVisible && animationId === null) {
+        animationId = requestAnimationFrame(loop);
+      }
+    };
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        isVisible = entries[0]?.isIntersecting ?? true;
+        if (!isVisible && animationId !== null) {
+          cancelAnimationFrame(animationId);
+          animationId = null;
+        } else if (isVisible && animationId === null && !document.hidden) {
+          animationId = requestAnimationFrame(loop);
+        }
+      },
+      { threshold: 0 },
+    );
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
     animationId = requestAnimationFrame(loop);
 
     return () => {
-      cancelAnimationFrame(animationId);
+      observer.disconnect();
+      if (animationId !== null) {
+        cancelAnimationFrame(animationId);
+      }
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, []);
 
   const legendEntries = getLegendEntries();
 
   return (
-    <div className={styles.container}>
+    <div ref={containerRef} className={styles.container}>
       <svg
         viewBox={`0 0 ${width} ${height}`}
         preserveAspectRatio="xMidYMid meet"
