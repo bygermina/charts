@@ -1,8 +1,8 @@
-import { type DataPoint } from '../types';
 import { type LineSeries } from './types';
 import { calculateTimeExtent } from './time-extent';
 import { calculateMaxValue } from './values';
-import { calculateShiftAnimation } from '../chart-animation';
+import type { DataPoint } from '../shared/types';
+import { calculateShiftAnimation } from '../shared/chart-animation';
 
 const calculateTimeStep = (data: DataPoint[]): number => {
   if (data.length < 2) return 0;

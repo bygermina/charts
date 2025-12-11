@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { type ChartVariant, getChartColors } from '../types';
+import { type ChartVariant, getChartColors } from '../shared/types';
 import {
   GAUGE_RADIUS,
   GAUGE_START_ANGLE,
@@ -12,7 +12,7 @@ import {
   GAUGE_VIEWBOX_WIDTH,
   GAUGE_VIEWBOX_HEIGHT,
   GAUGE_CENTER,
-} from '../constants';
+} from '../shared/constants';
 
 import styles from './gauge-chart.module.scss';
 

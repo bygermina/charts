@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
 
-import { type BarDataPoint } from '../types';
-import { type ChartColors } from '../chart-utils';
+import { type BarDataPoint } from './types';
+import { type ChartColors } from '../../shared/chart-utils';
 import { type CreateBarsConfig, type BarsSelection } from './types';
 import {
   BAR_OPACITY,
@@ -10,7 +10,7 @@ import {
   BAR_HOVER_OPACITY,
   BAR_FINAL_OPACITY,
   HOVER_TRANSLATE_Y,
-} from '../constants';
+} from '../../shared/constants';
 
 const createTooltip = (
   g: d3.Selection<SVGGElement, unknown, null, undefined>,

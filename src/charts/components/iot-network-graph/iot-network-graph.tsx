@@ -1,7 +1,10 @@
 import { useEffect, useRef } from 'react';
 
-import { getChartColors, type ChartVariant } from '@/components/basic/charts';
-import { ResponsiveChartWrapper } from '@/components/basic/charts/utils/responsive-chart-wrapper';
+import {
+  getChartColors,
+  type ChartVariant,
+  ResponsiveChartWrapper,
+} from '@/components/basic/charts';
 import { createNetworkGraph } from './create-network-graph';
 
 import styles from './iot-network-graph.module.scss';

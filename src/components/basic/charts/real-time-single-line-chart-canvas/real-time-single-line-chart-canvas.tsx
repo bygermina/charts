@@ -1,13 +1,12 @@
 import { useRef, useCallback } from 'react';
 
-import { type ChartVariant } from './types';
-import { useChartBase } from './use-chart-base';
-import { useCanvasRenderLoop } from './use-canvas-render-loop';
-import { resolveChartColors, resolveCSSVariable } from './utils/canvas-helpers';
-import { renderSingleLineChart } from './single-line-chart-canvas/render-chart';
-import { type Scales } from './multi-line-chart/index';
-
-import styles from './multi-line-chart-canvas.module.scss';
+import { type ChartVariant } from '../shared/types';
+import { useChartBase } from '../shared/use-chart-base';
+import { useCanvasRenderLoop } from '../shared/use-canvas-render-loop';
+import { resolveChartColors, resolveCSSVariable } from '../shared/utils/canvas-helpers';
+import { renderSingleLineChart } from './utils/render-chart';
+import { type Scales } from '../multi-line-chart';
+import styles from '../multi-line-chart/multi-line-chart-canvas.module.scss';
 
 export interface RealTimeSingleLineDataRef {
   values: Float32Array;

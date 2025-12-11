@@ -1,12 +1,12 @@
 import * as d3 from 'd3';
 
-import { createGrid, createLineLegend } from '../chart-utils';
-import { applyShiftAnimation, getCurrentTranslate } from '../chart-animation';
+import { createGrid, createLineLegend } from '../shared/chart-utils';
 import {
   type ManageLegendConfig,
   type ManageGridConfig,
   type AnimateGridAndAxisConfig,
 } from './types';
+import { applyShiftAnimation, getCurrentTranslate } from '../shared/chart-animation';
 
 export const manageLegend = ({
   mainGroup,

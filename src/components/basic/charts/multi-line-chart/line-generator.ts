@@ -1,13 +1,13 @@
 import * as d3 from 'd3';
 
-import { type DataPoint } from '../types';
 import {
   type CreateLineGeneratorConfig,
   type UpdateLinePathConfig,
   type UpdateLineWithShiftConfig,
   type UpdateLineConfig,
 } from './types';
-import { applyShiftAnimation } from '../chart-animation';
+import type { DataPoint } from '../shared/types';
+import { applyShiftAnimation } from '../shared/chart-animation';
 
 export const createLineGenerator = ({
   xScale,

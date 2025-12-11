@@ -1,12 +1,9 @@
 import { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 
-import { type DataPoint, type ChartVariant } from './types';
-
-type BarDataPoint = DataPoint;
-import { useChartBase } from './use-chart-base';
-import { createGrid, createAxes, createChartGroups } from './chart-utils';
-import { createClipPaths } from './multi-line-chart/index';
+import { type DataPoint, type ChartVariant } from '../shared/types';
+import { useChartBase } from '../shared/use-chart-base';
+import { createGrid, createAxes, createChartGroups } from '../shared/chart-utils';
 import {
   createScales,
   createGradient,
@@ -17,8 +14,11 @@ import {
   DEFAULT_Y_AXIS_TICKS,
   BAR_WIDTH_RATIO,
   BAR_GAP,
-} from './bar-chart/index';
-import { BAR_GRADIENT_ID } from './constants';
+} from './index';
+import { BAR_GRADIENT_ID } from '../shared/constants';
+import { createClipPaths } from '../shared/utils/clip-paths';
+
+type BarDataPoint = DataPoint;
 
 interface BarChartProps {
   data: BarDataPoint[];

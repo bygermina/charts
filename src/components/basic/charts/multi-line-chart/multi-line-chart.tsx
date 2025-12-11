@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 
-import { useChartBase } from './use-chart-base';
-import { useVisibilityCleanup } from './use-visibility-cleanup';
+import { type ChartVariant } from '../shared/types';
+import { useChartBase } from '../shared/use-chart-base';
+import { useVisibilityCleanup } from '../shared/use-visibility-cleanup';
 
 import styles from './multi-line-chart.module.scss';
-import { type LineSeries } from './multi-line-chart/index';
-import { renderMultiLineChart } from './multi-line-chart/render-chart';
-import type { ChartVariant } from './shared/types';
+import { type LineSeries } from './index';
+import { renderMultiLineChart } from './render-chart';
 
 interface MultiLineChartProps {
   lines: LineSeries[];

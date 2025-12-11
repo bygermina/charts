@@ -1,12 +1,11 @@
 import * as d3 from 'd3';
 
-import { type ChartColors } from '../chart-utils';
-import { createAxes } from '../chart-utils';
-import { calculateAnimationSpeed } from '../chart-animation';
-import { DEFAULT_X_AXIS_TICKS, DEFAULT_Y_AXIS_TICKS } from '../constants';
+import { type ChartColors, createAxes } from '../shared/chart-utils';
+import { calculateAnimationSpeed } from '../shared/chart-animation';
+import { DEFAULT_X_AXIS_TICKS, DEFAULT_Y_AXIS_TICKS } from '../shared/constants';
 import type { LineSeries } from './types';
+import { createClipPaths } from '../shared/utils/clip-paths';
 import {
-  createClipPaths,
   createChartGroups,
   prepareChartData,
   createScalesForAxes,

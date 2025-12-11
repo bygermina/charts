@@ -5,9 +5,9 @@ import {
   type DataPoint,
   getChartColors,
   type ChartVariant,
+  ResponsiveChartWrapper,
+  useVisibilityAwareTimer,
 } from '@/components/basic/charts';
-import { ResponsiveChartWrapper } from '@/components/basic/charts/utils/responsive-chart-wrapper';
-import { useVisibilityAwareTimer } from '@/components/basic/charts/use-visibility-aware-timer';
 import { generateTimeSeriesData } from '@/utils/data-generators';
 import { updateLinesData } from './update-lines-data';
 

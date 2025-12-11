@@ -1,4 +1,4 @@
-import { type ChartVariant, getChartColors } from '../types';
+import { type ChartVariant, getChartColors } from '../shared/types';
 
 import styles from './iot-sensor.module.scss';
 

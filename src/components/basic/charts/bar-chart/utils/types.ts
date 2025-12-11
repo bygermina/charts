@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
 
-import { type DataPoint } from '../types';
-import { type ChartColors } from '../chart-utils';
+import { type DataPoint } from '../../shared/types';
+import { type ChartColors } from '../../shared/chart-utils';
 
 type BarDataPoint = DataPoint;
 

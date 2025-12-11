@@ -1,4 +1,4 @@
-import { type DataPoint } from '@/components/basic/charts/types';
+import { type DataPoint } from '@/components/basic/charts';
 
 interface GenerateDataConfig {
   count: number;
@@ -28,4 +28,3 @@ export const generateTimeSeriesData = ({
 
   return data;
 };
-

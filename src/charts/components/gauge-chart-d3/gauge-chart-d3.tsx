@@ -1,8 +1,7 @@
 import { useState } from 'react';
 
-import { GaugeChart } from '@/components/basic/charts/gauge-chart/gauge-chart';
+import { GaugeChart, ResponsiveChartWrapper } from '@/components/basic/charts';
 import { LabeledInput } from '@/components/basic/input/labeled-input';
-import { ResponsiveChartWrapper } from '@/components/basic/charts/utils/responsive-chart-wrapper';
 
 import styles from './gauge-chart-d3.module.scss';
 

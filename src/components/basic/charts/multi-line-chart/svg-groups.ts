@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
 
 import { type GetOrCreateLineGroupConfig, type GetOrCreateLinePathConfig } from './types';
-import { createChartGroups as createChartGroupsUtil } from '../chart-utils';
+import { createChartGroups as createChartGroupsUtil } from '../shared/chart-utils';
 
 export const createChartGroups = (config: {
   svg: d3.Selection<SVGSVGElement, unknown, null, undefined>;

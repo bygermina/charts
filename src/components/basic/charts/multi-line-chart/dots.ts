@@ -1,6 +1,6 @@
 import * as d3 from 'd3';
 
-import { type DataPoint } from '../types';
+import { type DataPoint } from './types';
 import { type UpdateDotsConfig, type CreateDotsConfig } from './types';
 
 // Updates coordinates of dots on line

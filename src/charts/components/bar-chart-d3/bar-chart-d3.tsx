@@ -1,8 +1,12 @@
 import { useState } from 'react';
 
-import { BarChart, type DataPoint, type ChartVariant } from '@/components/basic/charts';
-import { ResponsiveChartWrapper } from '@/components/basic/charts/utils/responsive-chart-wrapper';
-import { useVisibilityAwareTimer } from '@/components/basic/charts/use-visibility-aware-timer';
+import {
+  BarChart,
+  ResponsiveChartWrapper,
+  type DataPoint,
+  type ChartVariant,
+  useVisibilityAwareTimer,
+} from '@/components/basic/charts';
 import { generateTimeSeriesData } from '@/utils/data-generators';
 
 type BarDataPoint = DataPoint;

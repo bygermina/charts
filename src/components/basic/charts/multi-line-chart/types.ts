@@ -1,4 +1,4 @@
-import { type DataPoint } from '../types';
+import { type DataPoint } from '../shared/types';
 
 export interface LineSeries {
   data: DataPoint[];
@@ -14,13 +14,6 @@ export interface TimeExtentConfig {
 export interface TimeExtentResult {
   timeExtent: [number, number];
   timeStep: number;
-}
-
-export interface CreateClipPathsConfig {
-  svg: d3.Selection<SVGSVGElement, unknown, null, undefined>;
-  chartWidth: number;
-  chartHeight: number;
-  margin: { right: number };
 }
 
 export interface CreateScalesConfig {
@@ -115,7 +108,7 @@ export interface GetOrCreateLinePathConfig {
   isInitialRender: boolean;
 }
 
-import { type ChartColors } from '../chart-utils';
+import { type ChartColors } from '../shared/chart-utils';
 
 export interface ManageLegendConfig {
   mainGroup: d3.Selection<SVGGElement, unknown, null, undefined>;
