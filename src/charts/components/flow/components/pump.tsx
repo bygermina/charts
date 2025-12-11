@@ -109,4 +109,3 @@ export const Pump: React.FC<PumpProps> = ({
     </g>
   );
 };
-

@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, memo } from 'react';
 
 import {
   MultiLineChart,
@@ -9,6 +9,7 @@ import {
   useVisibilityAwareTimer,
 } from '@/components/basic/charts';
 import { generateTimeSeriesData } from '@/utils/data-generators';
+
 import { updateLinesData } from './update-lines-data';
 
 const generateLineData = (count: number, startTime?: number, endTime?: number): DataPoint[] =>
@@ -63,7 +64,7 @@ export const MultiLineChartD3 = ({
   height = DEFAULT_CHART_HEIGHT,
   linesConfig = DEFAULT_LINES_CONFIG,
 }: MultiLineChartD3Props) => {
-  const chartColors = getChartColors(chartVariant);
+  const chartColors = useMemo(() => getChartColors(variant), [variant]);
 
   const linesWithColors = useMemo(
     () =>

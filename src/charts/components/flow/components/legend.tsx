@@ -38,4 +38,3 @@ export const Legend: React.FC<LegendProps> = ({ entries, x = 30, y = 30, fontSiz
     </g>
   );
 };
-

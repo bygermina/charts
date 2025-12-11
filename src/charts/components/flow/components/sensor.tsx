@@ -99,4 +99,3 @@ export const Sensor: React.FC<SensorProps> = ({
 
   return null;
 };
-

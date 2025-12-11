@@ -55,4 +55,3 @@ export const Pipe: React.FC<PipeProps> = ({
     </g>
   );
 };
-

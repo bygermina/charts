@@ -50,4 +50,3 @@ export const GasValve: React.FC<GasValveProps> = ({ x, y, label, color, fontSize
     </g>
   );
 };
-

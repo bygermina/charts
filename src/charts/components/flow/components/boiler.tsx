@@ -92,4 +92,3 @@ export const Boiler: React.FC<BoilerProps> = ({
     </g>
   );
 };
-

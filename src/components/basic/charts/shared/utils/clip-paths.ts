@@ -31,4 +31,3 @@ export const createClipPaths = ({
   }
   rect.attr('x', 0).attr('y', 0).attr('width', clippedWidth).attr('height', chartHeight);
 };
-

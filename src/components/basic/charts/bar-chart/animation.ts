@@ -1,12 +1,8 @@
 import * as d3 from 'd3';
 
+import { type BarDataPoint } from '../types';
 import { type AnimateBarsConfig } from './types';
-import {
-  BAR_ANIMATION_DURATION,
-  BAR_ANIMATION_DELAY,
-  BAR_FINAL_OPACITY,
-} from '../../shared/constants';
-import type { BarDataPoint } from '../../shared/types';
+import { BAR_ANIMATION_DURATION, BAR_ANIMATION_DELAY, BAR_FINAL_OPACITY } from '../constants';
 
 export const animateBars = ({ bars, yScale, chartHeight }: AnimateBarsConfig): void => {
   bars

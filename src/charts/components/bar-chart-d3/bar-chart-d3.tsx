@@ -12,7 +12,7 @@ import { generateTimeSeriesData } from '@/utils/data-generators';
 type BarDataPoint = DataPoint;
 
 const chartVariant = 'normal';
-const VALUE_GENERATOR = () => Math.random() * 100 + 20;
+const valueGenerator = () => Math.random() * 100 + 20;
 
 export const BarChartD3 = ({
   delay = 1000,
@@ -30,7 +30,7 @@ export const BarChartD3 = ({
   const [barData, setBarData] = useState<BarDataPoint[]>(() =>
     generateTimeSeriesData({
       count,
-      valueGenerator: VALUE_GENERATOR,
+      valueGenerator,
     }),
   );
 
@@ -38,22 +38,26 @@ export const BarChartD3 = ({
     delay,
     onTick: () => {
       const now = Date.now();
+
       setBarData((prev) => {
-        const trimmed = prev.length >= count ? prev.slice(prev.length - count + 1) : prev.slice(1);
+        const trimmed = prev.slice(1);
+
         trimmed.push({
           time: now,
-          value: VALUE_GENERATOR(),
+          value: valueGenerator(),
         });
+
         return trimmed;
       });
     },
     onVisible: () => {
       const now = Date.now();
+
       setBarData(
         generateTimeSeriesData({
           count,
           endTime: now,
-          valueGenerator: VALUE_GENERATOR,
+          valueGenerator,
         }),
       );
     },

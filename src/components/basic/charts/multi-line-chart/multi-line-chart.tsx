@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import * as d3 from 'd3';
 
 import { type ChartVariant } from '../shared/types';
 import { useChartBase } from '../shared/use-chart-base';
@@ -76,6 +77,14 @@ export const MultiLineChart = ({
       yDomain,
       setIsInitialRender,
     });
+
+    // return () => {
+    //   //?
+    //   if (svgElement) {
+    //     const svg = d3.select(svgElement);
+    //     svg.selectAll('*').interrupt();
+    //   }
+    // };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
