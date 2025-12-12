@@ -1,18 +1,6 @@
 import * as d3 from 'd3';
 
-import { type AnimateBarsConfig } from './types';
-import { BAR_ANIMATION_DURATION, BAR_ANIMATION_DELAY } from '../../shared/constants';
 import type { BarDataPoint } from '../../shared/types';
-
-export const animateBars = ({ bars, yScale, chartHeight }: AnimateBarsConfig): void => {
-  bars
-    .transition()
-    .duration(BAR_ANIMATION_DURATION)
-    .ease(d3.easeCubicOut)
-    .delay((_d, i) => i * BAR_ANIMATION_DELAY)
-    .attr('y', (d) => yScale(d.value))
-    .attr('height', (d) => chartHeight - yScale(d.value));
-};
 
 const updateBarPosition = (
   selection: d3.Selection<SVGRectElement, BarDataPoint, SVGGElement, unknown>,
@@ -38,15 +26,7 @@ export const updateBars = ({
   const barsEnterData = barsEnter.data() as BarDataPoint[];
   if (barsEnterData.length > 0) {
     const maxTime = Math.max(...barsEnterData.map((d) => d.time));
-    const rightmostBar = barsEnter.filter((d) => d.time === maxTime);
     const otherBars = barsEnter.filter((d) => d.time !== maxTime);
-
-    rightmostBar
-      .transition()
-      .duration(BAR_ANIMATION_DURATION)
-      .ease(d3.easeCubicOut)
-      .attr('y', (d) => yScale(d.value))
-      .attr('height', (d) => chartHeight - yScale(d.value));
 
     updateBarPosition(otherBars, yScale, chartHeight);
   }
@@ -55,10 +35,5 @@ export const updateBars = ({
   const barsToUpdate = barsUpdate.filter((_d, i, nodes) => !enterNodes.has(nodes[i]));
   updateBarPosition(barsToUpdate, yScale, chartHeight);
 
-  barsExit
-    .transition()
-    .duration(BAR_ANIMATION_DURATION / 2)
-    .attr('opacity', 0)
-    .attr('height', 0)
-    .remove();
+  barsExit.interrupt().remove();
 };

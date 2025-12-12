@@ -69,6 +69,9 @@ export const createBars = ({
     .data(data, (d) => d.time.toString());
 
   const barsExit = bars.exit();
+
+  barsExit.interrupt().on('mouseenter', null).on('mouseleave', null);
+
   g.selectAll('.bar-tooltip').remove();
 
   const barsEnter = bars

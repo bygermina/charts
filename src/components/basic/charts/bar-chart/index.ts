@@ -7,4 +7,4 @@ export {
 export { createScales } from './utils/scales';
 export { createGradient } from './utils/gradients';
 export { createBars } from './utils/bars';
-export { animateBars, updateBars } from './utils/animation';
+export { updateBars } from './utils/animation';

@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useMemo } from 'react';
 
 import { type ChartVariant, getChartColors } from './types';
 import { getChartDimensions, type ChartBaseConfig } from './chart-utils';
@@ -17,8 +17,10 @@ export const useChartBase = (
   },
 ): UseChartBaseResult => {
   const svgRef = useRef<SVGSVGElement | null>(null);
-  const chartColors = getChartColors(config.variant || 'normal');
-  const { margin, chartWidth, chartHeight } = getChartDimensions(config);
+
+  const chartColors = useMemo(() => getChartColors(config.variant || 'normal'), [config.variant]);
+
+  const { margin, chartWidth, chartHeight } = useMemo(() => getChartDimensions(config), [config]);
 
   return {
     svgRef,

@@ -171,6 +171,7 @@ export const createGrid = (
     gridGroup = g.append('g').attr('class', 'grid-group');
   } else {
     const savedTransform = gridGroup.attr('transform') || '';
+    gridGroup.selectAll('*').interrupt();
     gridGroup.selectAll('*').remove();
     if (savedTransform) {
       gridGroup.attr('transform', savedTransform);
@@ -345,6 +346,7 @@ export const createAxes = (
   if (xAxisGroup.empty()) {
     xAxisGroup = g.append('g').attr('class', 'x-axis-group');
   } else {
+    xAxisGroup.selectAll('*').interrupt();
     xAxisGroup.selectAll('*').remove();
   }
 
@@ -352,6 +354,7 @@ export const createAxes = (
     yAxisGroup = g.append('g').attr('class', 'y-axis-group');
   } else {
     const savedTransform = yAxisGroup.attr('transform') || '';
+    yAxisGroup.selectAll('*').interrupt();
     yAxisGroup.selectAll('*').remove();
     if (savedTransform) {
       yAxisGroup.attr('transform', savedTransform);

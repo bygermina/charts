@@ -8,7 +8,6 @@ import {
   createScales,
   createGradient,
   createBars,
-  animateBars,
   updateBars,
   DEFAULT_X_AXIS_TICKS,
   DEFAULT_Y_AXIS_TICKS,
@@ -41,16 +40,34 @@ export const BarChart = ({
     variant,
   });
 
-  const prevDataRef = useRef<DataPoint[]>([]);
-  const isInitialRenderRef = useRef(true);
   const fillColor = chartColors.secondary;
+  const isInitialRenderRef = useRef(true);
 
   useEffect(() => {
-    if (data.length === 0) return;
     const svgElement = svgRef.current;
     if (!svgElement) return;
 
+    if (data.length === 0) {
+      const svg = d3.select(svgElement);
+      svg.selectAll('*').interrupt();
+      svg.selectAll('.bar').on('mouseenter', null).on('mouseleave', null);
+      svg.selectAll('.bar-tooltip').remove();
+    }
+
+    return () => {
+      const svg = d3.select(svgElement);
+      svg.selectAll('*').interrupt();
+      svg.selectAll('.bar').on('mouseenter', null).on('mouseleave', null);
+      svg.selectAll('.bar-tooltip').remove();
+    };
+  }, [data.length, svgRef]);
+
+  useEffect(() => {
+    const svgElement = svgRef.current;
+    if (!svgElement || data.length === 0) return;
+
     const svg = d3.select(svgElement);
+    svg.selectAll('.bar-tooltip').remove();
 
     createClipPaths({
       svg,
@@ -59,6 +76,29 @@ export const BarChart = ({
       margin,
     });
 
+    const { mainGroup } = createChartGroups({
+      svg,
+      margin,
+      useClipPath: true,
+    });
+
+    const defs = mainGroup.select<SVGDefsElement>('defs').empty()
+      ? mainGroup.append('defs')
+      : mainGroup.select<SVGDefsElement>('defs');
+
+    createGradient({
+      defs,
+      color: fillColor,
+      chartHeight,
+      gradientId: BAR_GRADIENT_ID,
+    });
+  }, [chartWidth, chartHeight, margin, fillColor, svgRef, data.length]);
+
+  useEffect(() => {
+    const svgElement = svgRef.current;
+    if (!svgElement || data.length === 0) return;
+
+    const svg = d3.select(svgElement);
     const { mainGroup, axesGroup } = createChartGroups({
       svg,
       margin,
@@ -88,14 +128,6 @@ export const BarChart = ({
       DEFAULT_Y_AXIS_TICKS,
     );
 
-    const defs = mainGroup.append('defs');
-    createGradient({
-      defs,
-      color: fillColor,
-      chartHeight,
-      gradientId: BAR_GRADIENT_ID,
-    });
-
     const timeExtent = xScale.domain();
     const timeRange = timeExtent[1].getTime() - timeExtent[0].getTime();
     const avgInterval = timeRange / Math.max(data.length - 1, 1);
@@ -114,27 +146,18 @@ export const BarChart = ({
       chartColors,
     });
 
-    if (isInitialRenderRef.current) {
-      animateBars({ bars: barsUpdate, yScale, chartHeight });
-      isInitialRenderRef.current = false;
-    } else {
-      updateBars({ barsEnter, barsUpdate, barsExit, yScale, chartHeight });
-    }
+    updateBars({ barsEnter, barsUpdate, barsExit, yScale, chartHeight });
+    isInitialRenderRef.current = false;
 
-    prevDataRef.current = data.map((d) => ({ ...d }));
-  }, [
-    data,
-    width,
-    height,
-    variant,
-    chartColors,
-    fillColor,
-    showGrid,
-    margin,
-    chartWidth,
-    chartHeight,
-    svgRef,
-  ]);
+    return () => {
+      if (svgElement) {
+        const svg = d3.select(svgElement);
+        svg.selectAll('*').interrupt();
+        svg.selectAll('.bar').on('mouseenter', null).on('mouseleave', null);
+        svg.selectAll('.bar-tooltip').remove();
+      }
+    };
+  }, [data, chartWidth, chartHeight, margin, showGrid, chartColors, svgRef]);
 
   return <svg ref={svgRef} width={width} height={height} />;
 };

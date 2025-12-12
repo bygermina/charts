@@ -41,9 +41,3 @@ export interface BarsSelection {
   barsUpdate: d3.Selection<SVGRectElement, BarDataPoint, SVGGElement, unknown>;
   barsExit: d3.Selection<SVGRectElement, unknown, SVGGElement, unknown>;
 }
-
-export interface AnimateBarsConfig {
-  bars: d3.Selection<SVGRectElement, BarDataPoint, SVGGElement, unknown>;
-  yScale: d3.ScaleLinear<number, number>;
-  chartHeight: number;
-}
