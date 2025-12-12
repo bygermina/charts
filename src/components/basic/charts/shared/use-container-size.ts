@@ -7,32 +7,53 @@ interface ContainerSize {
   height: number;
 }
 
-const DEFAULT_SIZE: ContainerSize = DEFAULT_CHART_SIZE;
+interface DebouncedFunction<T extends (...args: unknown[]) => void> {
+  (...args: Parameters<T>): void;
+  cancel: () => void;
+}
 
-const debounce = <T extends (...args: unknown[]) => void>(fn: T, delay: number): T => {
+const debounce = <T extends (...args: unknown[]) => void>(
+  fn: T,
+  delay: number,
+): DebouncedFunction<T> => {
   let timeoutId: ReturnType<typeof setTimeout> | null = null;
 
-  return ((...args: Parameters<T>) => {
+  const debouncedFn = ((...args: Parameters<T>) => {
     if (timeoutId !== null) {
       clearTimeout(timeoutId);
     }
     timeoutId = setTimeout(() => {
       fn(...args);
+      timeoutId = null;
     }, delay);
-  }) as T;
+  }) as DebouncedFunction<T>;
+
+  debouncedFn.cancel = () => {
+    if (timeoutId !== null) {
+      clearTimeout(timeoutId);
+      timeoutId = null;
+    }
+  };
+
+  return debouncedFn;
 };
 
 export const useContainerSize = (ref: React.RefObject<HTMLElement | null>): ContainerSize => {
-  const [size, setSize] = useState<ContainerSize>(DEFAULT_SIZE);
+  const [size, setSize] = useState<ContainerSize>(DEFAULT_CHART_SIZE);
   const observerRef = useRef<ResizeObserver | null>(null);
-  const debouncedUpdateRef = useRef<(() => void) | null>(null);
+  const debouncedUpdateRef = useRef<DebouncedFunction<() => void> | null>(null);
+  const elementRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     const element = ref.current;
     if (!element) return;
 
+    elementRef.current = element;
+
     const updateSize = () => {
-      const rect = element.getBoundingClientRect();
+      const currentElement = elementRef.current;
+      if (!currentElement) return;
+      const rect = currentElement.getBoundingClientRect();
       if (rect.width > 0 && rect.height > 0) {
         setSize({ width: rect.width, height: rect.height });
       }
@@ -44,6 +65,7 @@ export const useContainerSize = (ref: React.RefObject<HTMLElement | null>): Cont
     debouncedUpdateRef.current = debouncedUpdate;
 
     if (typeof ResizeObserver !== 'undefined') {
+      observerRef.current?.disconnect();
       observerRef.current = new ResizeObserver(() => {
         debouncedUpdate();
       });
@@ -53,12 +75,12 @@ export const useContainerSize = (ref: React.RefObject<HTMLElement | null>): Cont
     }
 
     return () => {
-      if (observerRef.current) {
-        observerRef.current.disconnect();
-        observerRef.current = null;
-      } else if (debouncedUpdateRef.current) {
-        window.removeEventListener('resize', debouncedUpdateRef.current);
-      }
+      observerRef.current?.disconnect();
+      observerRef.current = null;
+      window.removeEventListener('resize', debouncedUpdate);
+      debouncedUpdateRef.current?.cancel();
+      debouncedUpdateRef.current = null;
+      elementRef.current = null;
     };
   }, [ref]);
 
