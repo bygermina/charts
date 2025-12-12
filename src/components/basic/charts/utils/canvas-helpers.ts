@@ -1,5 +1,7 @@
 import * as d3 from 'd3';
 
+import { CHART_FONT_SIZE, CHART_FONT_FAMILY } from '../shared/constants';
+
 export const resolveCSSVariable = (variable: string, element: Element): string => {
   if (!variable.startsWith('var(')) return variable;
 
@@ -73,8 +75,6 @@ interface DrawAxesConfig {
   xTicks?: number;
   yTicks?: number;
 }
-
-import { CHART_FONT_SIZE, CHART_FONT_FAMILY } from '../constants';
 
 export const drawAxes = ({
   ctx,

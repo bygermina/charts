@@ -1,11 +1,7 @@
 import * as d3 from 'd3';
 
 import { type AnimateBarsConfig } from './types';
-import {
-  BAR_ANIMATION_DURATION,
-  BAR_ANIMATION_DELAY,
-  BAR_FINAL_OPACITY,
-} from '../../shared/constants';
+import { BAR_ANIMATION_DURATION, BAR_ANIMATION_DELAY } from '../../shared/constants';
 import type { BarDataPoint } from '../../shared/types';
 
 export const animateBars = ({ bars, yScale, chartHeight }: AnimateBarsConfig): void => {
@@ -15,8 +11,7 @@ export const animateBars = ({ bars, yScale, chartHeight }: AnimateBarsConfig): v
     .ease(d3.easeCubicOut)
     .delay((_d, i) => i * BAR_ANIMATION_DELAY)
     .attr('y', (d) => yScale(d.value))
-    .attr('height', (d) => chartHeight - yScale(d.value))
-    .attr('opacity', BAR_FINAL_OPACITY);
+    .attr('height', (d) => chartHeight - yScale(d.value));
 };
 
 const updateBarPosition = (
@@ -51,11 +46,9 @@ export const updateBars = ({
       .duration(BAR_ANIMATION_DURATION)
       .ease(d3.easeCubicOut)
       .attr('y', (d) => yScale(d.value))
-      .attr('height', (d) => chartHeight - yScale(d.value))
-      .attr('opacity', BAR_FINAL_OPACITY);
+      .attr('height', (d) => chartHeight - yScale(d.value));
 
     updateBarPosition(otherBars, yScale, chartHeight);
-    otherBars.attr('opacity', BAR_FINAL_OPACITY);
   }
 
   const enterNodes = new Set(barsEnter.nodes());

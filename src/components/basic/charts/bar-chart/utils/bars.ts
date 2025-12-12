@@ -2,14 +2,7 @@ import * as d3 from 'd3';
 
 import { type ChartColors } from '../../shared/chart-utils';
 import { type CreateBarsConfig, type BarsSelection } from './types';
-import {
-  BAR_OPACITY,
-  BAR_BORDER_RADIUS,
-  HOVER_ANIMATION_DURATION,
-  BAR_HOVER_OPACITY,
-  BAR_FINAL_OPACITY,
-  HOVER_TRANSLATE_Y,
-} from '../../shared/constants';
+import { BAR_OPACITY, BAR_BORDER_RADIUS } from '../../shared/constants';
 import type { BarDataPoint } from '../../shared/types';
 
 const createTooltip = (
@@ -47,21 +40,15 @@ const attachHoverHandlers = (
   chartColors: ChartColors,
 ): void => {
   selection
+    .on('mouseenter', null)
+    .on('mouseleave', null)
     .on('mouseenter', function (_event, d) {
-      d3.select(this)
-        .transition()
-        .duration(HOVER_ANIMATION_DURATION)
-        .attr('opacity', BAR_HOVER_OPACITY)
-        .attr('transform', `translate(0, ${HOVER_TRANSLATE_Y})`);
+      d3.select(this);
 
       createTooltip(g, d, xScale, yScale, chartColors);
     })
     .on('mouseleave', function () {
-      d3.select(this)
-        .transition()
-        .duration(HOVER_ANIMATION_DURATION)
-        .attr('opacity', BAR_FINAL_OPACITY)
-        .attr('transform', 'translate(0, 0)');
+      d3.select(this);
 
       g.selectAll('.bar-tooltip').remove();
     });
@@ -97,8 +84,6 @@ export const createBars = ({
     .attr('rx', BAR_BORDER_RADIUS)
     .attr('ry', BAR_BORDER_RADIUS)
     .style('cursor', 'pointer');
-
-  attachHoverHandlers(barsEnter, g, xScale, yScale, chartColors);
 
   const barsUpdate = barsEnter.merge(bars);
 

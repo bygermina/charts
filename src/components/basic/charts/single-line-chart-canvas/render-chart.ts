@@ -1,5 +1,5 @@
-import { type RealTimeSingleLineDataRef } from '../real-time-single-line-chart-canvas';
 import { createScalesForAxes, updateScalesForAxes, type Scales } from '../multi-line-chart/index';
+import type { RealTimeSingleLineDataRef } from '../real-time-single-line-chart-canvas/real-time-single-line-chart-canvas';
 import { drawAxes, drawGrid } from '../utils/canvas-helpers';
 
 interface RenderSingleLineChartConfig {
