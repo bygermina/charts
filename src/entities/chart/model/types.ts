@@ -8,17 +8,15 @@ export type BarDataPoint = DataPoint;
 export type ChartVariant = 'normal' | 'accent';
 
 export const getChartColors = (variant: ChartVariant = 'normal') => {
-  const prefix = variant === 'accent' ? 'accent' : 'normal';
-
   return {
-    primary: `var(--chart-${prefix}-primary)`,
-    secondary: `var(--chart-${prefix}-secondary)`,
-    tertiary: `var(--chart-${prefix}-tertiary)`,
-    quaternary: `var(--chart-${prefix}-quaternary)`,
-    primaryOpacity: `var(--chart-${prefix}-primary-opacity)`,
-    grid: `var(--chart-${prefix}-grid)`,
-    text: `var(--chart-${prefix}-text)`,
-    textSecondary: `var(--chart-${prefix}-text-secondary)`,
+    primary: `var(--chart-${variant}-primary)`,
+    secondary: `var(--chart-${variant}-secondary)`,
+    tertiary: `var(--chart-${variant}-tertiary)`,
+    quaternary: `var(--chart-${variant}-quaternary)`,
+    primaryOpacity: `var(--chart-${variant}-primary-opacity)`,
+    grid: `var(--chart-${variant}-grid)`,
+    text: `var(--chart-${variant}-text)`,
+    textSecondary: `var(--chart-${variant}-text-secondary)`,
   };
 };
 

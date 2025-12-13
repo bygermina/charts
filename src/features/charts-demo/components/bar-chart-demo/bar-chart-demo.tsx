@@ -11,22 +11,23 @@ import { generateTimeSeriesData } from '@/shared/lib/utils';
 
 type BarDataPoint = DataPoint;
 
-const chartVariant = 'normal';
 const valueGenerator = () => Math.random() * 100 + 20;
 
-export const BarChartDemo = ({
-  delay = 1000,
-  count = 50,
-  variant = chartVariant,
-  width,
-  height = 300,
-}: {
+interface BarChartDemoProps {
   delay?: number;
   count?: number;
   variant?: ChartVariant;
   width?: number;
   height?: number;
-}) => {
+}
+
+export const BarChartDemo = ({
+  delay = 1000,
+  count = 50,
+  variant = 'normal',
+  width,
+  height = 300,
+}: BarChartDemoProps) => {
   const [barData, setBarData] = useState<BarDataPoint[]>(() =>
     generateTimeSeriesData({
       count,
@@ -37,13 +38,11 @@ export const BarChartDemo = ({
   useVisibilityAwareTimer({
     delay,
     onTick: () => {
-      const now = Date.now();
-
       setBarData((prev) => {
         const trimmed = prev.slice(1);
 
         trimmed.push({
-          time: now,
+          time: Date.now(),
           value: valueGenerator(),
         });
 
@@ -51,12 +50,10 @@ export const BarChartDemo = ({
       });
     },
     onVisible: () => {
-      const now = Date.now();
-
       setBarData(
         generateTimeSeriesData({
           count,
-          endTime: now,
+          endTime: Date.now(),
           valueGenerator,
         }),
       );

@@ -6,7 +6,8 @@ import { useCanvasRenderLoop } from '../../lib/use-canvas-render-loop';
 import { resolveChartColors, resolveCSSVariable } from '../../lib/utils/canvas-helpers';
 import { type Scales } from '../multi-line-chart';
 import { renderSingleLineChart } from './utils/render-chart';
-import styles from '../multi-line-chart/multi-line-chart-canvas.module.scss';
+
+import styles from './real-time-single-line-chart-canvas.module.scss';
 
 export interface RealTimeSingleLineDataRef {
   values: Float32Array;

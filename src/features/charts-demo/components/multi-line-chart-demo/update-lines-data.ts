@@ -1,4 +1,4 @@
-import type { DataPoint } from '@/entities/chart';
+import type { LineSeries } from '@/entities/chart';
 import { generateTimeSeriesData } from '@/shared/lib/utils';
 
 interface LineConfig {
@@ -9,47 +9,58 @@ interface LineConfig {
 }
 
 interface UpdateLinesDataConfig {
-  prevLinesData: DataPoint[][];
+  prevLines: LineSeries[];
   linesWithColors: LineConfig[];
   count: number;
   now: number;
 }
 
 export const updateLinesData = ({
-  prevLinesData,
+  prevLines,
   linesWithColors,
   count,
   now,
-}: UpdateLinesDataConfig): DataPoint[][] => {
-  if (prevLinesData.length !== linesWithColors.length) {
+}: UpdateLinesDataConfig): LineSeries[] => {
+  if (prevLines.length !== linesWithColors.length) {
     return linesWithColors.map((config, index) => {
-      if (index < prevLinesData.length) {
-        const lineData = prevLinesData[index];
-        const trimmed = lineData.slice(1);
+      if (index < prevLines.length) {
+        const prevLine = prevLines[index];
+        const trimmed = prevLine.data.slice(1);
 
         trimmed.push({
           time: now,
           value: config.generateValue(),
         });
-        return trimmed;
+        return {
+          ...prevLine,
+          data: trimmed,
+        };
       }
-      return generateTimeSeriesData({
-        count,
-        endTime: now,
-        valueGenerator: config.generateValue,
-      });
+      return {
+        data: generateTimeSeriesData({
+          count,
+          endTime: now,
+          valueGenerator: config.generateValue,
+        }),
+        color: config.color || '',
+        label: config.label,
+        showDots: config.showDots,
+      };
     });
   }
 
-  return prevLinesData.map((lineData, index) => {
-    if (index >= linesWithColors.length) return lineData;
+  return prevLines.map((prevLine, index) => {
+    if (index >= linesWithColors.length) return prevLine;
 
-    const trimmed = lineData.slice(1);
+    const trimmed = prevLine.data.slice(1);
 
     trimmed.push({
       time: now,
       value: linesWithColors[index].generateValue(),
     });
-    return trimmed;
+    return {
+      ...prevLine,
+      data: trimmed,
+    };
   });
 };

@@ -135,3 +135,10 @@ export interface AnimateGridAndAxisConfig {
   gridLeftShift: number;
   chartHeight: number;
 }
+
+export interface Metadata {
+  timeExtent: [number, number] | null;
+  timeStep: number;
+}
+
+export const DEFAULT_METADATA: Metadata = { timeExtent: null, timeStep: 0 };
