@@ -1,6 +1,6 @@
-import * as d3 from 'd3';
+import { select } from 'd3-selection';
 
-import { type DataPoint } from './types';
+import { type DataPoint } from '../shared/types';
 import { type UpdateDotsConfig, type CreateDotsConfig } from './types';
 
 // Updates coordinates of dots on line
@@ -11,11 +11,18 @@ export const updateDotsCoordinates = ({
   xScale,
   yScale,
 }: UpdateDotsConfig): void => {
-  const dots = lineGroup.selectAll<SVGCircleElement, DataPoint>(`.dot-${lineIndex}`).data(data);
+  const dots = lineGroup
+    .selectAll<SVGCircleElement, DataPoint>(`.dot-${lineIndex}`)
+    .data(data, (d) => d.time);
 
-  dots.exit().remove();
-
-  dots.attr('cx', (d) => xScale(d.time)).attr('cy', (d) => yScale(d.value));
+  dots
+    .join(
+      (enter) => enter.append('circle').attr('class', `dot-${lineIndex}`),
+      (update) => update,
+      (exit) => exit.remove(),
+    )
+    .attr('cx', (d) => xScale(d.time))
+    .attr('cy', (d) => yScale(d.value));
 };
 
 export const createAndAnimateDots = ({
@@ -24,24 +31,34 @@ export const createAndAnimateDots = ({
   data,
   color,
   isInitialRender,
-}: CreateDotsConfig): void => {
+  xScale,
+  yScale,
+}: CreateDotsConfig & {
+  xScale: UpdateDotsConfig['xScale'];
+  yScale: UpdateDotsConfig['yScale'];
+}): void => {
   lineGroup.selectAll('*').interrupt();
 
-  const dots = lineGroup.selectAll<SVGCircleElement, DataPoint>(`.dot-${lineIndex}`).data(data);
+  const dots = lineGroup
+    .selectAll<SVGCircleElement, DataPoint>(`.dot-${lineIndex}`)
+    .data(data, (d) => d.time);
 
-  dots.exit().remove();
-
-  const dotsEnter = dots
-    .enter()
-    .append('circle')
-    .attr('class', `dot-${lineIndex}`)
-    .attr('r', 0)
-    .attr('fill', color)
-    .attr('opacity', 0.7)
-    .attr('stroke', color)
-    .attr('stroke-width', 1);
-
-  const dotsUpdate = dotsEnter.merge(dots);
+  const dotsUpdate = dots
+    .join(
+      (enter) =>
+        enter
+          .append('circle')
+          .attr('class', `dot-${lineIndex}`)
+          .attr('r', 0)
+          .attr('fill', color)
+          .attr('opacity', 0.7)
+          .attr('stroke', color)
+          .attr('stroke-width', 1),
+      (update) => update,
+      (exit) => exit.remove(),
+    )
+    .attr('cx', (d) => xScale(d.time))
+    .attr('cy', (d) => yScale(d.value));
 
   if (isInitialRender && !document.hidden) {
     dotsUpdate
@@ -51,7 +68,7 @@ export const createAndAnimateDots = ({
       .attr('opacity', 0.9)
       .on('end', function () {
         if (document.hidden) {
-          d3.select(this).interrupt();
+          select(this).interrupt();
         }
       });
   } else {

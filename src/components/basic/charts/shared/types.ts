@@ -21,3 +21,5 @@ export const getChartColors = (variant: ChartVariant = 'normal') => {
     textSecondary: `var(--chart-${prefix}-text-secondary)`,
   };
 };
+
+export type ChartColors = ReturnType<typeof getChartColors>;

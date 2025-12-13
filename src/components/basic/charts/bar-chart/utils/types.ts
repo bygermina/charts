@@ -1,7 +1,8 @@
-import * as d3 from 'd3';
+import type { Selection } from 'd3-selection';
+import type { ScaleTime, ScaleLinear } from 'd3-scale';
 
 import { type DataPoint } from '../../shared/types';
-import { type ChartColors } from '../../shared/chart-utils';
+import { type ChartColors } from '../../shared/types';
 
 type BarDataPoint = DataPoint;
 
@@ -13,23 +14,23 @@ export interface CreateScalesConfig {
 }
 
 export interface Scales {
-  xScale: d3.ScaleTime<number, number>;
-  xAxisScale: d3.ScaleTime<number, number>;
-  yScale: d3.ScaleLinear<number, number>;
+  xScale: ScaleTime<number, number>;
+  xAxisScale: ScaleTime<number, number>;
+  yScale: ScaleLinear<number, number>;
 }
 
 export interface CreateGradientConfig {
-  defs: d3.Selection<SVGDefsElement, unknown, null, undefined>;
+  defs: Selection<SVGDefsElement, unknown, null, undefined>;
   color: string;
   chartHeight: number;
   gradientId: string;
 }
 
 export interface CreateBarsConfig {
-  g: d3.Selection<SVGGElement, unknown, null, undefined>;
+  g: Selection<SVGGElement, unknown, null, undefined>;
   data: BarDataPoint[];
-  xScale: d3.ScaleTime<number, number>;
-  yScale: d3.ScaleLinear<number, number>;
+  xScale: ScaleTime<number, number>;
+  yScale: ScaleLinear<number, number>;
   chartHeight: number;
   gradientId: string;
   barWidth: number;
@@ -37,7 +38,7 @@ export interface CreateBarsConfig {
 }
 
 export interface BarsSelection {
-  barsEnter: d3.Selection<SVGRectElement, BarDataPoint, SVGGElement, unknown>;
-  barsUpdate: d3.Selection<SVGRectElement, BarDataPoint, SVGGElement, unknown>;
-  barsExit: d3.Selection<SVGRectElement, unknown, SVGGElement, unknown>;
+  barsEnter: Selection<SVGRectElement, BarDataPoint, SVGGElement, unknown>;
+  barsUpdate: Selection<SVGRectElement, BarDataPoint, SVGGElement, unknown>;
+  barsExit: Selection<SVGRectElement, unknown, SVGGElement, unknown>;
 }

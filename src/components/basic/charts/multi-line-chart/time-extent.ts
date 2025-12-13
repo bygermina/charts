@@ -1,4 +1,4 @@
-import * as d3 from 'd3';
+import { extent } from 'd3-array';
 
 import { type TimeExtentConfig, type TimeExtentResult } from './types';
 import { calculateTimeStep } from './data-calculations';
@@ -6,7 +6,7 @@ import { calculateTimeStep } from './data-calculations';
 export const calculateTimeExtent = ({ lines }: TimeExtentConfig): TimeExtentResult => {
   const allTimes = lines.flatMap((line) => (line?.data || []).map((point) => point.time));
 
-  const rawTimeExtent = d3.extent(allTimes);
+  const rawTimeExtent = extent(allTimes);
 
   if (!rawTimeExtent[0] || !rawTimeExtent[1] || rawTimeExtent[0] === rawTimeExtent[1]) {
     throw new Error('Invalid time extent');

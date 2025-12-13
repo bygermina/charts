@@ -1,4 +1,6 @@
-import * as d3 from 'd3';
+import { scaleLinear, type ScaleLinear, type ScaleTime } from 'd3-scale';
+import type { Selection } from 'd3-selection';
+import { easeLinear } from 'd3-ease';
 
 export interface ShiftAnimationConfig {
   prevTimeExtent: [number, number] | null;
@@ -20,9 +22,8 @@ export const calculateShiftAnimation = ({
     return { shouldAnimate: false, shiftOffset: 0 };
   }
 
-  const prevXScale = d3.scaleLinear<number, number>().domain(prevTimeExtent).range([0, chartWidth]);
-  const currentXScale = d3
-    .scaleLinear<number, number>()
+  const prevXScale = scaleLinear<number, number>().domain(prevTimeExtent).range([0, chartWidth]);
+  const currentXScale = scaleLinear<number, number>()
     .domain(currentTimeExtent)
     .range([0, chartWidth]);
 
@@ -41,7 +42,7 @@ export const calculateShiftAnimation = ({
 
 export interface CalculateSpeedConfig {
   data: Array<{ time: number }>;
-  xScale: d3.ScaleLinear<number, number> | d3.ScaleTime<number, number>;
+  xScale: ScaleLinear<number, number> | ScaleTime<number, number>;
   customSpeed?: number;
   fallbackSpeed?: number;
 }
@@ -71,7 +72,7 @@ export const calculateAnimationSpeed = ({
 };
 
 export interface ApplyShiftAnimationConfig {
-  element: d3.Selection<SVGGElement, unknown, null, undefined>;
+  element: Selection<SVGGElement, unknown, null, undefined>;
   shiftOffset: number;
   speed: number;
   targetX?: number;
@@ -97,12 +98,12 @@ export const applyShiftAnimation = ({
   element
     .transition()
     .duration(duration)
-    .ease(d3.easeLinear)
+    .ease(easeLinear)
     .attr('transform', `translate(${targetX}, ${targetY})`);
 };
 
 export const getCurrentTranslate = (
-  element: d3.Selection<SVGGElement, unknown, null, undefined>,
+  element: Selection<SVGGElement, unknown, null, undefined>,
 ): { x: number; y: number } => {
   const currentTransform = element.attr('transform') || 'translate(0, 0)';
   const match = currentTransform.match(/translate\(([^,]+),\s*([^)]+)\)/);

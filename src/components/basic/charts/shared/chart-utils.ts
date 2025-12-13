@@ -1,20 +1,22 @@
-import * as d3 from 'd3';
+import type { Selection } from 'd3-selection';
+import { interrupt } from 'd3-transition';
+import { axisLeft, axisBottom, type AxisScale } from 'd3-axis';
+import type { ScaleTime, ScaleBand, ScaleLinear } from 'd3-scale';
+import { timeFormat } from 'd3-time-format';
 
-import { getChartColors } from './types';
+import { type ChartColors } from './types';
 import { resolveCSSVariable } from './utils/canvas-helpers';
-import { CHART_FONT_SIZE, CHART_FONT_FAMILY, DEFAULT_MARGIN } from './constants';
-
-export type ChartColors = ReturnType<typeof getChartColors>;
+import { CHART_FONT_SIZE, CHART_FONT_FAMILY } from './constants';
 
 export interface CreateChartGroupsConfig {
-  svg: d3.Selection<SVGSVGElement, unknown, null, undefined>;
+  svg: Selection<SVGSVGElement, unknown, null, undefined>;
   margin: { left: number; top: number };
   useClipPath?: boolean;
 }
 
 export interface ChartGroups {
-  mainGroup: d3.Selection<SVGGElement, unknown, null, undefined>;
-  axesGroup: d3.Selection<SVGGElement, unknown, null, undefined>;
+  mainGroup: Selection<SVGGElement, unknown, null, undefined>;
+  axesGroup: Selection<SVGGElement, unknown, null, undefined>;
 }
 
 export const createChartGroups = ({
@@ -45,28 +47,11 @@ export const createChartGroups = ({
   return { mainGroup, axesGroup };
 };
 
-export type XScale =
-  | d3.ScaleTime<number, number>
-  | d3.ScaleBand<string>
-  | d3.ScaleLinear<number, number>;
-export type YScale = d3.ScaleLinear<number, number>;
-
-export interface ChartBaseConfig {
-  width: number;
-  height: number;
-  margin?: { top: number; right: number; bottom: number; left: number };
-}
-
-export const getChartDimensions = (config: ChartBaseConfig) => {
-  const margin = config.margin || DEFAULT_MARGIN;
-  const chartWidth = config.width - margin.left - margin.right;
-  const chartHeight = config.height - margin.top - margin.bottom;
-
-  return { margin, chartWidth, chartHeight };
-};
+export type XScale = ScaleTime<number, number> | ScaleBand<string> | ScaleLinear<number, number>;
+export type YScale = ScaleLinear<number, number>;
 
 const createHorizontalGrid = (
-  g: d3.Selection<SVGGElement, unknown, null, undefined>,
+  g: Selection<SVGGElement, unknown, null, undefined>,
   yScale: YScale,
   chartWidth: number,
   chartColors: ChartColors,
@@ -80,8 +65,7 @@ const createHorizontalGrid = (
     .append('g')
     .attr('class', 'grid')
     .call(
-      d3
-        .axisLeft(yScale)
+      axisLeft(yScale)
         .ticks(5)
         .tickSize(-chartWidth)
         .tickFormat(() => ''),
@@ -102,7 +86,7 @@ const createHorizontalGrid = (
 };
 
 const createVerticalGrid = (
-  g: d3.Selection<SVGGElement, unknown, null, undefined>,
+  g: Selection<SVGGElement, unknown, null, undefined>,
   xScale: XScale,
   chartHeight: number,
   chartColors: ChartColors,
@@ -118,7 +102,7 @@ const createVerticalGrid = (
     .attr('transform', `translate(0,${chartHeight})`);
 
   if ('bandwidth' in xScale) {
-    const bandScale = xScale as d3.ScaleBand<string>;
+    const bandScale = xScale as ScaleBand<string>;
     const domain = bandScale.domain();
     domain.forEach((d) => {
       const x = bandScale(d);
@@ -137,8 +121,7 @@ const createVerticalGrid = (
     });
   } else {
     verticalGridGroup.call(
-      d3
-        .axisBottom(xScale as d3.AxisScale<d3.NumberValue>)
+      axisBottom(xScale as AxisScale<number | Date>)
         .ticks(5)
         .tickSize(-chartHeight)
         .tickFormat(() => ''),
@@ -158,20 +141,22 @@ const createVerticalGrid = (
 };
 
 export const createGrid = (
-  g: d3.Selection<SVGGElement, unknown, null, undefined>,
+  g: Selection<SVGGElement, unknown, null, undefined>,
   xScale: XScale,
   yScale: YScale,
   chartWidth: number,
   chartHeight: number,
   chartColors: ChartColors,
   svgElement?: SVGSVGElement,
-): d3.Selection<SVGGElement, unknown, null, undefined> => {
+): Selection<SVGGElement, unknown, null, undefined> => {
   let gridGroup = g.select<SVGGElement>('g.grid-group');
   if (gridGroup.empty()) {
     gridGroup = g.append('g').attr('class', 'grid-group');
   } else {
     const savedTransform = gridGroup.attr('transform') || '';
-    gridGroup.selectAll('*').interrupt();
+    gridGroup.selectAll('*').each(function () {
+      interrupt(this);
+    });
     gridGroup.selectAll('*').remove();
     if (savedTransform) {
       gridGroup.attr('transform', savedTransform);
@@ -188,11 +173,11 @@ const getTimeFormatter = (min: number, max: number): ((date: Date) => string) =>
   const timeRange = max - min;
   const oneDay = 24 * 60 * 60 * 1000;
 
-  return timeRange > oneDay ? d3.timeFormat('%d.%m %H:%M') : d3.timeFormat('%H:%M:%S');
+  return timeRange > oneDay ? timeFormat('%d.%m %H:%M') : timeFormat('%H:%M:%S');
 };
 
 const createXAxis = (
-  g: d3.Selection<SVGGElement, unknown, null, undefined>,
+  g: Selection<SVGGElement, unknown, null, undefined>,
   xScale: XScale,
   chartHeight: number,
   chartWidth: number,
@@ -203,16 +188,16 @@ const createXAxis = (
   g.attr('transform', `translate(0,${chartHeight})`);
 
   if ('bandwidth' in xScale) {
-    const axis = d3.axisBottom(xScale as d3.ScaleBand<string>);
+    const axis = axisBottom(xScale as ScaleBand<string>);
     g.call(axis);
   } else {
     const domain = xScale.domain();
     const firstValue = domain[0];
     const isTimeScale = firstValue instanceof Date;
-    const linearScale = xScale as d3.ScaleLinear<number, number> | d3.ScaleTime<number, number>;
+    const linearScale = xScale as ScaleLinear<number, number> | ScaleTime<number, number>;
     const [min, max] = domain as [number | Date, number | Date];
 
-    const axis = d3.axisBottom(linearScale as d3.AxisScale<d3.NumberValue>);
+    const axis = axisBottom(linearScale as AxisScale<number | Date>);
 
     if (isTimeScale) {
       const timeFormat = getTimeFormatter((min as Date).getTime(), (max as Date).getTime());
@@ -283,13 +268,13 @@ const createXAxis = (
 };
 
 const createYAxis = (
-  g: d3.Selection<SVGGElement, unknown, null, undefined>,
+  g: Selection<SVGGElement, unknown, null, undefined>,
   yScale: YScale,
   chartHeight: number,
   chartColors: ChartColors,
   ticks?: number,
 ) => {
-  const axis = d3.axisLeft(yScale);
+  const axis = axisLeft(yScale);
   if (ticks !== undefined) {
     axis.ticks(ticks);
   }
@@ -327,7 +312,7 @@ const createYAxis = (
 };
 
 export const createAxes = (
-  g: d3.Selection<SVGGElement, unknown, null, undefined>,
+  g: Selection<SVGGElement, unknown, null, undefined>,
   xScale: XScale,
   yScale: YScale,
   chartHeight: number,
@@ -337,28 +322,17 @@ export const createAxes = (
   xTicks?: number,
   yTicks?: number,
 ): {
-  xAxisGroup: d3.Selection<SVGGElement, unknown, null, undefined>;
-  yAxisGroup: d3.Selection<SVGGElement, unknown, null, undefined>;
+  xAxisGroup: Selection<SVGGElement, unknown, null, undefined>;
+  yAxisGroup: Selection<SVGGElement, unknown, null, undefined>;
 } => {
   let xAxisGroup = g.select<SVGGElement>('g.x-axis-group');
-  let yAxisGroup = g.select<SVGGElement>('g.y-axis-group');
-
   if (xAxisGroup.empty()) {
     xAxisGroup = g.append('g').attr('class', 'x-axis-group');
-  } else {
-    xAxisGroup.selectAll('*').interrupt();
-    xAxisGroup.selectAll('*').remove();
   }
 
+  let yAxisGroup = g.select<SVGGElement>('g.y-axis-group');
   if (yAxisGroup.empty()) {
     yAxisGroup = g.append('g').attr('class', 'y-axis-group');
-  } else {
-    const savedTransform = yAxisGroup.attr('transform') || '';
-    yAxisGroup.selectAll('*').interrupt();
-    yAxisGroup.selectAll('*').remove();
-    if (savedTransform) {
-      yAxisGroup.attr('transform', savedTransform);
-    }
   }
 
   createXAxis(xAxisGroup, xScale, chartHeight, chartWidth, chartColors, margin, xTicks);
@@ -373,7 +347,7 @@ export interface LegendItem {
 }
 
 export const createLineLegend = (
-  g: d3.Selection<SVGGElement, unknown, null, undefined>,
+  g: Selection<SVGGElement, unknown, null, undefined>,
   items: LegendItem[],
   chartWidth: number,
   chartColors: ChartColors,

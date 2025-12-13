@@ -1,22 +1,32 @@
-import * as d3 from 'd3';
+import type { Selection } from 'd3-selection';
 
 import { type GetOrCreateLineGroupConfig, type GetOrCreateLinePathConfig } from './types';
 import { createChartGroups as createChartGroupsUtil } from '../shared/chart-utils';
 
 export const createChartGroups = (config: {
-  svg: d3.Selection<SVGSVGElement, unknown, null, undefined>;
+  svg: Selection<SVGSVGElement, unknown, null, undefined>;
   margin: { left: number; top: number };
 }) => createChartGroupsUtil({ ...config, useClipPath: true });
 
 export const getOrCreateLineGroup = ({
   mainGroup,
   lineIndex,
-}: GetOrCreateLineGroupConfig): d3.Selection<SVGGElement, unknown, null, undefined> => {
-  let lineGroup = mainGroup.select<SVGGElement>(`g.line-group-${lineIndex}`);
-  if (lineGroup.empty()) {
-    lineGroup = mainGroup.append('g').attr('class', `line-group-${lineIndex}`);
-  }
-  return lineGroup;
+}: GetOrCreateLineGroupConfig): Selection<SVGGElement, unknown, null, undefined> => {
+  mainGroup
+    .selectAll<SVGGElement, number>(`g.line-group-${lineIndex}`)
+    .data([lineIndex], (d) => d)
+    .join(
+      (enter) => enter.append('g').attr('class', `line-group-${lineIndex}`),
+      (update) => update,
+      (exit) => exit.remove(),
+    );
+
+  return mainGroup.select<SVGGElement>(`g.line-group-${lineIndex}`) as Selection<
+    SVGGElement,
+    unknown,
+    null,
+    undefined
+  >;
 };
 
 export const getOrCreateLinePath = ({
@@ -24,26 +34,32 @@ export const getOrCreateLinePath = ({
   color,
   strokeWidth,
   isInitialRender,
-}: GetOrCreateLinePathConfig): d3.Selection<SVGPathElement, unknown, null, undefined> => {
-  let path = lineGroup.select<SVGPathElement>('path.line-path');
-  if (path.empty()) {
-    path = lineGroup
-      .append('path')
-      .attr('class', 'line-path')
-      .attr('fill', 'none')
-      .attr('stroke', color)
-      .attr('stroke-width', strokeWidth)
-      .attr('stroke-opacity', 0.8);
+}: GetOrCreateLinePathConfig): Selection<SVGPathElement, unknown, null, undefined> => {
+  lineGroup
+    .selectAll<SVGPathElement, string>('path.line-path')
+    .data(['line-path'], (d) => d)
+    .join(
+      (enter) =>
+        enter
+          .append('path')
+          .attr('class', 'line-path')
+          .attr('fill', 'none')
+          .attr('stroke', color)
+          .attr('stroke-width', strokeWidth)
+          .attr('stroke-opacity', 0.8),
+      (update) => {
+        if (!isInitialRender) {
+          update.interrupt();
+        }
+        return update.attr('stroke', color).attr('stroke-width', strokeWidth);
+      },
+      (exit) => exit.remove(),
+    );
 
-    if (!isInitialRender) {
-      path.attr('opacity', 1);
-    }
-  } else {
-    if (!isInitialRender) {
-      path.interrupt();
-    }
-    path.attr('stroke', color).attr('stroke-width', strokeWidth);
-  }
-
-  return path;
+  return lineGroup.select<SVGPathElement>('path.line-path') as Selection<
+    SVGPathElement,
+    unknown,
+    null,
+    undefined
+  >;
 };

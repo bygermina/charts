@@ -1,10 +1,11 @@
-import * as d3 from 'd3';
+import type { Selection } from 'd3-selection';
+import type { ScaleLinear } from 'd3-scale';
 
 import type { BarDataPoint } from '../../shared/types';
 
 const updateBarPosition = (
-  selection: d3.Selection<SVGRectElement, BarDataPoint, SVGGElement, unknown>,
-  yScale: d3.ScaleLinear<number, number>,
+  selection: Selection<SVGRectElement, BarDataPoint, SVGGElement, unknown>,
+  yScale: ScaleLinear<number, number>,
   chartHeight: number,
 ): void => {
   selection.attr('y', (d) => yScale(d.value)).attr('height', (d) => chartHeight - yScale(d.value));
@@ -17,10 +18,10 @@ export const updateBars = ({
   yScale,
   chartHeight,
 }: {
-  barsEnter: d3.Selection<SVGRectElement, BarDataPoint, SVGGElement, unknown>;
-  barsUpdate: d3.Selection<SVGRectElement, BarDataPoint, SVGGElement, unknown>;
-  barsExit: d3.Selection<SVGRectElement, unknown, SVGGElement, unknown>;
-  yScale: d3.ScaleLinear<number, number>;
+  barsEnter: Selection<SVGRectElement, BarDataPoint, SVGGElement, unknown>;
+  barsUpdate: Selection<SVGRectElement, BarDataPoint, SVGGElement, unknown>;
+  barsExit: Selection<SVGRectElement, unknown, SVGGElement, unknown>;
+  yScale: ScaleLinear<number, number>;
   chartHeight: number;
 }): void => {
   const barsEnterData = barsEnter.data() as BarDataPoint[];

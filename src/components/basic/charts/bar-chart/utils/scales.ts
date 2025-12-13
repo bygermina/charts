@@ -1,4 +1,5 @@
-import * as d3 from 'd3';
+import { extent, max } from 'd3-array';
+import { scaleTime, scaleLinear, type ScaleTime, type ScaleLinear } from 'd3-scale';
 
 import { type CreateScalesConfig, type Scales } from './types';
 import { Y_SCALE_PADDING_MULTIPLIER } from '../../shared/constants';
@@ -9,17 +10,15 @@ export const createScales = ({
   chartHeight,
   margin,
 }: CreateScalesConfig): Scales => {
-  const timeExtent = d3.extent(data, (d) => new Date(d.time)) as [Date, Date];
-  const xScale = d3.scaleTime().domain(timeExtent).range([0, chartWidth]);
+  const timeExtent = extent(data, (d) => new Date(d.time)) as [Date, Date];
+  const xScale = scaleTime<number, number>().domain(timeExtent).range([0, chartWidth]);
 
-  const xAxisScale = d3
-    .scaleTime()
+  const xAxisScale = scaleTime<number, number>()
     .domain(timeExtent)
     .range([0, chartWidth - margin.right]);
 
-  const yScale = d3
-    .scaleLinear()
-    .domain([0, d3.max(data, (d) => d.value)! * Y_SCALE_PADDING_MULTIPLIER])
+  const yScale = scaleLinear<number, number>()
+    .domain([0, max(data, (d) => d.value)! * Y_SCALE_PADDING_MULTIPLIER])
     .nice()
     .range([chartHeight, 0]);
 

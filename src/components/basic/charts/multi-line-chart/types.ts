@@ -1,3 +1,7 @@
+import type { Selection } from 'd3-selection';
+import type { ScaleLinear } from 'd3-scale';
+import type { Line } from 'd3-shape';
+
 import { type DataPoint } from '../shared/types';
 
 export interface LineSeries {
@@ -26,9 +30,9 @@ export interface CreateScalesConfig {
 }
 
 export interface Scales {
-  xScale: d3.ScaleLinear<number, number>;
-  xAxisScale: d3.ScaleLinear<number, number>;
-  yScale: d3.ScaleLinear<number, number>;
+  xScale: ScaleLinear<number, number>;
+  xAxisScale: ScaleLinear<number, number>;
+  yScale: ScaleLinear<number, number>;
 }
 
 export interface CalculateMaxValueConfig {
@@ -42,37 +46,37 @@ export interface CalculateGridLeftShiftConfig {
 }
 
 export interface CreateLineGeneratorConfig {
-  xScale: d3.ScaleLinear<number, number>;
-  yScale: d3.ScaleLinear<number, number>;
+  xScale: ScaleLinear<number, number>;
+  yScale: ScaleLinear<number, number>;
 }
 
 export interface UpdateLinePathConfig {
-  path: d3.Selection<SVGPathElement, unknown, null, undefined>;
-  line: d3.Line<DataPoint>;
+  path: Selection<SVGPathElement, unknown, null, undefined>;
+  line: Line<DataPoint>;
   data: DataPoint[];
   isInitialRender: boolean;
 }
 
 export interface CalculateAnimationSpeedConfig {
   data: Array<{ time: number }>;
-  xScale: d3.ScaleLinear<number, number>;
+  xScale: ScaleLinear<number, number>;
   customSpeed?: number;
   fallbackSpeed: number;
 }
 
 export interface UpdateLineWithShiftConfig {
-  path: d3.Selection<SVGPathElement, unknown, null, undefined>;
-  line: d3.Line<DataPoint>;
-  lineGroup: d3.Selection<SVGGElement, unknown, null, undefined>;
+  path: Selection<SVGPathElement, unknown, null, undefined>;
+  line: Line<DataPoint>;
+  lineGroup: Selection<SVGGElement, unknown, null, undefined>;
   data: DataPoint[];
   shiftOffset: number;
   speed: number;
 }
 
 export interface UpdateLineConfig {
-  path: d3.Selection<SVGPathElement, unknown, null, undefined>;
-  line: d3.Line<DataPoint>;
-  lineGroup: d3.Selection<SVGGElement, unknown, null, undefined>;
+  path: Selection<SVGPathElement, unknown, null, undefined>;
+  line: Line<DataPoint>;
+  lineGroup: Selection<SVGGElement, unknown, null, undefined>;
   data: DataPoint[];
   isInitialRender: boolean;
   shouldShift: boolean;
@@ -81,15 +85,15 @@ export interface UpdateLineConfig {
 }
 
 export interface UpdateDotsConfig {
-  lineGroup: d3.Selection<SVGGElement, unknown, null, undefined>;
+  lineGroup: Selection<SVGGElement, unknown, null, undefined>;
   lineIndex: number;
   data: DataPoint[];
-  xScale: d3.ScaleLinear<number, number>;
-  yScale: d3.ScaleLinear<number, number>;
+  xScale: ScaleLinear<number, number>;
+  yScale: ScaleLinear<number, number>;
 }
 
 export interface CreateDotsConfig {
-  lineGroup: d3.Selection<SVGGElement, unknown, null, undefined>;
+  lineGroup: Selection<SVGGElement, unknown, null, undefined>;
   lineIndex: number;
   data: DataPoint[];
   color: string;
@@ -97,21 +101,21 @@ export interface CreateDotsConfig {
 }
 
 export interface GetOrCreateLineGroupConfig {
-  mainGroup: d3.Selection<SVGGElement, unknown, null, undefined>;
+  mainGroup: Selection<SVGGElement, unknown, null, undefined>;
   lineIndex: number;
 }
 
 export interface GetOrCreateLinePathConfig {
-  lineGroup: d3.Selection<SVGGElement, unknown, null, undefined>;
+  lineGroup: Selection<SVGGElement, unknown, null, undefined>;
   color: string;
   strokeWidth: number;
   isInitialRender: boolean;
 }
 
-import { type ChartColors } from '../shared/chart-utils';
+import { type ChartColors } from '../shared/types';
 
 export interface ManageLegendConfig {
-  mainGroup: d3.Selection<SVGGElement, unknown, null, undefined>;
+  mainGroup: Selection<SVGGElement, unknown, null, undefined>;
   lines: LineSeries[];
   chartWidth: number;
   showLegend: boolean;
@@ -119,9 +123,9 @@ export interface ManageLegendConfig {
 }
 
 export interface ManageGridConfig {
-  mainGroup: d3.Selection<SVGGElement, unknown, null, undefined>;
-  xScale: d3.ScaleLinear<number, number>;
-  yScale: d3.ScaleLinear<number, number>;
+  mainGroup: Selection<SVGGElement, unknown, null, undefined>;
+  xScale: ScaleLinear<number, number>;
+  yScale: ScaleLinear<number, number>;
   chartWidth: number;
   chartHeight: number;
   margin: { right: number };
@@ -131,8 +135,8 @@ export interface ManageGridConfig {
 }
 
 export interface AnimateGridAndAxisConfig {
-  gridGroup: d3.Selection<SVGGElement, unknown, null, undefined> | null;
-  xAxisGroup: d3.Selection<SVGGElement, unknown, null, undefined>;
+  gridGroup: Selection<SVGGElement, unknown, null, undefined> | null;
+  xAxisGroup: Selection<SVGGElement, unknown, null, undefined>;
   shiftOffset: number;
   speed: number;
   gridLeftShift: number;

@@ -1,4 +1,4 @@
-import * as d3 from 'd3';
+import { line, curveCatmullRom, type Line } from 'd3-shape';
 
 import {
   type CreateLineGeneratorConfig,
@@ -12,12 +12,11 @@ import { applyShiftAnimation } from '../shared/chart-animation';
 export const createLineGenerator = ({
   xScale,
   yScale,
-}: CreateLineGeneratorConfig): d3.Line<DataPoint> => {
-  return d3
-    .line<DataPoint>()
+}: CreateLineGeneratorConfig): Line<DataPoint> => {
+  return line<DataPoint>()
     .x((d) => xScale(d.time))
     .y((d) => yScale(d.value))
-    .curve(d3.curveCatmullRom.alpha(0.8))
+    .curve(curveCatmullRom.alpha(0.8))
     .defined((d) => d != null && !isNaN(d.time) && !isNaN(d.value));
 };
 

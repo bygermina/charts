@@ -1,6 +1,7 @@
-import * as d3 from 'd3';
+import { select } from 'd3-selection';
 
-import { type ChartColors, createAxes } from '../shared/chart-utils';
+import { type ChartColors } from '../shared/types';
+import { createAxes } from '../shared/chart-utils';
 import { calculateAnimationSpeed } from '../shared/chart-animation';
 import { DEFAULT_X_AXIS_TICKS, DEFAULT_Y_AXIS_TICKS } from '../shared/constants';
 import type { LineSeries } from './types';
@@ -9,16 +10,17 @@ import {
   createChartGroups,
   prepareChartData,
   createScalesForAxes,
+  updateScalesForAxes,
   calculateGridLeftShift,
   createLineGenerator,
   updateLine,
-  updateDotsCoordinates,
   createAndAnimateDots,
   getOrCreateLineGroup,
   getOrCreateLinePath,
   manageGrid,
   manageLegend,
   animateGridAndAxis,
+  type Scales,
 } from './index';
 
 interface RenderChartConfig {
@@ -28,6 +30,7 @@ interface RenderChartConfig {
     timeExtent: [number, number] | null;
     timeStep: number;
   }>;
+  scalesRef: React.RefObject<Scales | null>;
   isInitialRender: boolean;
   chartWidth: number;
   chartHeight: number;
@@ -45,6 +48,7 @@ export const renderMultiLineChart = ({
   svgElement,
   lines,
   prevMetadataRef,
+  scalesRef,
   isInitialRender,
   chartWidth,
   chartHeight,
@@ -57,7 +61,7 @@ export const renderMultiLineChart = ({
   yDomain,
   setIsInitialRender,
 }: RenderChartConfig): void => {
-  const svg = d3.select(svgElement);
+  const svg = select(svgElement);
 
   createClipPaths({
     svg,
@@ -80,14 +84,27 @@ export const renderMultiLineChart = ({
 
   const { timeExtent, timeStep, maxValue, shouldAnimateShift, shiftOffset } = chartData;
 
-  const { xScale, xAxisScale, yScale } = createScalesForAxes({
-    timeExtent,
-    maxValue,
-    chartWidth,
-    chartHeight,
-    margin,
-    yDomain,
-  });
+  if (!scalesRef.current) {
+    scalesRef.current = createScalesForAxes({
+      timeExtent,
+      maxValue,
+      chartWidth,
+      chartHeight,
+      margin,
+      yDomain,
+    });
+  } else {
+    updateScalesForAxes(scalesRef.current, {
+      timeExtent,
+      maxValue,
+      chartWidth,
+      chartHeight,
+      margin,
+      yDomain,
+    });
+  }
+
+  const { xScale, xAxisScale, yScale } = scalesRef.current;
 
   const gridLeftShift = calculateGridLeftShift({
     timeStep,
@@ -154,20 +171,14 @@ export const renderMultiLineChart = ({
     });
 
     if (showDots ?? true) {
-      updateDotsCoordinates({
-        lineGroup,
-        lineIndex,
-        data,
-        xScale,
-        yScale,
-      });
-
       createAndAnimateDots({
         lineGroup,
         lineIndex,
         data,
         color,
         isInitialRender,
+        xScale,
+        yScale,
       });
     }
   });

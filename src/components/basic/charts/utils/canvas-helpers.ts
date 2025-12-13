@@ -1,4 +1,5 @@
-import * as d3 from 'd3';
+import type { ScaleLinear } from 'd3-scale';
+import { timeFormat } from 'd3-time-format';
 
 import { CHART_FONT_SIZE, CHART_FONT_FAMILY } from '../shared/constants';
 
@@ -66,8 +67,8 @@ export const setupCanvas = (
 
 interface DrawAxesConfig {
   ctx: CanvasRenderingContext2D;
-  xAxisScale: d3.ScaleLinear<number, number>;
-  yScale: d3.ScaleLinear<number, number>;
+  xAxisScale: ScaleLinear<number, number>;
+  yScale: ScaleLinear<number, number>;
   chartWidth: number;
   chartHeight: number;
   margin: { top: number; right: number; bottom: number; left: number };
@@ -112,9 +113,8 @@ export const drawAxes = ({
     if (isTimestamp) {
       const timeRange = max - min;
       const oneDay = 24 * 60 * 60 * 1000;
-      const timeFormat =
-        timeRange > oneDay ? d3.timeFormat('%d.%m %H:%M') : d3.timeFormat('%H:%M:%S');
-      xTickFormat = (value: number) => timeFormat(new Date(value));
+      const formatter = timeRange > oneDay ? timeFormat('%d.%m %H:%M') : timeFormat('%H:%M:%S');
+      xTickFormat = (value: number) => formatter(new Date(value));
     } else {
       xTickFormat = (value: number) => String(value);
     }
@@ -176,8 +176,8 @@ export const drawAxes = ({
 
 interface DrawGridConfig {
   ctx: CanvasRenderingContext2D;
-  xAxisScale: d3.ScaleLinear<number, number>;
-  yScale: d3.ScaleLinear<number, number>;
+  xAxisScale: ScaleLinear<number, number>;
+  yScale: ScaleLinear<number, number>;
   chartWidth: number;
   chartHeight: number;
   margin: { top: number; right: number; bottom: number; left: number };

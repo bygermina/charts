@@ -1,4 +1,7 @@
-import * as d3 from 'd3';
+import { select } from 'd3-selection';
+import { zoom, zoomIdentity } from 'd3-zoom';
+import { forceSimulation, forceLink, forceManyBody, forceCenter, forceCollide } from 'd3-force';
+import { drag } from 'd3-drag';
 import { type ChartColors } from '@/components/basic/charts';
 
 interface Node {
@@ -87,35 +90,32 @@ export const createNetworkGraph = ({
 }: CreateNetworkGraphConfig): (() => void) => {
   const { nodes, links } = generateIoTNetwork();
 
-  const svg = d3.select(svgElement);
+  const svg = select(svgElement);
   svg.selectAll('*').remove();
 
   const g = svg.append('g');
 
-  const zoom = d3
-    .zoom<SVGSVGElement, unknown>()
+  const zoomBehavior = zoom<SVGSVGElement, unknown>()
     .scaleExtent([0.1, 4])
     .on('zoom', (event) => {
       g.attr('transform', event.transform);
     });
 
-  svg.call(zoom);
+  svg.call(zoomBehavior);
 
   const centerX = width / 2;
   const centerY = height / 2;
 
-  const simulation = d3
-    .forceSimulation<Node>(nodes)
+  const simulation = forceSimulation<Node>(nodes)
     .force(
       'link',
-      d3
-        .forceLink<Node, Link>(links)
+      forceLink<Node, Link>(links)
         .id((d) => d.id)
         .distance(100),
     )
-    .force('charge', d3.forceManyBody<Node>().strength(-300))
-    .force('center', d3.forceCenter(centerX, centerY))
-    .force('collision', d3.forceCollide<Node>().radius(25));
+    .force('charge', forceManyBody<Node>().strength(-300))
+    .force('center', forceCenter(centerX, centerY))
+    .force('collision', forceCollide<Node>().radius(25));
 
   const link = g
     .append('g')
@@ -137,8 +137,7 @@ export const createNetworkGraph = ({
     .append('g')
     .attr('class', 'node')
     .call(
-      d3
-        .drag<SVGGElement, Node>()
+      drag<SVGGElement, Node>()
         .on('start', (event, d) => {
           if (!event.active) simulation.alphaTarget(0.3).restart();
           d.fx = d.x;
@@ -161,10 +160,10 @@ export const createNetworkGraph = ({
     .attr('fill', (d) => getNodeColor(d.type, chartColors))
     .style('cursor', 'grab')
     .on('mouseenter', function (_event, d) {
-      d3.select(this).attr('r', getNodeRadiusHover(d.type));
+      select(this).attr('r', getNodeRadiusHover(d.type));
     })
     .on('mouseleave', function (_event, d) {
-      d3.select(this).attr('r', getNodeRadius(d.type));
+      select(this).attr('r', getNodeRadius(d.type));
     });
 
   node
@@ -187,10 +186,10 @@ export const createNetworkGraph = ({
     node.attr('transform', (d) => `translate(${d.x ?? 0},${d.y ?? 0})`);
   });
 
-  const initialTransform = d3.zoomIdentity
+  const initialTransform = zoomIdentity
     .translate(width / 2 - centerX, height / 2 - centerY)
     .scale(0.8);
-  svg.call(zoom.transform, initialTransform);
+  svg.call(zoomBehavior.transform, initialTransform);
 
   return () => {
     simulation.stop();

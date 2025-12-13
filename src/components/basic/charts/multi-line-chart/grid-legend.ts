@@ -1,4 +1,4 @@
-import * as d3 from 'd3';
+import type { Selection } from 'd3-selection';
 
 import { createGrid, createLineLegend } from '../shared/chart-utils';
 import {
@@ -38,7 +38,7 @@ export const manageGrid = ({
   gridLeftShift,
   chartColors,
   svgElement,
-}: ManageGridConfig): d3.Selection<SVGGElement, unknown, null, undefined> | null => {
+}: ManageGridConfig): Selection<SVGGElement, unknown, null, undefined> | null => {
   const existingGridGroup = mainGroup.select<SVGGElement>('g.grid-group');
   const savedTransform = existingGridGroup.empty() ? '' : existingGridGroup.attr('transform') || '';
 

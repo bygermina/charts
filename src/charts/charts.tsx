@@ -2,14 +2,14 @@ import { Typography } from '@/components/basic/typography/typography';
 import { ChartContainer } from '@/components/basic/charts';
 
 import { MultiLineChartD3 } from './components/multiline-chart-d3/multi-line-chart';
-// import { BarChartD3 } from './components/bar-chart-d3/bar-chart-d3';
-// import { GaugeChartD3 } from './components/gauge-chart-d3/gauge-chart-d3';
-// import { IoTSensors } from './components/iot-sensors/iot-sensors';
-// import { IoTNetworkGraph } from './components/iot-network-graph/iot-network-graph';
-// import RealTimeChart from './components/canvas-canvas/canvas';
+import { BarChartD3 } from './components/bar-chart-d3/bar-chart-d3';
+import { GaugeChartD3 } from './components/gauge-chart-d3/gauge-chart-d3';
+import { IoTSensors } from './components/iot-sensors/iot-sensors';
+import { IoTNetworkGraph } from './components/iot-network-graph/iot-network-graph';
+import RealTimeChart from './components/canvas-canvas/canvas';
+import BoilerDiagram from './components/flow/flow';
 
 import styles from './charts.module.scss';
-//import BoilerDiagram from './components/flow/flow';
 
 export const Charts = () => {
   return (
@@ -22,7 +22,7 @@ export const Charts = () => {
           <ChartContainer header="d3.js Multi Line Chart (SVG)" subtitle="data update every second">
             <MultiLineChartD3 />
           </ChartContainer>
-          {/* <ChartContainer
+          <ChartContainer
             header="Canvas chart 1000 points / sec"
             subtitle="data update every millisecond"
           >
@@ -47,7 +47,7 @@ export const Charts = () => {
           </ChartContainer>
           <ChartContainer header="Flow Diagram" subtitle="Simulates data flow between nodes">
             <BoilerDiagram />
-          </ChartContainer> */}
+          </ChartContainer>
         </div>
       </div>
     </section>

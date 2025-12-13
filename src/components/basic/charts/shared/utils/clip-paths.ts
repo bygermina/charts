@@ -1,7 +1,7 @@
-import * as d3 from 'd3';
+import type { Selection } from 'd3-selection';
 
 export interface CreateClipPathsConfig {
-  svg: d3.Selection<SVGSVGElement, unknown, null, undefined>;
+  svg: Selection<SVGSVGElement, unknown, null, undefined>;
   chartWidth: number;
   chartHeight: number;
   margin: { right: number };

@@ -1,7 +1,7 @@
 import { useRef, useMemo } from 'react';
 
 import { type ChartVariant, getChartColors } from './types';
-import { getChartDimensions, type ChartBaseConfig } from './chart-utils';
+import { getChartDimensions, type ChartBaseConfig } from './chart-dimensions';
 
 export interface UseChartBaseResult {
   svgRef: React.RefObject<SVGSVGElement | null>;

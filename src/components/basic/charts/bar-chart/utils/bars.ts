@@ -1,15 +1,16 @@
-import * as d3 from 'd3';
+import { select, type Selection } from 'd3-selection';
+import type { ScaleTime, ScaleLinear } from 'd3-scale';
 
-import { type ChartColors } from '../../shared/chart-utils';
+import { type ChartColors } from '../../shared/types';
 import { type CreateBarsConfig, type BarsSelection } from './types';
 import { BAR_OPACITY, BAR_BORDER_RADIUS } from '../../shared/constants';
 import type { BarDataPoint } from '../../shared/types';
 
 const createTooltip = (
-  g: d3.Selection<SVGGElement, unknown, null, undefined>,
+  g: Selection<SVGGElement, unknown, null, undefined>,
   d: BarDataPoint,
-  xScale: d3.ScaleTime<number, number>,
-  yScale: d3.ScaleLinear<number, number>,
+  xScale: ScaleTime<number, number>,
+  yScale: ScaleLinear<number, number>,
   chartColors: ChartColors,
 ): void => {
   g.selectAll('.bar-tooltip').remove();
@@ -33,22 +34,22 @@ const createTooltip = (
 };
 
 const attachHoverHandlers = (
-  selection: d3.Selection<SVGRectElement, BarDataPoint, SVGGElement, unknown>,
-  g: d3.Selection<SVGGElement, unknown, null, undefined>,
-  xScale: d3.ScaleTime<number, number>,
-  yScale: d3.ScaleLinear<number, number>,
+  selection: Selection<SVGRectElement, BarDataPoint, SVGGElement, unknown>,
+  g: Selection<SVGGElement, unknown, null, undefined>,
+  xScale: ScaleTime<number, number>,
+  yScale: ScaleLinear<number, number>,
   chartColors: ChartColors,
 ): void => {
   selection
     .on('mouseenter', null)
     .on('mouseleave', null)
     .on('mouseenter', function (_event, d) {
-      d3.select(this);
+      select(this);
 
       createTooltip(g, d, xScale, yScale, chartColors);
     })
     .on('mouseleave', function () {
-      d3.select(this);
+      select(this);
 
       g.selectAll('.bar-tooltip').remove();
     });

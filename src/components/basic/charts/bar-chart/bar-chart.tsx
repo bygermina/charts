@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import * as d3 from 'd3';
+import { select } from 'd3-selection';
 
 import { type DataPoint, type ChartVariant } from '../shared/types';
 import { useChartBase } from '../shared/use-chart-base';
@@ -48,14 +48,14 @@ export const BarChart = ({
     if (!svgElement) return;
 
     if (data.length === 0) {
-      const svg = d3.select(svgElement);
+      const svg = select(svgElement);
       svg.selectAll('*').interrupt();
       svg.selectAll('.bar').on('mouseenter', null).on('mouseleave', null);
       svg.selectAll('.bar-tooltip').remove();
     }
 
     return () => {
-      const svg = d3.select(svgElement);
+      const svg = select(svgElement);
       svg.selectAll('*').interrupt();
       svg.selectAll('.bar').on('mouseenter', null).on('mouseleave', null);
       svg.selectAll('.bar-tooltip').remove();
@@ -98,7 +98,7 @@ export const BarChart = ({
     const svgElement = svgRef.current;
     if (!svgElement || data.length === 0) return;
 
-    const svg = d3.select(svgElement);
+    const svg = select(svgElement);
     const { mainGroup, axesGroup } = createChartGroups({
       svg,
       margin,
@@ -151,7 +151,7 @@ export const BarChart = ({
 
     return () => {
       if (svgElement) {
-        const svg = d3.select(svgElement);
+        const svg = select(svgElement);
         svg.selectAll('*').interrupt();
         svg.selectAll('.bar').on('mouseenter', null).on('mouseleave', null);
         svg.selectAll('.bar-tooltip').remove();
@@ -159,5 +159,5 @@ export const BarChart = ({
     };
   }, [data, chartWidth, chartHeight, margin, showGrid, chartColors, svgRef]);
 
-  return <svg ref={svgRef} width={width} height={height} />;
+  return <svg width={width} height={height} />;
 };

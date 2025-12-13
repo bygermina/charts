@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { timer, type Timer } from 'd3-timer';
 
 interface UseVisibilityAwareTimerConfig {
   delay: number;
@@ -15,7 +16,8 @@ export const useVisibilityAwareTimer = ({
   onVisible,
   enabled = true,
 }: UseVisibilityAwareTimerConfig): void => {
-  const timeoutIdRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const timerRef = useRef<Timer | null>(null);
+  const lastTickRef = useRef<number>(0);
   const wasHiddenRef = useRef(document.hidden);
   const onTickRef = useRef(onTick);
   const onHiddenRef = useRef(onHidden);
@@ -30,41 +32,47 @@ export const useVisibilityAwareTimer = ({
   useEffect(() => {
     if (!enabled) return;
 
-    const tick = () => {
-      if (document.hidden) return;
-
-      onTickRef.current();
-      timeoutIdRef.current = setTimeout(tick, delay);
-    };
-
-    const startTick = () => {
-      if (!document.hidden && enabled) {
-        timeoutIdRef.current = setTimeout(tick, delay);
+    const startTimer = () => {
+      if (timerRef.current) {
+        timerRef.current.stop();
       }
+
+      lastTickRef.current = 0;
+
+      timerRef.current = timer((elapsed) => {
+        if (document.hidden) return;
+
+        const timeSinceLastTick = elapsed - lastTickRef.current;
+
+        if (timeSinceLastTick >= delay) {
+          onTickRef.current();
+          lastTickRef.current = elapsed;
+        }
+      });
     };
 
     const handleVisibilityChange = () => {
       if (document.hidden) {
         wasHiddenRef.current = true;
-        if (timeoutIdRef.current !== null) {
-          clearTimeout(timeoutIdRef.current);
-          timeoutIdRef.current = null;
+        if (timerRef.current) {
+          timerRef.current.stop();
+          timerRef.current = null;
         }
         onHiddenRef.current?.();
       } else if (wasHiddenRef.current && enabled) {
         wasHiddenRef.current = false;
         onVisibleRef.current?.();
-        startTick();
+        startTimer();
       }
     };
 
     document.addEventListener('visibilitychange', handleVisibilityChange);
-    startTick();
+    startTimer();
 
     return () => {
-      if (timeoutIdRef.current !== null) {
-        clearTimeout(timeoutIdRef.current);
-        timeoutIdRef.current = null;
+      if (timerRef.current) {
+        timerRef.current.stop();
+        timerRef.current = null;
       }
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
