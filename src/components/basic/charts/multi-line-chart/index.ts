@@ -1,6 +1,6 @@
 export type { LineSeries, Scales } from './types';
 
-export { prepareChartData, type ChartData } from './data-calculations';
+export { prepareChartData } from './data-calculations';
 
 export { calculateGridLeftShift } from './grid-shift';
 
@@ -8,7 +8,7 @@ export { createScalesForAxes, updateScalesForAxes } from './scales';
 
 export { createLineGenerator, updateLine } from './line-generator';
 
-export { updateDotsCoordinates, createAndAnimateDots } from './dots';
+export { createAndAnimateDots } from './dots';
 
 export { createChartGroups, getOrCreateLineGroup, getOrCreateLinePath } from './svg-groups';
 

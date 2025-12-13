@@ -3,7 +3,7 @@ import { useRef, useMemo } from 'react';
 import { type ChartVariant, getChartColors } from './types';
 import { getChartDimensions, type ChartBaseConfig } from './chart-dimensions';
 
-export interface UseChartBaseResult {
+interface UseChartBaseResult {
   svgRef: React.RefObject<SVGSVGElement | null>;
   chartColors: ReturnType<typeof getChartColors>;
   margin: { top: number; right: number; bottom: number; left: number };

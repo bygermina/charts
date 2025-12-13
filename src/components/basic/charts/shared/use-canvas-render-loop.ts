@@ -2,7 +2,7 @@ import { useEffect, useRef, type RefObject } from 'react';
 
 import { setupCanvas } from './utils/canvas-helpers';
 
-export interface UseCanvasRenderLoopConfig {
+interface UseCanvasRenderLoopConfig {
   canvasRef: RefObject<HTMLCanvasElement | null>;
   width: number;
   height: number;

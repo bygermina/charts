@@ -8,13 +8,13 @@ import { type ChartColors } from './types';
 import { resolveCSSVariable } from './utils/canvas-helpers';
 import { CHART_FONT_SIZE, CHART_FONT_FAMILY } from './constants';
 
-export interface CreateChartGroupsConfig {
+interface CreateChartGroupsConfig {
   svg: Selection<SVGSVGElement, unknown, null, undefined>;
   margin: { left: number; top: number };
   useClipPath?: boolean;
 }
 
-export interface ChartGroups {
+interface ChartGroups {
   mainGroup: Selection<SVGGElement, unknown, null, undefined>;
   axesGroup: Selection<SVGGElement, unknown, null, undefined>;
 }
@@ -47,8 +47,8 @@ export const createChartGroups = ({
   return { mainGroup, axesGroup };
 };
 
-export type XScale = ScaleTime<number, number> | ScaleBand<string> | ScaleLinear<number, number>;
-export type YScale = ScaleLinear<number, number>;
+type XScale = ScaleTime<number, number> | ScaleBand<string> | ScaleLinear<number, number>;
+type YScale = ScaleLinear<number, number>;
 
 const createHorizontalGrid = (
   g: Selection<SVGGElement, unknown, null, undefined>,
@@ -341,7 +341,7 @@ export const createAxes = (
   return { xAxisGroup, yAxisGroup };
 };
 
-export interface LegendItem {
+interface LegendItem {
   label: string;
   color: string;
 }

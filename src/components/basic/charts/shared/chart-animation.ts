@@ -2,13 +2,13 @@ import { scaleLinear, type ScaleLinear, type ScaleTime } from 'd3-scale';
 import type { Selection } from 'd3-selection';
 import { easeLinear } from 'd3-ease';
 
-export interface ShiftAnimationConfig {
+interface ShiftAnimationConfig {
   prevTimeExtent: [number, number] | null;
   currentTimeExtent: [number, number];
   chartWidth: number;
 }
 
-export interface ShiftAnimationResult {
+interface ShiftAnimationResult {
   shouldAnimate: boolean;
   shiftOffset: number;
 }
@@ -40,7 +40,7 @@ export const calculateShiftAnimation = ({
   return { shouldAnimate: false, shiftOffset: 0 };
 };
 
-export interface CalculateSpeedConfig {
+interface CalculateSpeedConfig {
   data: Array<{ time: number }>;
   xScale: ScaleLinear<number, number> | ScaleTime<number, number>;
   customSpeed?: number;
@@ -71,7 +71,7 @@ export const calculateAnimationSpeed = ({
   return fallbackSpeed || 100;
 };
 
-export interface ApplyShiftAnimationConfig {
+interface ApplyShiftAnimationConfig {
   element: Selection<SVGGElement, unknown, null, undefined>;
   shiftOffset: number;
   speed: number;

@@ -1,6 +1,6 @@
 import type { Selection } from 'd3-selection';
 
-export interface CreateClipPathsConfig {
+interface CreateClipPathsConfig {
   svg: Selection<SVGSVGElement, unknown, null, undefined>;
   chartWidth: number;
   chartHeight: number;

@@ -57,13 +57,6 @@ export interface UpdateLinePathConfig {
   isInitialRender: boolean;
 }
 
-export interface CalculateAnimationSpeedConfig {
-  data: Array<{ time: number }>;
-  xScale: ScaleLinear<number, number>;
-  customSpeed?: number;
-  fallbackSpeed: number;
-}
-
 export interface UpdateLineWithShiftConfig {
   path: Selection<SVGPathElement, unknown, null, undefined>;
   line: Line<DataPoint>;

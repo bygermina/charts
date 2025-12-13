@@ -3,28 +3,6 @@ import { select } from 'd3-selection';
 import { type DataPoint } from '../shared/types';
 import { type UpdateDotsConfig, type CreateDotsConfig } from './types';
 
-// Updates coordinates of dots on line
-export const updateDotsCoordinates = ({
-  lineGroup,
-  lineIndex,
-  data,
-  xScale,
-  yScale,
-}: UpdateDotsConfig): void => {
-  const dots = lineGroup
-    .selectAll<SVGCircleElement, DataPoint>(`.dot-${lineIndex}`)
-    .data(data, (d) => d.time);
-
-  dots
-    .join(
-      (enter) => enter.append('circle').attr('class', `dot-${lineIndex}`),
-      (update) => update,
-      (exit) => exit.remove(),
-    )
-    .attr('cx', (d) => xScale(d.time))
-    .attr('cy', (d) => yScale(d.value));
-};
-
 export const createAndAnimateDots = ({
   lineGroup,
   lineIndex,

@@ -22,7 +22,7 @@ const calculateTimeStep = (data: DataPoint[]): number => {
 
 export { calculateTimeStep };
 
-export interface PrepareChartDataConfig {
+interface PrepareChartDataConfig {
   lines: LineSeries[];
   prevMetadata: {
     timeExtent: [number, number] | null;
@@ -32,7 +32,7 @@ export interface PrepareChartDataConfig {
   chartWidth: number;
 }
 
-export interface ChartData {
+interface ChartData {
   timeExtent: [number, number];
   timeStep: number;
   maxValue: number;

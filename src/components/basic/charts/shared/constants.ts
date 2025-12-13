@@ -14,7 +14,6 @@ export const Y_SCALE_PADDING_MULTIPLIER = 1.1; // Adds 10% padding to top of Y a
 // Bar chart constants
 export const BAR_WIDTH_RATIO = 0.8; // Width of bar relative to available space between bars
 export const BAR_GAP = 2; // Gap between bars in pixels
-export const BAR_ANIMATION_DURATION = 800;
 export const BAR_OPACITY = 0.6;
 export const BAR_BORDER_RADIUS = 2;
 export const GRADIENT_START_OPACITY = 0.7;

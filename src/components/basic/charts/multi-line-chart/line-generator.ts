@@ -20,12 +20,7 @@ export const createLineGenerator = ({
     .defined((d) => d != null && !isNaN(d.time) && !isNaN(d.value));
 };
 
-export const updateLinePath = ({
-  path,
-  line,
-  data,
-  isInitialRender,
-}: UpdateLinePathConfig): void => {
+const updateLinePath = ({ path, line, data, isInitialRender }: UpdateLinePathConfig): void => {
   path.datum(data);
 
   if (isInitialRender && !document.hidden) {
@@ -50,7 +45,7 @@ export const updateLinePath = ({
   }
 };
 
-export const updateLineWithShift = ({
+const updateLineWithShift = ({
   path,
   line,
   lineGroup,
