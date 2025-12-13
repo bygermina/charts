@@ -87,7 +87,6 @@ export const MultiLineChart = ({
   });
 
   useEffect(() => {
-    console.log(1);
     const svgElement = svgRef.current;
     if (!svgElement) return;
 
@@ -111,7 +110,6 @@ export const MultiLineChart = ({
   }, [chartWidth, chartHeight, margin]);
 
   useEffect(() => {
-    console.log(2);
     if (lines.length === 0 || lines.some((line) => line.data.length === 0)) return;
     const svgElement = svgRef.current;
     if (!svgElement) return;
@@ -246,7 +244,6 @@ export const MultiLineChart = ({
   ]);
 
   useEffect(() => {
-    console.log(6);
     if (lines.length === 0 || lines.some((line) => line.data.length === 0)) return;
     const svgElement = svgRef.current;
     if (!svgElement) return;

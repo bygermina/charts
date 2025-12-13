@@ -66,7 +66,7 @@ export const BarChart = ({
     const svgElement = svgRef.current;
     if (!svgElement || data.length === 0) return;
 
-    const svg = d3.select(svgElement);
+    const svg = select(svgElement);
     svg.selectAll('.bar-tooltip').remove();
 
     createClipPaths({
@@ -159,5 +159,5 @@ export const BarChart = ({
     };
   }, [data, chartWidth, chartHeight, margin, showGrid, chartColors, svgRef]);
 
-  return <svg width={width} height={height} />;
+  return <svg ref={svgRef} width={width} height={height} />;
 };

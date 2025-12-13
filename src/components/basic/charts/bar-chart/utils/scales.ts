@@ -1,5 +1,5 @@
 import { extent, max } from 'd3-array';
-import { scaleTime, scaleLinear, type ScaleTime, type ScaleLinear } from 'd3-scale';
+import { scaleTime, scaleLinear } from 'd3-scale';
 
 import { type CreateScalesConfig, type Scales } from './types';
 import { Y_SCALE_PADDING_MULTIPLIER } from '../../shared/constants';

@@ -113,8 +113,7 @@ export const drawAxes = ({
     if (isTimestamp) {
       const timeRange = max - min;
       const oneDay = 24 * 60 * 60 * 1000;
-      const formatter =
-        timeRange > oneDay ? timeFormat('%d.%m %H:%M') : timeFormat('%H:%M:%S');
+      const formatter = timeRange > oneDay ? timeFormat('%d.%m %H:%M') : timeFormat('%H:%M:%S');
       xTickFormat = (value: number) => formatter(new Date(value));
     } else {
       xTickFormat = (value: number) => String(value);

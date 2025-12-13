@@ -13,4 +13,3 @@ export const getChartDimensions = (config: ChartBaseConfig) => {
 
   return { margin, chartWidth, chartHeight };
 };
-
