@@ -11,14 +11,13 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
-      styles: path.resolve(__dirname, './src/styles'),
+      styles: path.resolve(__dirname, './src/shared/config/styles'),
     },
   },
   css: {
     preprocessorOptions: {
       scss: {
         // Paths are resolved via resolve.alias configuration
-        // includePaths is no longer supported in Vite 5+
       },
     },
   },
