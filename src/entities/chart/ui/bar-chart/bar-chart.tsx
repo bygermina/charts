@@ -12,6 +12,7 @@ import { type DataPoint, type ChartVariant } from '../../model/types';
 import { createGrid, createAxes, createChartGroups } from '../../lib/chart-utils';
 import { createClipPaths } from '../../lib/utils/clip-paths';
 import { useChartBase } from '../../lib/use-chart-base';
+import { getClippedWidth } from '../../lib/chart-dimensions';
 import { createBars } from './utils/bars';
 import { createGradient } from './utils/gradients';
 import { createScales } from './utils/scales';
@@ -104,7 +105,19 @@ export const BarChart = ({
     });
 
     if (showGrid) {
-      createGrid(mainGroup, xScale, yScale, chartWidth, chartHeight, chartColors, svgElement);
+      const clippedWidth = getClippedWidth(chartWidth, margin.right);
+
+      createGrid(
+        mainGroup,
+        xAxisScale,
+        yScale,
+        clippedWidth,
+        chartHeight,
+        chartColors,
+        svgElement,
+        DEFAULT_X_AXIS_TICKS,
+        DEFAULT_Y_AXIS_TICKS,
+      );
     }
 
     createAxes(

@@ -57,20 +57,23 @@ const createHorizontalGrid = (
   chartWidth: number,
   chartColors: ChartColors,
   svgElement?: SVGSVGElement,
+  ticks?: number,
 ) => {
   const gridColor = svgElement
     ? resolveCSSVariable(chartColors.grid, svgElement)
     : chartColors.grid;
 
-  const gridGroup = g
-    .append('g')
-    .attr('class', 'grid')
-    .call(
-      axisLeft(yScale)
-        .ticks(5)
-        .tickSize(-chartWidth)
-        .tickFormat(() => ''),
-    );
+  const axis = axisLeft(yScale)
+    .tickSize(-chartWidth)
+    .tickFormat(() => '');
+
+  if (ticks !== undefined) {
+    axis.ticks(ticks);
+  } else {
+    axis.ticks(5);
+  }
+
+  const gridGroup = g.append('g').attr('class', 'grid').call(axis);
 
   gridGroup
     .selectAll('path')
@@ -92,6 +95,7 @@ const createVerticalGrid = (
   chartHeight: number,
   chartColors: ChartColors,
   svgElement?: SVGSVGElement,
+  ticks?: number,
 ) => {
   const gridColor = svgElement
     ? resolveCSSVariable(chartColors.grid, svgElement)
@@ -121,12 +125,17 @@ const createVerticalGrid = (
       }
     });
   } else {
-    verticalGridGroup.call(
-      axisBottom(xScale as AxisScale<number | Date>)
-        .ticks(5)
-        .tickSize(-chartHeight)
-        .tickFormat(() => ''),
-    );
+    const axis = axisBottom(xScale as AxisScale<number | Date>)
+      .tickSize(-chartHeight)
+      .tickFormat(() => '');
+
+    if (ticks !== undefined) {
+      axis.ticks(ticks);
+    } else {
+      axis.ticks(5);
+    }
+
+    verticalGridGroup.call(axis);
     verticalGridGroup
       .selectAll('path')
       .attr('stroke', 'none')
@@ -149,6 +158,8 @@ export const createGrid = (
   chartHeight: number,
   chartColors: ChartColors,
   svgElement?: SVGSVGElement,
+  xTicks?: number,
+  yTicks?: number,
 ): Selection<SVGGElement, unknown, null, undefined> => {
   let gridGroup = g.select<SVGGElement>('g.grid-group');
   if (gridGroup.empty()) {
@@ -164,8 +175,8 @@ export const createGrid = (
     }
   }
 
-  createHorizontalGrid(gridGroup, yScale, chartWidth, chartColors, svgElement);
-  createVerticalGrid(gridGroup, xScale, chartHeight, chartColors, svgElement);
+  createHorizontalGrid(gridGroup, yScale, chartWidth, chartColors, svgElement, yTicks);
+  createVerticalGrid(gridGroup, xScale, chartHeight, chartColors, svgElement, xTicks);
 
   return gridGroup;
 };

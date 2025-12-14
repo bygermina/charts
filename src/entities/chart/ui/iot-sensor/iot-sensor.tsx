@@ -1,4 +1,5 @@
 import { clamp } from '@/shared/lib/utils';
+
 import { type ChartVariant, getChartColors } from '../../model/types';
 
 import styles from './iot-sensor.module.scss';
