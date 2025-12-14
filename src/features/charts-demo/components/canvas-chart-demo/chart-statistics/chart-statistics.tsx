@@ -9,7 +9,7 @@ import {
   calculateExceedPercent,
   calculateMax,
   calculateMin,
-} from './statistics-utils';
+} from '../utils/statistics-utils';
 
 import styles from './chart-statistics.module.scss';
 
@@ -136,3 +136,4 @@ export const ChartStatistics = ({
     </div>
   );
 };
+

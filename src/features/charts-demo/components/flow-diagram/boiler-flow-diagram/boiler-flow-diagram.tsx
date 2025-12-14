@@ -2,19 +2,19 @@ import { useEffect, useRef, useState } from 'react';
 
 import { useVisibility } from '@/entities/chart';
 
-import { Pipe } from './components/pipe';
-import { Boiler } from './components/boiler';
-import { Sensor } from './components/sensor';
-import { Pump } from './components/pump';
-import { GasValve } from './components/gas-valve';
-import { Legend } from './components/legend';
-import type { Particle } from './types';
-import { getParticleColor, getLegendEntries } from './flow-config';
-import { getInitialParticles, updateParticles } from './particle-utils';
-import { createFlowSegments } from './flow-config-segments';
-import { FLOW_COLORS } from './flow-colors';
+import { Pipe } from '../components/pipe';
+import { Boiler } from '../components/boiler';
+import { Sensor } from '../components/sensor';
+import { Pump } from '../components/pump';
+import { GasValve } from '../components/gas-valve';
+import { Legend } from '../components/legend';
+import type { Particle } from '../config/types';
+import { getParticleColor, getLegendEntries } from '../config/flow-config';
+import { getInitialParticles, updateParticles } from '../utils/particle-utils';
+import { createFlowSegments } from '../config/flow-config-segments';
+import { FLOW_COLORS } from '../config/flow-colors';
 
-import styles from './flow.module.scss';
+import styles from './boiler-flow-diagram.module.scss';
 
 interface BoilerFlowDiagramProps {
   width?: number;
@@ -188,3 +188,4 @@ const BoilerFlowDiagram = ({ width = 900, height = 500 }: BoilerFlowDiagramProps
 };
 
 export default BoilerFlowDiagram;
+

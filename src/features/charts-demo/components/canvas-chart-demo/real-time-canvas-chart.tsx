@@ -11,7 +11,7 @@ import { createTrendGenerator } from '@/shared/lib/utils';
 import { ChartStatistics } from './chart-statistics';
 import { TogglePanel } from './toggle-panel';
 
-import styles from './canvas.module.scss';
+import styles from './real-time-canvas-chart.module.scss';
 
 const MAX_POINTS = 2000;
 const TIME_WINDOW_MS = 8000;

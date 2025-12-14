@@ -1,4 +1,4 @@
-import type { FlowType, Segment } from './types';
+import type { FlowType, Segment } from '../config/types';
 
 export const getSegmentLength = (seg: Segment): number => {
   return Math.sqrt(Math.pow(seg.to.x - seg.from.x, 2) + Math.pow(seg.to.y - seg.from.y, 2));
@@ -44,3 +44,4 @@ export const getSegmentChains = (segments: Segment[]): Map<FlowType, number[][]>
 export const getChainLength = (chain: number[], segments: Segment[]): number => {
   return chain.reduce((sum, segIndex) => sum + getSegmentLength(segments[segIndex]), 0);
 };
+

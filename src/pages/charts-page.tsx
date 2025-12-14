@@ -1,6 +1,6 @@
 import { BarChartDemo } from '@/features/charts-demo/components/bar-chart-demo/bar-chart-demo';
-import RealTimeCanvasChart from '@/features/charts-demo/components/canvas-chart-demo/real-time-canvas-chart';
-import BoilerFlowDiagram from '@/features/charts-demo/components/flow-diagram/boiler-flow-diagram';
+import { RealTimeCanvasChart } from '@/features/charts-demo/components/canvas-chart-demo';
+import { BoilerFlowDiagram } from '@/features/charts-demo/components/flow-diagram/boiler-flow-diagram';
 import { GaugeChartDemo } from '@/features/charts-demo/components/gauge-chart-demo/gauge-chart-demo';
 import { IoTNetworkGraph } from '@/features/charts-demo/components/iot-network-graph/iot-network-graph';
 import { IoTSensors } from '@/features/charts-demo/components/iot-sensors/iot-sensors';

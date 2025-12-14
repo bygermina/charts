@@ -7,3 +7,4 @@ export const FLOW_COLORS = {
   sensorTemperature: 'var(--color-red-500)',
   sensorPressure: 'var(--color-cyan-300)',
 } as const;
+

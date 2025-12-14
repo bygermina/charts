@@ -1,7 +1,7 @@
 import { clamp } from '@/shared/lib/utils';
 
-import type { Particle, Segment } from './types';
-import { getBaseSpeed } from './flow-config';
+import type { Particle, Segment } from '../config/types';
+import { getBaseSpeed } from '../config/flow-config';
 import { getSegmentLength, getSegmentChains, getChainLength } from './segment-utils';
 
 const MIN_PARTICLES = 3;
@@ -130,3 +130,4 @@ export const updateParticles = (
     };
   });
 };
+

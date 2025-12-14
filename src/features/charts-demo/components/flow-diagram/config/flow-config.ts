@@ -39,3 +39,4 @@ export const getLegendEntries = (): { label: string; color: string }[] => {
     { label: 'Air / Smoke', color: FLOW_COLORS.air },
   ];
 };
+

@@ -1,6 +1,6 @@
 import { type RealTimeSingleLineDataRef } from '@/entities/chart';
 
-import { type Statistics } from './chart-statistics';
+import { type Statistics } from '../chart-statistics';
 
 interface GetTimeWindowDataParams {
   data: RealTimeSingleLineDataRef;
@@ -104,3 +104,4 @@ export const calculateStatistics = ({
     exceedPercent: calculateExceedPercent({ data, timeWindowMs, highlightThreshold }),
   };
 };
+

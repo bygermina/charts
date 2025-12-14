@@ -59,3 +59,4 @@ export const createFlowSegments = (
     to: { x: boiler.x + boiler.w / 2, y: boiler.y - 180 },
   },
 ];
+
