@@ -26,7 +26,6 @@ export const updateLinesData = ({
       if (index < prevLines.length) {
         const prevLine = prevLines[index];
         const trimmed = prevLine.data.slice(1);
-
         trimmed.push({
           time: now,
           value: config.generateValue(),
@@ -54,7 +53,6 @@ export const updateLinesData = ({
     if (index >= configsWithColors.length) return prevLine;
 
     const trimmed = prevLine.data.slice(1);
-
     trimmed.push({
       time: now,
       value: configsWithColors[index].generateValue(),

@@ -93,12 +93,13 @@ export const MultiLineChartDemo = ({
   );
 
   const onUpdate = useCallback(() => {
+    const now = Date.now();
     setLines((prev) =>
       updateLinesData({
         prevLines: prev,
         configsWithColors,
         count,
-        now: Date.now(),
+        now,
       }),
     );
   }, [configsWithColors, count]);

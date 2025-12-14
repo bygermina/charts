@@ -1,4 +1,3 @@
-import type { ScaleTime } from 'd3-scale';
 import { select, type Selection } from 'd3-selection';
 
 import { BAR_OPACITY, BAR_BORDER_RADIUS } from '../../../model/constants';
@@ -13,13 +12,13 @@ import { type CreateBarsConfig, type BarsSelection } from './types';
 const createTooltip = (
   g: SVGGroupSelection,
   d: BarDataPoint,
-  xScale: ScaleTime<number, number>,
+  xScale: LinearScale,
   yScale: LinearScale,
   chartColors: ChartColors,
 ): void => {
   g.selectAll('.bar-tooltip').remove();
 
-  const x = xScale(new Date(d.time));
+  const x = xScale(d.time);
   const y = yScale(d.value) - 10;
 
   const tooltipGroup = g
@@ -40,7 +39,7 @@ const createTooltip = (
 const attachHoverHandlers = (
   selection: Selection<SVGRectElement, BarDataPoint, SVGGElement, unknown>,
   g: SVGGroupSelection,
-  xScale: ScaleTime<number, number>,
+  xScale: LinearScale,
   yScale: LinearScale,
   chartColors: ChartColors,
 ): void => {
@@ -83,7 +82,7 @@ export const createBars = ({
     .enter()
     .append('rect')
     .attr('class', 'bar')
-    .attr('x', (d) => xScale(new Date(d.time)) - barWidth / 2)
+    .attr('x', (d) => xScale(d.time) - barWidth / 2)
     .attr('width', barWidth)
     .attr('y', chartHeight)
     .attr('height', 0)
@@ -95,7 +94,7 @@ export const createBars = ({
 
   const barsUpdate = barsEnter.merge(bars);
 
-  barsUpdate.attr('x', (d) => xScale(new Date(d.time)) - barWidth / 2).attr('width', barWidth);
+  barsUpdate.attr('x', (d) => xScale(d.time) - barWidth / 2).attr('width', barWidth);
 
   attachHoverHandlers(barsUpdate, g, xScale, yScale, chartColors);
 

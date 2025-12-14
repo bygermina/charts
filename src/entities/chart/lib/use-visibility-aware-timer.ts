@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 
 import { useLatestRef } from './use-latest-ref';
 import { useVisibility } from './use-visibility';
@@ -19,14 +19,23 @@ export const useVisibilityAwareTimer = ({
   enabled = true,
 }: UseVisibilityAwareTimerConfig): void => {
   const timeoutIdRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const rafIdRef = useRef<number | null>(null);
   const onTickRef = useLatestRef(onTick);
   const delayRef = useLatestRef(delay);
 
-  const startTimer = useCallback(() => {
+  const stopTimer = useCallback(() => {
     if (timeoutIdRef.current !== null) {
       clearTimeout(timeoutIdRef.current);
       timeoutIdRef.current = null;
     }
+    if (rafIdRef.current !== null) {
+      cancelAnimationFrame(rafIdRef.current);
+      rafIdRef.current = null;
+    }
+  }, []);
+
+  const startTimer = useCallback(() => {
+    stopTimer();
 
     const scheduleNext = () => {
       onTickRef.current();
@@ -34,22 +43,22 @@ export const useVisibilityAwareTimer = ({
       timeoutIdRef.current = setTimeout(scheduleNext, delayRef.current);
     };
 
-    onTickRef.current();
     timeoutIdRef.current = setTimeout(scheduleNext, delayRef.current);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [stopTimer]);
 
   useVisibility({
     onHidden: () => {
-      if (timeoutIdRef.current !== null) {
-        clearTimeout(timeoutIdRef.current);
-        timeoutIdRef.current = null;
-      }
+      stopTimer();
       onHidden?.();
     },
     onVisible: () => {
       if (enabled) {
-        requestAnimationFrame(() => {
+        if (rafIdRef.current !== null) {
+          cancelAnimationFrame(rafIdRef.current);
+        }
+        rafIdRef.current = requestAnimationFrame(() => {
+          rafIdRef.current = null;
           startTimer();
         });
       }
@@ -57,4 +66,10 @@ export const useVisibilityAwareTimer = ({
     },
     enabled,
   });
+
+  useEffect(() => {
+    return () => {
+      stopTimer();
+    };
+  }, [stopTimer]);
 };

@@ -7,15 +7,15 @@ import { calculateTimeStep } from './data-calculations';
 export const calculateTimeExtent = ({ lines }: TimeExtentConfig): TimeExtentResult => {
   const allTimes = extractTimesFromLines(lines);
 
-  const rawTimeExtent = extent(allTimes);
+  const [minTime, maxTime] = extent(allTimes);
 
-  if (!rawTimeExtent[0] || !rawTimeExtent[1] || rawTimeExtent[0] === rawTimeExtent[1]) {
+  if (!minTime || !maxTime || minTime === maxTime) {
     throw new Error('Invalid time extent');
   }
 
   const timeStep = calculateTimeStep(lines[0]?.data || []);
-  const adjustedStartTime = rawTimeExtent[0] + timeStep;
-  const timeExtent: [number, number] = [adjustedStartTime, rawTimeExtent[1]];
+
+  const timeExtent: [number, number] = [minTime, maxTime];
 
   return { timeExtent, timeStep };
 };

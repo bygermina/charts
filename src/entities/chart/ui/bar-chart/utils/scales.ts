@@ -1,5 +1,5 @@
 import { extent, max } from 'd3-array';
-import { scaleTime, scaleLinear } from 'd3-scale';
+import { scaleLinear } from 'd3-scale';
 
 import { getClippedWidth } from '../../../lib/chart-dimensions';
 import { Y_SCALE_PADDING_MULTIPLIER } from '../../../model/constants';
@@ -11,10 +11,10 @@ export const createScales = ({
   chartHeight,
   margin,
 }: CreateScalesConfig): Scales => {
-  const timeExtent = extent(data, (d) => new Date(d.time)) as [Date, Date];
-  const xScale = scaleTime<number, number>().domain(timeExtent).range([0, chartWidth]);
+  const timeExtent = extent(data, (d) => d.time) as [number, number];
+  const xScale = scaleLinear<number, number>().domain(timeExtent).range([0, chartWidth]);
 
-  const xAxisScale = scaleTime<number, number>()
+  const xAxisScale = scaleLinear<number, number>()
     .domain(timeExtent)
     .range([0, getClippedWidth(chartWidth, margin.right)]);
 

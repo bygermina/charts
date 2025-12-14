@@ -2,11 +2,11 @@ import { type CalculateGridLeftShiftConfig } from '../types';
 
 export const calculateGridLeftShift = ({
   timeStep,
-  timeExtent,
+  timeExtent: [minTime, maxTime],
   chartWidth,
 }: CalculateGridLeftShiftConfig): number => {
-  if (timeStep > 0 && timeExtent[1] > timeExtent[0]) {
-    return (chartWidth * timeStep) / (timeExtent[1] - timeExtent[0]);
+  if (timeStep > 0 && maxTime > minTime) {
+    return (chartWidth * timeStep) / (maxTime - minTime);
   }
 
   return 0;

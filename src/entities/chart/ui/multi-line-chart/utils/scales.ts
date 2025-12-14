@@ -1,47 +1,49 @@
-import { scaleLinear } from 'd3-scale';
+import { scaleLinear, type ScaleLinear } from 'd3-scale';
 
 import { getClippedWidth } from '../../../lib/chart-dimensions';
 import { Y_SCALE_PADDING_MULTIPLIER } from '../../../model/constants';
 import { type CreateScalesConfig, type Scales } from '../types';
 
-export const createScalesForAxes = ({
-  timeExtent,
-  maxValue,
-  chartWidth,
-  chartHeight,
-  margin,
-  yDomain,
-}: CreateScalesConfig): Scales => {
-  const [t0, t1] = timeExtent;
+export const createOrUpdateXScale = (
+  timeExtent: [number, number],
+  chartWidth: number,
+  existingScale?: ScaleLinear<number, number>,
+): ScaleLinear<number, number> => {
+  const scale = existingScale ?? scaleLinear();
 
-  const xScale = scaleLinear<number, number>().domain([t0, t1]).range([0, chartWidth]);
-
-  const xAxisScale = scaleLinear<number, number>()
-    .domain([t0, t1])
-    .range([0, getClippedWidth(chartWidth, margin.right)]);
-
-  const yDomainBase = yDomain ?? [0, maxValue * Y_SCALE_PADDING_MULTIPLIER];
-
-  const yScale = scaleLinear<number, number>().domain(yDomainBase).nice().range([chartHeight, 0]);
-
-  return { xScale, xAxisScale, yScale };
+  return scale.domain(timeExtent).range([0, chartWidth]);
 };
 
-export const updateScalesForAxes = (
-  scales: Scales,
-  { timeExtent, maxValue, chartWidth, chartHeight, margin, yDomain }: CreateScalesConfig,
-): void => {
-  const [t0, t1] = timeExtent;
+export const createOrUpdateScalesForAxes = (
+  existingScales: Scales | null,
+  {
+    timeExtent,
+    maxValue,
+    chartWidth,
+    chartHeight,
+    margin,
+    yDomain,
+    xScale: providedXScale,
+  }: CreateScalesConfig & { xScale?: ScaleLinear<number, number> },
+): Scales => {
+  const xScale = createOrUpdateXScale(
+    timeExtent,
+    chartWidth,
+    providedXScale ?? existingScales?.xScale,
+  );
 
-  scales.xScale.domain([t0, t1]).range([0, chartWidth]);
-  scales.xAxisScale.domain([t0, t1]).range([0, getClippedWidth(chartWidth, margin.right)]);
+  const xAxisScale = existingScales?.xAxisScale ?? scaleLinear();
+  xAxisScale.domain(timeExtent).range([0, getClippedWidth(chartWidth, margin.right)]);
 
-  if (yDomain) {
-    scales.yScale.domain(yDomain).range([chartHeight, 0]);
-  } else {
-    scales.yScale
-      .domain([0, maxValue * Y_SCALE_PADDING_MULTIPLIER])
-      .nice()
-      .range([chartHeight, 0]);
-  }
+  const yScale = existingScales?.yScale ?? scaleLinear();
+  const yDomainValue = yDomain ?? [0, maxValue * Y_SCALE_PADDING_MULTIPLIER];
+  yScale.domain(yDomainValue);
+  if (!yDomain) yScale.nice();
+  yScale.range([chartHeight, 0]);
+
+  if (!existingScales) return { xScale, xAxisScale, yScale };
+
+  existingScales.xScale = providedXScale ?? xScale;
+
+  return existingScales;
 };

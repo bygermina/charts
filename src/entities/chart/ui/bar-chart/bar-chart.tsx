@@ -133,11 +133,11 @@ export const BarChart = ({
       DEFAULT_Y_AXIS_TICKS,
     );
 
-    const timeExtent = xScale.domain();
-    const timeRange = timeExtent[1].getTime() - timeExtent[0].getTime();
+    const [minTime, maxTime] = xScale.domain();
+    const timeRange = maxTime - minTime;
     const avgInterval = timeRange / Math.max(data.length - 1, 1);
-    const nextTime = new Date(timeExtent[0].getTime() + avgInterval);
-    const availableSpace = xScale(nextTime) - xScale(timeExtent[0]);
+    const nextTime = minTime + avgInterval;
+    const availableSpace = xScale(nextTime) - xScale(minTime);
     const barWidth = Math.max((availableSpace - BAR_GAP) * BAR_WIDTH_RATIO, 1);
 
     const { barsEnter, barsUpdate, barsExit } = createBars({

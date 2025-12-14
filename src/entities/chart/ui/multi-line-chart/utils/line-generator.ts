@@ -1,14 +1,38 @@
 import { line, curveCatmullRom, type Line } from 'd3-shape';
+import type { Selection } from 'd3-selection';
 
 import { applyShiftAnimation } from '../../../lib/chart-animation';
-import type { DataPoint } from '../../../model/types';
+import type { DataPoint, LinearScale } from '../../../model/types';
 
-import {
-  type CreateLineGeneratorConfig,
-  type UpdateLinePathConfig,
-  type UpdateLineWithShiftConfig,
-  type UpdateLineConfig,
-} from '../types';
+interface CreateLineGeneratorConfig {
+  xScale: LinearScale;
+  yScale: LinearScale;
+}
+
+interface UpdateLinePathConfig {
+  path: Selection<SVGPathElement, string, SVGGElement, number>;
+  line: Line<DataPoint>;
+  data: DataPoint[];
+}
+
+interface UpdateLineWithShiftConfig {
+  path: Selection<SVGPathElement, string, SVGGElement, number>;
+  line: Line<DataPoint>;
+  lineGroup: Selection<SVGGElement, number, SVGGElement, unknown>;
+  data: DataPoint[];
+  shiftOffset: number;
+  speed: number;
+}
+
+interface UpdateLineConfig {
+  path: Selection<SVGPathElement, string, SVGGElement, number>;
+  line: Line<DataPoint>;
+  lineGroup: Selection<SVGGElement, number, SVGGElement, unknown>;
+  data: DataPoint[];
+  shouldShift: boolean;
+  shiftOffset: number;
+  speed?: number;
+}
 
 export const createLineGenerator = ({
   xScale,
@@ -21,29 +45,9 @@ export const createLineGenerator = ({
     .defined((d) => d != null && !isNaN(d.time) && !isNaN(d.value));
 };
 
-const updateLinePath = ({ path, line, data, isInitialRender }: UpdateLinePathConfig): void => {
+const updateLinePath = ({ path, line, data }: UpdateLinePathConfig): void => {
   path.datum(data);
-
-  if (isInitialRender && !document.hidden) {
-    const finalPathD = line(data) || '';
-    const emptyPathD = '';
-
-    path.attr('d', emptyPathD).attr('opacity', 0);
-
-    requestAnimationFrame(() => {
-      if (document.hidden) {
-        path.attr('opacity', 1).attr('d', finalPathD);
-        return;
-      }
-
-      const node = path.node();
-      if (node && node.ownerDocument) {
-        path.attr('opacity', 1).attr('d', finalPathD);
-      }
-    });
-  } else {
-    path.attr('opacity', 1).attr('d', line(data));
-  }
+  path.attr('opacity', 1).attr('d', line(data));
 };
 
 const updateLineWithShift = ({
@@ -69,7 +73,6 @@ export const updateLine = ({
   line,
   lineGroup,
   data,
-  isInitialRender,
   shouldShift,
   shiftOffset,
   speed,
@@ -88,7 +91,6 @@ export const updateLine = ({
       path,
       line,
       data,
-      isInitialRender,
     });
   }
 };

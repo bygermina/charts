@@ -5,6 +5,7 @@ import { scaleLinear, type ScaleLinear, type ScaleTime } from 'd3-scale';
 interface ShiftAnimationConfig {
   prevTimeExtent: [number, number] | null;
   currentTimeExtent: [number, number];
+  currentXScale: ScaleLinear<number, number>;
   chartWidth: number;
 }
 
@@ -13,21 +14,26 @@ interface ShiftAnimationResult {
   shiftOffset: number;
 }
 
+//
 export const calculateShiftAnimation = ({
   prevTimeExtent,
   currentTimeExtent,
+  currentXScale,
   chartWidth,
 }: ShiftAnimationConfig): ShiftAnimationResult => {
   if (!prevTimeExtent || prevTimeExtent[0] === null || prevTimeExtent[1] === null) {
     return { shouldAnimate: false, shiftOffset: 0 };
   }
 
-  const prevXScale = scaleLinear().domain(prevTimeExtent).range([0, chartWidth]);
-  const currentXScale = scaleLinear().domain(currentTimeExtent).range([0, chartWidth]);
+  const [prevMinTime, prevMaxTime] = prevTimeExtent;
 
-  if (currentTimeExtent[1] > prevTimeExtent[1]) {
-    const oldFirstX = prevXScale(prevTimeExtent[0]);
-    const newFirstX = currentXScale(prevTimeExtent[0]);
+  const prevXScale = scaleLinear().domain(prevTimeExtent).range([0, chartWidth]);
+
+  const [, currentMaxTime] = currentTimeExtent;
+
+  if (currentMaxTime > prevMaxTime) {
+    const oldFirstX = prevXScale(prevMinTime);
+    const newFirstX = currentXScale(prevMinTime);
     const shiftOffset = oldFirstX - newFirstX;
 
     if (shiftOffset > 0) {

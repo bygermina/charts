@@ -2,7 +2,7 @@ import { type RefObject } from 'react';
 
 import { drawAxes, drawGrid } from '../../../lib/utils/canvas-helpers';
 import { type RealTimeSingleLineDataRef } from '../real-time-single-line-chart-canvas';
-import { createScalesForAxes, updateScalesForAxes, type Scales } from '../../multi-line-chart';
+import { createOrUpdateScalesForAxes, type Scales } from '../../multi-line-chart';
 
 interface RenderSingleLineChartConfig {
   ctx: CanvasRenderingContext2D;
@@ -58,11 +58,7 @@ export const renderSingleLineChart = ({
     yDomain,
   };
 
-  const scales = cachedScales || createScalesForAxes(scaleConfig);
-
-  if (cachedScales) {
-    updateScalesForAxes(scales, scaleConfig);
-  }
+  const scales = createOrUpdateScalesForAxes(cachedScales, scaleConfig);
 
   ctx.save();
   ctx.translate(margin.left, margin.top);

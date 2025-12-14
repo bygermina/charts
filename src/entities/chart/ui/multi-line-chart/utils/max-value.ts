@@ -5,5 +5,6 @@ import { type CalculateMaxValueConfig } from '../types';
 
 export const calculateMaxValue = ({ lines }: CalculateMaxValueConfig): number => {
   const allValues = extractValuesFromLines(lines);
+
   return max(allValues) ?? 0;
 };

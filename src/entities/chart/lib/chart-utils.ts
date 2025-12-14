@@ -185,22 +185,21 @@ const createXAxis = (
   g.attr('transform', `translate(0,${chartHeight})`);
 
   if ('bandwidth' in xScale) {
-    const axis = axisBottom(xScale as ScaleBand<string>);
+    const axis = axisBottom(xScale);
     g.call(axis);
   } else {
-    const [min, max] = xScale.domain();
-    const isTimeScale = min instanceof Date;
-
+    const [minTime, maxTime] = xScale.domain();
     const axis = axisBottom(xScale);
 
-    const minTime = isTimeScale ? (min as Date).getTime() : (min as number);
-    const maxTime = isTimeScale ? (max as Date).getTime() : (max as number);
-
-    if (isTimeScale || isTimestamp(minTime, maxTime)) {
+    if (
+      isTimestamp(minTime, maxTime) &&
+      typeof minTime === 'number' &&
+      typeof maxTime === 'number'
+    ) {
       const timeFormat = getTimeFormatter(minTime, maxTime);
       axis.tickFormat((d) => {
-        const date = d instanceof Date ? d : new Date(typeof d === 'number' ? d : Number(d));
-        return timeFormat(date);
+        const timestamp = d instanceof Date ? d.getTime() : typeof d === 'number' ? d : Number(d);
+        return timeFormat(new Date(timestamp));
       });
     }
 

@@ -1,4 +1,3 @@
-import type { Line } from 'd3-shape';
 import type { Selection } from 'd3-selection';
 
 import { type DataPoint, type LinearScale, type SVGGroupSelection } from '../../model/types';
@@ -44,38 +43,6 @@ export interface CalculateGridLeftShiftConfig {
   chartWidth: number;
 }
 
-export interface CreateLineGeneratorConfig {
-  xScale: LinearScale;
-  yScale: LinearScale;
-}
-
-export interface UpdateLinePathConfig {
-  path: Selection<SVGPathElement, string, SVGGElement, number>;
-  line: Line<DataPoint>;
-  data: DataPoint[];
-  isInitialRender: boolean;
-}
-
-export interface UpdateLineWithShiftConfig {
-  path: Selection<SVGPathElement, string, SVGGElement, number>;
-  line: Line<DataPoint>;
-  lineGroup: Selection<SVGGElement, number, SVGGElement, unknown>;
-  data: DataPoint[];
-  shiftOffset: number;
-  speed: number;
-}
-
-export interface UpdateLineConfig {
-  path: Selection<SVGPathElement, string, SVGGElement, number>;
-  line: Line<DataPoint>;
-  lineGroup: Selection<SVGGElement, number, SVGGElement, unknown>;
-  data: DataPoint[];
-  isInitialRender: boolean;
-  shouldShift: boolean;
-  shiftOffset: number;
-  speed?: number;
-}
-
 export interface UpdateDotsConfig {
   lineGroup: Selection<SVGGElement, number, SVGGElement, unknown>;
   lineIndex: number;
@@ -84,24 +51,10 @@ export interface UpdateDotsConfig {
   yScale: LinearScale;
 }
 
-export interface CreateDotsConfig {
-  lineGroup: Selection<SVGGElement, number, SVGGElement, unknown>;
-  lineIndex: number;
-  data: DataPoint[];
-  color: string;
-  isInitialRender: boolean;
-}
-
-export interface GetOrCreateLineGroupConfig {
-  mainGroup: SVGGroupSelection;
-  lineIndex: number;
-}
-
 export interface GetOrCreateLinePathConfig {
   lineGroup: Selection<SVGGElement, number, SVGGElement, unknown>;
   color: string;
   strokeWidth: number;
-  isInitialRender: boolean;
 }
 
 import { type ChartColors } from '../../model/types';

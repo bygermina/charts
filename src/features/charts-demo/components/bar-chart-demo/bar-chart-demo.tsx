@@ -37,14 +37,13 @@ export const BarChartDemo = ({
   useVisibilityAwareTimer({
     delay,
     onTick: () => {
+      const now = Date.now();
       setBarData((prev) => {
         const trimmed = prev.slice(1);
-
         trimmed.push({
-          time: Date.now(),
+          time: now,
           value: valueGenerator(),
         });
-
         return trimmed;
       });
     },
