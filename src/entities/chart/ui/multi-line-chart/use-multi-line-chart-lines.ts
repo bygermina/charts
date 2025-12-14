@@ -1,16 +1,17 @@
-import { useEffect, useState, type RefObject } from 'react';
+import { useEffect, type RefObject } from 'react';
 
-import { calculateAnimationSpeed } from '../../lib/chart-animation';
 import { createAxes } from '../../lib/chart-utils';
 import { DEFAULT_X_AXIS_TICKS, DEFAULT_Y_AXIS_TICKS } from '../../model/constants';
 import type { ChartColors, SVGGroupSelection } from '../../model/types';
-import { getOrCreateLineGroup, getOrCreateLinePath } from './components/svg-groups';
+import { getOrCreateLineGroup } from './utils/svg-group-helpers';
+import { getOrCreateLinePath } from './components/svg-groups';
 import { createAndAnimateDots } from './components/dots';
 import { prepareChartData } from './utils/data-calculations';
-import { calculateGridLeftShift } from './utils/grid-shift-calculations';
-import { createScalesForAxes, updateScalesForAxes } from './utils/scales';
+import { createOrUpdateScalesForAxes } from './utils/scales';
 import { createLineGenerator, updateLine } from './utils/line-generator';
 import type { LineSeries, Metadata, Scales } from './types';
+import { calculateGridLeftShift } from './utils/grid-shift-calculations';
+import { animateChartShift, calculateChartAnimationSpeed } from './utils/chart-animation';
 
 interface UseMultiLineChartLinesParams {
   lines: LineSeries[];
@@ -19,6 +20,7 @@ interface UseMultiLineChartLinesParams {
   axesGroupRef: RefObject<SVGGroupSelection | null>;
   scalesRef: RefObject<Scales | null>;
   xAxisGroupRef: RefObject<SVGGroupSelection | null>;
+  gridGroupRef: RefObject<SVGGroupSelection | null>;
   lastChartDataRef: RefObject<{
     shouldAnimateShift: boolean;
     shiftOffset: number;
@@ -29,8 +31,8 @@ interface UseMultiLineChartLinesParams {
   margin: { left: number; right: number; top: number; bottom: number };
   chartColors: ChartColors;
   yDomain?: [number, number];
-  animationSpeed?: number;
   strokeWidth: number;
+  animationSpeed?: number;
 }
 
 export const useMultiLineChartLines = ({
@@ -40,6 +42,7 @@ export const useMultiLineChartLines = ({
   axesGroupRef,
   scalesRef,
   xAxisGroupRef,
+  gridGroupRef,
   lastChartDataRef,
   prevMetadataRef,
   chartWidth,
@@ -50,13 +53,13 @@ export const useMultiLineChartLines = ({
   animationSpeed,
   strokeWidth,
 }: UseMultiLineChartLinesParams) => {
-  const [isInitialRender, setIsInitialRender] = useState(true);
-  const isVisible = !document.hidden;
-
   useEffect(() => {
     if (lines.length === 0 || lines.some((line) => line.data.length === 0)) {
       if (mainGroupRef.current) {
         mainGroupRef.current.selectAll('*').remove();
+      }
+      if (svgRef.current && axesGroupRef.current) {
+        axesGroupRef.current.selectAll('*').remove();
       }
       return;
     }
@@ -73,29 +76,20 @@ export const useMultiLineChartLines = ({
       chartWidth,
     });
 
-    const { timeExtent, timeStep, maxValue, shouldAnimateShift, shiftOffset } = chartData;
+    const { timeExtent, timeStep, maxValue, currentXScale, shouldAnimateShift, shiftOffset } =
+      chartData;
 
-    if (!scalesRef.current) {
-      scalesRef.current = createScalesForAxes({
-        timeExtent,
-        maxValue,
-        chartWidth,
-        chartHeight,
-        margin,
-        yDomain,
-      });
-    } else {
-      updateScalesForAxes(scalesRef.current, {
-        timeExtent,
-        maxValue,
-        chartWidth,
-        chartHeight,
-        margin,
-        yDomain,
-      });
-    }
+    scalesRef.current = createOrUpdateScalesForAxes(scalesRef.current, {
+      timeExtent,
+      maxValue,
+      chartWidth,
+      chartHeight,
+      margin,
+      yDomain,
+      xScale: currentXScale,
+    });
 
-    const { xScale, xAxisScale, yScale } = scalesRef.current;
+    const { xAxisScale, yScale } = scalesRef.current;
 
     const gridLeftShift = calculateGridLeftShift({
       timeStep,
@@ -121,36 +115,40 @@ export const useMultiLineChartLines = ({
 
     if (timeExtent) {
       const shouldShift = shouldAnimateShift && !document.hidden;
+
       const speed = shouldShift
-        ? calculateAnimationSpeed({
-            data: lines[0].data,
-            xScale,
+        ? calculateChartAnimationSpeed({
+            lines,
+            xScale: xAxisScale,
+            chartWidth,
             customSpeed: animationSpeed,
-            fallbackSpeed: chartWidth / 10,
           })
         : undefined;
 
+      const lineGroups: SVGGroupSelection[] = [];
+
       lines.forEach((lineSeries, lineIndex) => {
         const { data, color, showDots } = lineSeries;
-        const lineGroup = getOrCreateLineGroup({ mainGroup, lineIndex });
 
-        const line = createLineGenerator({ xScale, yScale });
+        const lineGroup = getOrCreateLineGroup({ mainGroup, lineIndex });
+        lineGroups.push(lineGroup as unknown as SVGGroupSelection);
+
+        if (!shouldShift) {
+          lineGroup.attr('transform', `translate(${-gridLeftShift}, 0)`);
+        }
+
+        const line = createLineGenerator({ xScale: xAxisScale, yScale });
+
         const path = getOrCreateLinePath({
           lineGroup,
           color,
           strokeWidth,
-          isInitialRender,
         });
 
         updateLine({
           path,
           line,
-          lineGroup,
           data,
-          isInitialRender,
-          shouldShift,
-          shiftOffset,
-          speed,
         });
 
         if (showDots ?? true) {
@@ -159,12 +157,23 @@ export const useMultiLineChartLines = ({
             lineIndex,
             data,
             color,
-            isInitialRender,
-            xScale,
+            xScale: xAxisScale,
             yScale,
           });
         }
       });
+
+      if (shouldShift && speed !== undefined) {
+        animateChartShift({
+          lineGroups,
+          gridGroup: gridGroupRef.current,
+          xAxisGroup: xAxisGroupRef.current,
+          shiftOffset,
+          speed,
+          gridLeftShift,
+          chartHeight,
+        });
+      }
     }
 
     prevMetadataRef.current = {
@@ -175,20 +184,6 @@ export const useMultiLineChartLines = ({
       shouldAnimateShift,
       shiftOffset,
     };
-    setIsInitialRender(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    lines,
-    chartWidth,
-    chartHeight,
-    margin,
-    yDomain,
-    isInitialRender,
-    animationSpeed,
-    strokeWidth,
-    chartColors,
-    isVisible,
-  ]);
-
-  return { isInitialRender };
+  }, [lines, chartWidth, chartHeight, margin, yDomain, strokeWidth, chartColors, animationSpeed]);
 };

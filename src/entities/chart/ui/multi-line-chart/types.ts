@@ -79,15 +79,6 @@ export interface ManageGridConfig {
   svgElement?: SVGSVGElement;
 }
 
-export interface AnimateGridAndAxisConfig {
-  gridGroup: SVGGroupSelection | null;
-  xAxisGroup: SVGGroupSelection;
-  shiftOffset: number;
-  speed: number;
-  gridLeftShift: number;
-  chartHeight: number;
-}
-
 export interface Metadata {
   timeExtent: [number, number] | null;
   timeStep: number;

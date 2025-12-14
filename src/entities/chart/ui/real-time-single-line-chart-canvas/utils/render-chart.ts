@@ -58,7 +58,7 @@ export const renderSingleLineChart = ({
     yDomain,
   };
 
-  const scales = createOrUpdateScalesForAxes(cachedScales, scaleConfig);
+  const scales = createOrUpdateScalesForAxes(cachedScales ?? null, scaleConfig);
 
   ctx.save();
   ctx.translate(margin.left, margin.top);

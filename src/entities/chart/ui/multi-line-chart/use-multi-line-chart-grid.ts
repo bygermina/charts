@@ -1,8 +1,7 @@
 import { useEffect, type RefObject } from 'react';
 
-import { calculateAnimationSpeed } from '../../lib/chart-animation';
 import type { ChartColors, SVGGroupSelection } from '../../model/types';
-import { animateGridAndAxis, manageGrid, manageLegend } from './components/grid-legend';
+import { manageGrid, manageLegend } from './components/grid-legend';
 import { calculateGridLeftShift } from './utils/grid-shift-calculations';
 import type { LineSeries, Metadata, Scales } from './types';
 
@@ -12,7 +11,6 @@ interface UseMultiLineChartGridParams {
   mainGroupRef: RefObject<SVGGroupSelection | null>;
   scalesRef: RefObject<Scales | null>;
   gridGroupRef: RefObject<SVGGroupSelection | null>;
-  xAxisGroupRef: RefObject<SVGGroupSelection | null>;
   lastChartDataRef: RefObject<{
     shouldAnimateShift: boolean;
     shiftOffset: number;
@@ -24,7 +22,6 @@ interface UseMultiLineChartGridParams {
   chartColors: ChartColors;
   showGrid: boolean;
   showLegend: boolean;
-  animationSpeed?: number;
 }
 
 export const useMultiLineChartGrid = ({
@@ -33,7 +30,6 @@ export const useMultiLineChartGrid = ({
   mainGroupRef,
   scalesRef,
   gridGroupRef,
-  xAxisGroupRef,
   lastChartDataRef,
   prevMetadataRef,
   chartWidth,
@@ -42,7 +38,6 @@ export const useMultiLineChartGrid = ({
   chartColors,
   showGrid,
   showLegend,
-  animationSpeed,
 }: UseMultiLineChartGridParams) => {
   useEffect(() => {
     if (lines.length === 0 || lines.some((line) => line.data.length === 0)) return;
@@ -62,6 +57,8 @@ export const useMultiLineChartGrid = ({
       chartWidth,
     });
 
+    const shouldAnimate = lastChartDataRef.current?.shouldAnimateShift && !document.hidden;
+
     const gridGroup = showGrid
       ? manageGrid({
           mainGroup,
@@ -73,6 +70,7 @@ export const useMultiLineChartGrid = ({
           gridLeftShift,
           chartColors,
           svgElement,
+          shouldAnimate,
         })
       : null;
 
@@ -85,31 +83,6 @@ export const useMultiLineChartGrid = ({
       showLegend,
       chartColors,
     });
-
-    if (gridGroup && xAxisGroupRef.current && lastChartDataRef.current) {
-      const { shouldAnimateShift, shiftOffset } = lastChartDataRef.current;
-      const shouldShift = shouldAnimateShift && !document.hidden;
-
-      if (shouldShift) {
-        const speed = calculateAnimationSpeed({
-          data: lines[0].data,
-          xScale: scalesRef.current.xScale,
-          customSpeed: animationSpeed,
-          fallbackSpeed: chartWidth / 10,
-        });
-
-        if (speed !== undefined) {
-          animateGridAndAxis({
-            gridGroup,
-            xAxisGroup: xAxisGroupRef.current,
-            shiftOffset,
-            speed,
-            gridLeftShift,
-            chartHeight,
-          });
-        }
-      }
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [showGrid, showLegend, chartColors, chartWidth, chartHeight, margin, lines, animationSpeed]);
+  }, [showGrid, showLegend, chartColors, chartWidth, chartHeight, margin, lines]);
 };

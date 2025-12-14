@@ -13,4 +13,4 @@ export { createAndAnimateDots } from './components/dots';
 export { createChartGroups, getOrCreateLinePath } from './components/svg-groups';
 export { getOrCreateLineGroup } from './utils/svg-group-helpers';
 
-export { manageGrid, manageLegend, animateGridAndAxis } from './components/grid-legend';
+export { manageGrid, manageLegend } from './components/grid-legend';

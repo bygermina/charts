@@ -2,8 +2,8 @@ import { select } from 'd3-selection';
 import { useEffect, useRef } from 'react';
 
 import { type ChartVariant, type SVGGroupSelection } from '../../model/types';
-import { createClipPaths } from '../../lib/utils/clip-paths';
 import { useChartBase } from '../../lib/use-chart-base';
+import { useVisibility } from '../../lib/use-visibility';
 import type { LineSeries, Metadata, Scales } from './types';
 import { DEFAULT_METADATA } from './types';
 import { createChartGroups } from './components/svg-groups';
@@ -55,6 +55,20 @@ export const MultiLineChart = ({
 
   const prevMetadataRef = useRef<Metadata>(DEFAULT_METADATA);
 
+  useVisibility({
+    onHidden: () => {
+      prevMetadataRef.current = DEFAULT_METADATA;
+      lastChartDataRef.current = null;
+
+      if (mainGroupRef.current) {
+        mainGroupRef.current.selectAll('*').remove();
+      }
+      if (axesGroupRef.current) {
+        axesGroupRef.current.selectAll('*').remove();
+      }
+    },
+  });
+
   useMultiLineChartLines({
     lines,
     svgRef,
@@ -62,6 +76,7 @@ export const MultiLineChart = ({
     axesGroupRef,
     scalesRef,
     xAxisGroupRef,
+    gridGroupRef,
     lastChartDataRef,
     prevMetadataRef,
     chartWidth,
@@ -69,8 +84,8 @@ export const MultiLineChart = ({
     margin,
     chartColors,
     yDomain,
-    animationSpeed,
     strokeWidth,
+    animationSpeed,
   });
 
   useEffect(() => {
@@ -78,13 +93,6 @@ export const MultiLineChart = ({
     if (!svgElement) return;
 
     const svg = select(svgElement);
-
-    createClipPaths({
-      svg,
-      chartWidth,
-      chartHeight,
-      margin,
-    });
 
     const { mainGroup, axesGroup } = createChartGroups({
       svg,
@@ -102,7 +110,6 @@ export const MultiLineChart = ({
     mainGroupRef,
     scalesRef,
     gridGroupRef,
-    xAxisGroupRef,
     lastChartDataRef,
     prevMetadataRef,
     chartWidth,
@@ -111,7 +118,6 @@ export const MultiLineChart = ({
     chartColors,
     showGrid,
     showLegend,
-    animationSpeed,
   });
 
   return (

@@ -14,7 +14,6 @@ interface ShiftAnimationResult {
   shiftOffset: number;
 }
 
-//
 export const calculateShiftAnimation = ({
   prevTimeExtent,
   currentTimeExtent,
@@ -105,14 +104,49 @@ export const applyShiftAnimation = <
   element.interrupt();
 
   const startTranslateX = currentTranslateX + shiftOffset;
-  element.attr('transform', `translate(${startTranslateX}, ${currentTranslateY})`);
+  element.attr('transform', `translate(${startTranslateX},${currentTranslateY})`);
 
   element
     .transition()
     .duration(duration)
     .ease(easeLinear)
-    .attr('transform', `translate(${targetX}, ${targetY})`);
+    .attr('transform', `translate(${targetX},${targetY})`);
 };
+
+interface AnimateChartElementsConfig {
+  elements: Array<{
+    element: Selection<SVGGElement, unknown, null, undefined>;
+    targetX: number;
+    targetY: number;
+  }>;
+  shiftOffset: number;
+  speed: number;
+}
+
+export const animateChartElements = ({
+  elements,
+  shiftOffset,
+  speed,
+}: AnimateChartElementsConfig): void => {
+  const duration = Math.abs(shiftOffset / speed) * 1000;
+
+  elements.forEach(({ element, targetX, targetY }) => {
+    const { x: currentTranslateX, y: currentTranslateY } = getCurrentTranslate(element);
+
+    element.interrupt();
+
+    const startTranslateX = currentTranslateX + shiftOffset;
+    element.attr('transform', `translate(${startTranslateX},${currentTranslateY})`);
+
+    element
+      .transition()
+      .duration(duration)
+      .ease(easeLinear)
+      .attr('transform', `translate(${targetX},${targetY})`);
+  });
+};
+
+const TRANSFORM_REGEX = /translate\(([^,]+),?\s*([^)]*)\)/;
 
 export const getCurrentTranslate = <
   Datum = unknown,
@@ -121,12 +155,14 @@ export const getCurrentTranslate = <
 >(
   element: Selection<SVGGElement, Datum, PElement, PDatum>,
 ): { x: number; y: number } => {
-  const currentTransform = element.attr('transform') || 'translate(0, 0)';
-  const match = currentTransform.match(/translate\(([^,]+),\s*([^)]+)\)/);
+  const currentTransform = element.attr('transform');
+  if (!currentTransform) return { x: 0, y: 0 };
+
+  const match = currentTransform.match(TRANSFORM_REGEX);
   if (match) {
     return {
       x: parseFloat(match[1]) || 0,
-      y: parseFloat(match[2]) || 0,
+      y: match[2] ? parseFloat(match[2]) || 0 : 0,
     };
   }
 

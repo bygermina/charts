@@ -1,13 +1,7 @@
 import { getClippedWidth } from '../../../lib/chart-dimensions';
 import { createGrid, createLineLegend } from '../../../lib/chart-utils';
-import { applyShiftAnimation, getCurrentTranslate } from '../../../lib/chart-animation';
 import type { SVGGroupSelection } from '../../../model/types';
-
-import {
-  type ManageLegendConfig,
-  type ManageGridConfig,
-  type AnimateGridAndAxisConfig,
-} from '../types';
+import { type ManageLegendConfig, type ManageGridConfig } from '../types';
 
 export const manageLegend = ({
   mainGroup,
@@ -39,7 +33,8 @@ export const manageGrid = ({
   gridLeftShift,
   chartColors,
   svgElement,
-}: ManageGridConfig): SVGGroupSelection | null => {
+  shouldAnimate = false,
+}: ManageGridConfig & { shouldAnimate?: boolean }): SVGGroupSelection | null => {
   const existingGridGroup = mainGroup.select<SVGGElement>('g.grid-group');
   const savedTransform = existingGridGroup.empty() ? '' : existingGridGroup.attr('transform') || '';
 
@@ -53,37 +48,10 @@ export const manageGrid = ({
     svgElement,
   );
 
-  const transform = savedTransform || `translate(${-gridLeftShift}, 0)`;
-  gridGroup.attr('transform', transform);
-
-  return gridGroup;
-};
-
-export const animateGridAndAxis = ({
-  gridGroup,
-  xAxisGroup,
-  shiftOffset,
-  speed,
-  gridLeftShift,
-  chartHeight,
-}: AnimateGridAndAxisConfig): void => {
-  if (gridGroup) {
-    const { y: gridY } = getCurrentTranslate(gridGroup);
-    applyShiftAnimation({
-      element: gridGroup,
-      shiftOffset,
-      speed,
-      targetX: -gridLeftShift,
-      targetY: gridY,
-    });
+  if (!shouldAnimate) {
+    const transform = savedTransform || `translate(${-gridLeftShift}, 0)`;
+    gridGroup.attr('transform', transform);
   }
 
-  const { y: xAxisY } = getCurrentTranslate(xAxisGroup);
-  applyShiftAnimation({
-    element: xAxisGroup,
-    shiftOffset,
-    speed,
-    targetX: -gridLeftShift,
-    targetY: xAxisY || chartHeight,
-  });
+  return gridGroup;
 };
