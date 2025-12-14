@@ -5,6 +5,7 @@ export { IoTSensor } from './ui/iot-sensor/iot-sensor';
 export { MultiLineChart } from './ui/multi-line-chart/multi-line-chart';
 export { RealTimeSingleLineChartCanvas } from './ui/real-time-single-line-chart-canvas/real-time-single-line-chart-canvas';
 export { ResponsiveChartWrapper } from './ui/responsive-chart-wrapper';
+export type { ChartSize } from './ui/responsive-chart-wrapper/responsive-chart-wrapper';
 
 export type { DataPoint, BarDataPoint, ChartVariant, ChartColors } from './model/types';
 export { getChartColors } from './model/types';

@@ -5,8 +5,13 @@ import { useContainerSize } from '../../lib/use-container-size';
 
 import styles from './responsive-chart-wrapper.module.scss';
 
+export interface ChartSize {
+  width: number;
+  height: number;
+}
+
 interface ResponsiveChartWrapperProps {
-  children: (size: { width: number; height: number }) => ReactNode;
+  children: (size: ChartSize) => ReactNode;
   width?: number;
   height?: number;
   fixedWidth?: boolean;

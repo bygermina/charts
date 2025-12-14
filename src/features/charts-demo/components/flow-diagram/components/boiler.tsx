@@ -35,7 +35,7 @@ export const Boiler = ({
               Q ${dropX + dropWidth * 0.4} ${dropY} ${dropX + dropWidth * 0.5} ${dropY - dropHeight * 0.3}
               Q ${dropX + dropWidth * 0.3} ${dropY - dropHeight * 0.7} ${dropX} ${dropY - dropHeight}
               Z`}
-          fill="rgba(220, 50, 50, 0.9)"
+          fill="var(--color-red-500-90)"
         />
         <path
           d={`M ${dropX} ${dropY - dropHeight * 0.8} 
@@ -44,7 +44,7 @@ export const Boiler = ({
               Q ${dropX + dropWidth * 0.25} ${dropY} ${dropX + dropWidth * 0.3} ${dropY - dropHeight * 0.2}
               Q ${dropX + dropWidth * 0.2} ${dropY - dropHeight * 0.5} ${dropX} ${dropY - dropHeight * 0.8}
               Z`}
-          fill="rgba(255, 100, 50, 0.95)"
+          fill="var(--color-orange-600-95)"
         />
       </g>
     );
@@ -60,8 +60,8 @@ export const Boiler = ({
     <g>
       <defs>
         <linearGradient id={gradientId} x1="0%" y1="100%" x2="0%" y2="0%">
-          <stop offset="0%" stopColor="rgb(59, 130, 246)" stopOpacity="0.8" />
-          <stop offset="100%" stopColor="rgb(239, 68, 68)" stopOpacity="0.8" />
+          <stop offset="0%" stopColor="var(--color-blue-400)" stopOpacity="0.8" />
+          <stop offset="100%" stopColor="var(--color-red-500)" stopOpacity="0.8" />
         </linearGradient>
       </defs>
       <rect
@@ -70,8 +70,8 @@ export const Boiler = ({
         width={width}
         height={height}
         rx={18}
-        fill="rgb(30, 41, 59)"
-        stroke="rgb(71, 85, 105)"
+        fill="var(--color-slate-800)"
+        stroke="var(--color-slate-600)"
         strokeWidth={2}
       />
       <rect
@@ -81,7 +81,7 @@ export const Boiler = ({
         height={waterContainerHeight}
         rx={12}
         fill={`url(#${gradientId})`}
-        stroke="rgba(6, 182, 212, 0.5)"
+        stroke="var(--color-cyan-400-50)"
         strokeWidth={2}
       />
       {renderDrop(drop1X, flameY)}

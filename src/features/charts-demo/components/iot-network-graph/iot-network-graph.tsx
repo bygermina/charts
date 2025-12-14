@@ -1,6 +1,11 @@
 import { useEffect, useRef } from 'react';
 
-import { getChartColors, type ChartVariant, ResponsiveChartWrapper } from '@/entities/chart';
+import {
+  getChartColors,
+  type ChartVariant,
+  ResponsiveChartWrapper,
+  type ChartSize,
+} from '@/entities/chart';
 
 import { createNetworkGraph } from './create-network-graph';
 
@@ -12,15 +17,13 @@ interface IoTNetworkGraphProps {
   variant?: ChartVariant;
 }
 
-const NetworkGraphContent = ({
-  width,
-  height,
-  variant = 'normal',
-}: {
+interface NetworkGraphContentProps {
   width: number;
   height: number;
   variant?: ChartVariant;
-}) => {
+}
+
+const NetworkGraphContent = ({ width, height, variant = 'normal' }: NetworkGraphContentProps) => {
   const svgRef = useRef<SVGSVGElement>(null);
   const chartColors = getChartColors(variant);
 
@@ -50,7 +53,7 @@ export const IoTNetworkGraph = ({
 }: IoTNetworkGraphProps) => {
   return (
     <ResponsiveChartWrapper width={width} height={height}>
-      {({ width: chartWidth, height: chartHeight }: { width: number; height: number }) => (
+      {({ width: chartWidth, height: chartHeight }: ChartSize) => (
         <NetworkGraphContent width={chartWidth} height={chartHeight} variant={variant} />
       )}
     </ResponsiveChartWrapper>

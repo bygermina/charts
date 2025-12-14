@@ -36,7 +36,7 @@ export const GasValve = ({ x, y, label, color, fontSize = 12 }: GasValveProps) =
         <text
           x={x + size + 8}
           y={y}
-          fill="rgb(203, 213, 225)"
+          fill="var(--color-slate-300)"
           fontSize={fontSize}
           fontFamily="system-ui, -apple-system, BlinkMacSystemFont, sans-serif"
           dominantBaseline="middle"

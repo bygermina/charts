@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 
-export const useLatestRef = <T>(value: T): React.MutableRefObject<T> => {
+export const useLatestRef = <T>(value: T): React.RefObject<T> => {
   const ref = useRef(value);
 
   useEffect(() => {
@@ -9,4 +9,3 @@ export const useLatestRef = <T>(value: T): React.MutableRefObject<T> => {
 
   return ref;
 };
-

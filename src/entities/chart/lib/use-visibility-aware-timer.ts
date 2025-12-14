@@ -1,5 +1,4 @@
-import { timer, type Timer } from 'd3-timer';
-import { useEffect, useRef } from 'react';
+import { useCallback, useRef } from 'react';
 
 import { useLatestRef } from './use-latest-ref';
 import { useVisibility } from './use-visibility';
@@ -19,60 +18,43 @@ export const useVisibilityAwareTimer = ({
   onVisible,
   enabled = true,
 }: UseVisibilityAwareTimerConfig): void => {
-  const timerRef = useRef<Timer | null>(null);
-  const lastTickRef = useRef<number>(0);
+  const timeoutIdRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const onTickRef = useLatestRef(onTick);
   const delayRef = useLatestRef(delay);
-  const startTimerRef = useRef<(() => void) | null>(null);
 
-  const startTimer = () => {
-    if (timerRef.current) {
-      timerRef.current.stop();
+  const startTimer = useCallback(() => {
+    if (timeoutIdRef.current !== null) {
+      clearTimeout(timeoutIdRef.current);
+      timeoutIdRef.current = null;
     }
 
-    lastTickRef.current = 0;
+    const scheduleNext = () => {
+      onTickRef.current();
 
-    timerRef.current = timer((elapsed) => {
-      if (document.hidden) return;
+      timeoutIdRef.current = setTimeout(scheduleNext, delayRef.current);
+    };
 
-      const timeSinceLastTick = elapsed - lastTickRef.current;
-
-      if (timeSinceLastTick >= delayRef.current) {
-        onTickRef.current();
-        lastTickRef.current = elapsed;
-      }
-    });
-  };
-
-  startTimerRef.current = startTimer;
+    onTickRef.current();
+    timeoutIdRef.current = setTimeout(scheduleNext, delayRef.current);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useVisibility({
     onHidden: () => {
-      if (timerRef.current) {
-        timerRef.current.stop();
-        timerRef.current = null;
+      if (timeoutIdRef.current !== null) {
+        clearTimeout(timeoutIdRef.current);
+        timeoutIdRef.current = null;
       }
       onHidden?.();
     },
     onVisible: () => {
-      if (enabled && startTimerRef.current) {
-        startTimerRef.current();
+      if (enabled) {
+        requestAnimationFrame(() => {
+          startTimer();
+        });
       }
       onVisible?.();
     },
     enabled,
   });
-
-  useEffect(() => {
-    if (!enabled) return;
-
-    startTimer();
-
-    return () => {
-      if (timerRef.current) {
-        timerRef.current.stop();
-        timerRef.current = null;
-      }
-    };
-  }, [delay, enabled]);
 };

@@ -8,6 +8,7 @@ import {
   type ChartColors,
   useVisibilityAwareTimer,
   ResponsiveChartWrapper,
+  type ChartSize,
 } from '@/entities/chart';
 import { generateTimeSeriesData } from '@/shared/lib/utils';
 
@@ -61,15 +62,17 @@ const createInitialLines = (
   count: number,
   linesWithColors: ReturnType<typeof createLinesWithColors>,
 ): LineSeries[] =>
-  linesWithColors.map((config) => ({
-    data: generateTimeSeriesData({
-      count,
-      valueGenerator: config.generateValue,
-    }),
-    color: config.color,
-    label: config.label,
-    showDots: config.showDots,
-  }));
+  linesWithColors.map((config) => {
+    const { generateValue: valueGenerator, ...lineProps } = config;
+
+    return {
+      ...lineProps,
+      data: generateTimeSeriesData({
+        count,
+        valueGenerator,
+      }),
+    };
+  });
 
 export const MultiLineChartDemo = ({
   delay = 1000,
@@ -80,35 +83,40 @@ export const MultiLineChartDemo = ({
   height = DEFAULT_CHART_HEIGHT,
   linesConfig = DEFAULT_LINES_CONFIG,
 }: MultiLineChartDemoProps) => {
-  const linesWithColors = useMemo(
+  const configsWithColors = useMemo(
     () => createLinesWithColors(linesConfig, variant),
     [linesConfig, variant],
   );
 
   const [lines, setLines] = useState<LineSeries[]>(() =>
-    createInitialLines(count, linesWithColors),
+    createInitialLines(count, configsWithColors),
   );
 
   const onUpdate = useCallback(() => {
     setLines((prev) =>
       updateLinesData({
         prevLines: prev,
-        linesWithColors,
+        configsWithColors,
         count,
         now: Date.now(),
       }),
     );
-  }, [linesWithColors, count]);
+  }, [configsWithColors, count]);
+
+  const onVisible = useCallback(() => {
+    setLines(createInitialLines(count, configsWithColors));
+  }, [configsWithColors, count]);
 
   useVisibilityAwareTimer({
     delay,
     onTick: onUpdate,
-    onVisible: onUpdate,
+    onVisible: onVisible,
+    onHidden: () => setLines([]),
   });
 
   return (
     <ResponsiveChartWrapper width={width} height={height} fixedWidth={!width}>
-      {({ width: chartWidth, height: chartHeight }) => (
+      {({ width: chartWidth, height: chartHeight }: ChartSize) => (
         <MultiLineChart
           lines={lines}
           width={chartWidth}

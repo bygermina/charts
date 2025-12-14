@@ -44,4 +44,3 @@ export const getSegmentChains = (segments: Segment[]): Map<FlowType, number[][]>
 export const getChainLength = (chain: number[], segments: Segment[]): number => {
   return chain.reduce((sum, segIndex) => sum + getSegmentLength(segments[segIndex]), 0);
 };
-

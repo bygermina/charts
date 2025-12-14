@@ -41,12 +41,19 @@ export const Sensor = ({
             opacity={0.6}
           />
         )}
-        <circle cx={x} cy={y} r={radius} fill="rgb(16, 19, 24)" stroke={color} strokeWidth={3} />
+        <circle
+          cx={x}
+          cy={y}
+          r={radius}
+          fill="var(--color-background-dark)"
+          stroke={color}
+          strokeWidth={3}
+        />
         <circle
           cx={x}
           cy={y}
           r={innerRadius}
-          fill="rgba(30, 41, 59)"
+          fill="var(--color-slate-800-50)"
           stroke={color}
           strokeWidth={1}
           opacity={0.5}
@@ -82,7 +89,7 @@ export const Sensor = ({
           <text
             x={x + radius + 8}
             y={y}
-            fill="rgb(203, 213, 225)"
+            fill="var(--color-slate-300)"
             fontSize={fontSize}
             fontFamily="system-ui, -apple-system, BlinkMacSystemFont, sans-serif"
             dominantBaseline="middle"

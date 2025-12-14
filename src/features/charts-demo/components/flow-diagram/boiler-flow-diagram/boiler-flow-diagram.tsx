@@ -21,7 +21,7 @@ interface BoilerFlowDiagramProps {
   height?: number;
 }
 
-const BoilerFlowDiagram = ({ width = 900, height = 500 }: BoilerFlowDiagramProps) => {
+export const BoilerFlowDiagram = ({ width = 900, height = 500 }: BoilerFlowDiagramProps) => {
   const boiler = {
     x: width / 2 - 120,
     y: height / 2 - 150,
@@ -186,6 +186,3 @@ const BoilerFlowDiagram = ({ width = 900, height = 500 }: BoilerFlowDiagramProps
     </div>
   );
 };
-
-export default BoilerFlowDiagram;
-

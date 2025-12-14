@@ -23,7 +23,7 @@ export const Legend = ({ entries, x = 30, y = 30, fontSize = 14 }: LegendProps) 
             <text
               x={x + 39}
               y={currentY}
-              fill="rgb(203, 213, 225)"
+              fill="var(--color-slate-300)"
               fontSize={fontSize}
               fontFamily="system-ui, -apple-system, BlinkMacSystemFont, sans-serif"
               dominantBaseline="middle"

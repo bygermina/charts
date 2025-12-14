@@ -1,6 +1,6 @@
 import { forwardRef, type ElementType } from 'react';
 
-import { cn } from '../../lib/utils/cn';
+import { cn } from '../../lib/utils';
 
 import styles from './typography.module.scss';
 

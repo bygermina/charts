@@ -13,4 +13,3 @@ type Particle = {
 };
 
 export type { FlowType, Segment, Particle };
-

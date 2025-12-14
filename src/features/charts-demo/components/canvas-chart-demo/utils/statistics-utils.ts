@@ -104,4 +104,3 @@ export const calculateStatistics = ({
     exceedPercent: calculateExceedPercent({ data, timeWindowMs, highlightThreshold }),
   };
 };
-

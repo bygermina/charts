@@ -2,7 +2,12 @@ import type { ScaleTime } from 'd3-scale';
 import { select, type Selection } from 'd3-selection';
 
 import { BAR_OPACITY, BAR_BORDER_RADIUS } from '../../../model/constants';
-import { type ChartColors, type BarDataPoint, type LinearScale, type SVGGroupSelection } from '../../../model/types';
+import {
+  type ChartColors,
+  type BarDataPoint,
+  type LinearScale,
+  type SVGGroupSelection,
+} from '../../../model/types';
 import { type CreateBarsConfig, type BarsSelection } from './types';
 
 const createTooltip = (

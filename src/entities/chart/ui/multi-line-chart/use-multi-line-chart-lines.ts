@@ -31,7 +31,6 @@ interface UseMultiLineChartLinesParams {
   yDomain?: [number, number];
   animationSpeed?: number;
   strokeWidth: number;
-  visibilityKey: number;
 }
 
 export const useMultiLineChartLines = ({
@@ -50,12 +49,18 @@ export const useMultiLineChartLines = ({
   yDomain,
   animationSpeed,
   strokeWidth,
-  visibilityKey,
 }: UseMultiLineChartLinesParams) => {
   const [isInitialRender, setIsInitialRender] = useState(true);
+  const isVisible = !document.hidden;
 
   useEffect(() => {
-    if (lines.length === 0 || lines.some((line) => line.data.length === 0)) return;
+    if (lines.length === 0 || lines.some((line) => line.data.length === 0)) {
+      if (mainGroupRef.current) {
+        mainGroupRef.current.selectAll('*').remove();
+      }
+      return;
+    }
+
     const svgElement = svgRef.current;
     if (!svgElement) return;
     if (!mainGroupRef.current || !axesGroupRef.current) return;
@@ -66,7 +71,6 @@ export const useMultiLineChartLines = ({
     const chartData = prepareChartData({
       lines,
       prevMetadata: prevMetadataRef.current,
-      isInitialRender,
       chartWidth,
     });
 
@@ -184,14 +188,8 @@ export const useMultiLineChartLines = ({
     animationSpeed,
     strokeWidth,
     chartColors,
-    visibilityKey,
+    isVisible,
   ]);
-
-  useEffect(() => {
-    if (visibilityKey > 0) {
-      setIsInitialRender(true);
-    }
-  }, [visibilityKey]);
 
   return { isInitialRender };
 };

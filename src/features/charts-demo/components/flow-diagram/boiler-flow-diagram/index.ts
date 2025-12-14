@@ -1,2 +1,1 @@
-export { default as BoilerFlowDiagram } from './boiler-flow-diagram';
-
+export { BoilerFlowDiagram } from './boiler-flow-diagram';

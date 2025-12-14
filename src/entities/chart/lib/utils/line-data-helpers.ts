@@ -7,4 +7,3 @@ export const extractTimesFromLines = (lines: LineSeries[]): number[] => {
 export const extractValuesFromLines = (lines: LineSeries[]): number[] => {
   return lines.flatMap((line) => line.data.map((d) => d.value));
 };
-

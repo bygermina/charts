@@ -27,7 +27,7 @@ export const Pipe = ({
         y1={y1}
         x2={x2}
         y2={y2}
-        stroke="rgba(128, 128, 128, 0.15)"
+        stroke="var(--color-gray-500-15)"
         strokeWidth={lineWidth * 5}
         strokeLinecap="round"
       />

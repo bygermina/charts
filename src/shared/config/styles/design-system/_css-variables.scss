@@ -11,6 +11,13 @@
 
   // Red
   --color-red-500: #{ds-color('red', 500)};
+  --color-red-600: #{ds-color('red', 600)};
+
+  // Orange
+  --color-orange-600: #{ds-color('orange', 600)};
+
+  // Gray
+  --color-gray-500: #{ds-color('gray', 500)};
 
   // Yellow
   --color-yellow-500: #{ds-color('yellow', 500)};
@@ -24,7 +31,6 @@
   // Slate
   --color-slate-300: #{ds-color('slate', 300)};
   --color-slate-400: #{ds-color('slate', 400)};
-  --color-slate-500: #{ds-color('slate', 500)};
   --color-slate-600: #{ds-color('slate', 600)};
   --color-slate-700: #{ds-color('slate', 700)};
   --color-slate-800: #{ds-color('slate', 800)};
@@ -41,11 +47,18 @@
   --color-blue-400-60: #{color-opacity('blue', 400, 0.6)};
   --color-blue-400-30: #{color-opacity('blue', 400, 0.3)};
   --color-blue-400-50: #{color-opacity('blue', 400, 0.5)};
+  --color-blue-400-80: #{color-opacity('blue', 400, 0.8)};
   --color-purple-500-30: #{color-opacity('purple', 500, 0.3)};
   --color-indigo-500-40: #{color-opacity('indigo', 500, 0.4)};
-  --color-deepBlue-7: #{color-opacity('deepBlue', null, 0.07)};
   --color-slate-800-30: #{color-opacity('slate', 800, 0.3)};
+  --color-slate-800-50: #{color-opacity('slate', 800, 0.5)};
   --color-slate-600-20: #{color-opacity('slate', 600, 0.2)};
+  --color-red-500-80: #{color-opacity('red', 500, 0.8)};
+  --color-red-500-90: #{color-opacity('red', 500, 0.9)};
+  --color-orange-600-90: #{color-opacity('orange', 600, 0.9)};
+  --color-orange-600-95: #{color-opacity('orange', 600, 0.95)};
+  --color-gray-500-15: #{color-opacity('gray', 500, 0.15)};
+  --color-background-dark-7: #{color-opacity('background-dark', null, 0.07)};
 
   --spacing-4: #{spacing(4)};
 

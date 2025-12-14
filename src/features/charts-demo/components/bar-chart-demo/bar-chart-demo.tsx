@@ -6,6 +6,7 @@ import {
   type ChartVariant,
   useVisibilityAwareTimer,
   ResponsiveChartWrapper,
+  type ChartSize,
 } from '@/entities/chart';
 import { generateTimeSeriesData } from '@/shared/lib/utils';
 
@@ -60,7 +61,7 @@ export const BarChartDemo = ({
 
   return (
     <ResponsiveChartWrapper width={width} height={height} fixedWidth={!width}>
-      {({ width: chartWidth, height: chartHeight }: { width: number; height: number }) => (
+      {({ width: chartWidth, height: chartHeight }: ChartSize) => (
         <BarChart
           data={barData}
           width={chartWidth}

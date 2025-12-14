@@ -73,7 +73,6 @@ export const GaugeChart = ({ value, variant = 'normal', min = 0, max = 100 }: Ga
         viewBox={`0 0 ${GAUGE_VIEWBOX_WIDTH} ${GAUGE_VIEWBOX_HEIGHT}`}
         className={styles.svg}
         preserveAspectRatio="xMidYMid meet"
-        style={{ width: '100%', height: '100%' }}
       >
         <g transform={`translate(${GAUGE_CENTER}, ${GAUGE_CENTER})`}>
           <path

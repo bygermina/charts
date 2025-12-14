@@ -88,7 +88,7 @@ export const Pump = ({ x, y, label, color, fontSize = 12, rotationSpeed = 0 }: P
         <text
           x={x + radius + 8}
           y={y}
-          fill="rgb(203, 213, 225)"
+          fill="var(--color-slate-300)"
           fontSize={fontSize}
           fontFamily="system-ui, -apple-system, BlinkMacSystemFont, sans-serif"
           dominantBaseline="middle"

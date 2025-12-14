@@ -1,2 +1,1 @@
-export { default as RealTimeCanvasChart } from './real-time-canvas-chart';
-
+export { RealTimeCanvasChart } from './real-time-canvas-chart';

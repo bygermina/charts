@@ -12,4 +12,3 @@ export const isTimestamp = (min: number | Date, max: number | Date): boolean => 
 
   return typeof min === 'number' && typeof max === 'number' && min > 1000000000;
 };
-

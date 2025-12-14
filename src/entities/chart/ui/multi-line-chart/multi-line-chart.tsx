@@ -1,5 +1,5 @@
 import { select } from 'd3-selection';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
 import { type ChartVariant, type SVGGroupSelection } from '../../model/types';
 import { createClipPaths } from '../../lib/utils/clip-paths';
@@ -54,7 +54,6 @@ export const MultiLineChart = ({
     null,
   );
 
-  const [visibilityKey, setVisibilityKey] = useState(0);
   const prevMetadataRef = useRef<Metadata>(DEFAULT_METADATA);
 
   useMultiLineChartLines({
@@ -73,7 +72,6 @@ export const MultiLineChart = ({
     yDomain,
     animationSpeed,
     strokeWidth,
-    visibilityKey,
   });
 
   useVisibility({
@@ -84,7 +82,6 @@ export const MultiLineChart = ({
       axesGroupRef.current = null;
       gridGroupRef.current = null;
       xAxisGroupRef.current = null;
-      setVisibilityKey((prev) => prev + 1);
     },
   });
 
@@ -109,7 +106,7 @@ export const MultiLineChart = ({
     mainGroupRef.current = mainGroup;
     axesGroupRef.current = axesGroup;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chartWidth, chartHeight, margin, visibilityKey]);
+  }, [chartWidth, chartHeight, margin]);
 
   useMultiLineChartGrid({
     lines,

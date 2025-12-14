@@ -328,7 +328,11 @@ const codeColumns = [
   ],
 ];
 
-const CodeBackground = ({ className }: { className?: string }) => {
+interface CodeBackgroundProps {
+  className?: string;
+}
+
+export const CodeBackground = ({ className }: CodeBackgroundProps) => {
   return (
     <div className={cn(styles.root, className)} aria-hidden="true" role="presentation">
       <div className={styles.container}>
@@ -347,5 +351,3 @@ const CodeBackground = ({ className }: { className?: string }) => {
     </div>
   );
 };
-
-export { CodeBackground };

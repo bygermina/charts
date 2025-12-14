@@ -20,7 +20,11 @@ const Y_DOMAIN: [number, number] = [0, 200];
 const HIGHLIGHT_THRESHOLD = 130;
 const DEFAULT_CHART_HEIGHT = 300;
 
-export default function RealTimeCanvasChart({ variant = 'normal' }: { variant?: ChartVariant }) {
+interface RealTimeCanvasChartProps {
+  variant?: ChartVariant;
+}
+
+export const RealTimeCanvasChart = ({ variant = 'normal' }: RealTimeCanvasChartProps) => {
   const chartColors = getChartColors(variant);
   const valueGeneratorRef = useRef(createTrendGenerator(75, [30, 170]));
 
@@ -69,7 +73,7 @@ export default function RealTimeCanvasChart({ variant = 'normal' }: { variant?: 
         yDomain={Y_DOMAIN}
         timeWindowMs={TIME_WINDOW_MS}
         strokeColor={chartColors.tertiary}
-        highlightStrokeColor="#ff4d4f"
+        highlightStrokeColor="var(--color-red-600)"
         highlightThreshold={HIGHLIGHT_THRESHOLD}
         strokeWidth={1}
         height={DEFAULT_CHART_HEIGHT}
@@ -77,4 +81,4 @@ export default function RealTimeCanvasChart({ variant = 'normal' }: { variant?: 
       />
     </div>
   );
-}
+};

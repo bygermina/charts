@@ -36,12 +36,14 @@ interface StatItem {
   getColor?: (value: number, threshold: number) => string | undefined;
 }
 
+const HIGHLIGHT_COLOR = 'var(--color-red-600)';
+
 const STAT_ITEMS: StatItem[] = [
   {
     label: 'Current:',
     key: 'current',
     format: (v) => v.toFixed(1),
-    getColor: (v, threshold) => (v > threshold ? '#ff4d4f' : undefined),
+    getColor: (v, threshold) => (v > threshold ? HIGHLIGHT_COLOR : undefined),
   },
   {
     label: 'Min:',
@@ -62,13 +64,13 @@ const STAT_ITEMS: StatItem[] = [
     label: 'Exceeded:',
     key: 'exceedCount',
     format: (v) => v.toString(),
-    getColor: () => '#ff4d4f',
+    getColor: () => HIGHLIGHT_COLOR,
   },
   {
     label: 'Exceed %:',
     key: 'exceedPercent',
     format: (v) => `${v.toFixed(1)}%`,
-    getColor: () => '#ff4d4f',
+    getColor: () => HIGHLIGHT_COLOR,
   },
 ];
 
@@ -122,11 +124,20 @@ export const ChartStatistics = ({
         {STAT_ITEMS.map((item) => {
           const value = statistics[item.key];
           const color = item.getColor?.(value, highlightThreshold);
+          const isHighlighted = !!color;
 
           return (
             <div key={item.key} className={styles.statRow}>
               <span className={styles.statLabel}>{item.label}</span>
-              <span className={styles.statValue} style={{ color }}>
+              <span
+                className={styles.statValue}
+                data-highlight={isHighlighted}
+                style={
+                  isHighlighted
+                    ? ({ '--stat-highlight-color': color } as React.CSSProperties)
+                    : undefined
+                }
+              >
                 {item.format(value)}
               </span>
             </div>

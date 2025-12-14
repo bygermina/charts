@@ -1,44 +1,46 @@
 @use 'styles/design-system' as *;
 
 .statistics {
-  background: rgba(15, 23, 42, 0.95);
-  border: 1px solid rgb(51, 65, 85);
-  border-radius: 8px;
-  padding: 12px;
+  background: color-opacity('slate', 900, 0.95);
+  border: 1px solid var(--color-slate-700);
+  border-radius: radius(lg);
+  padding: spacing(3);
   min-width: 180px;
   backdrop-filter: blur(8px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .statisticsHeader {
-  font-size: 13px;
-  font-weight: 600;
-  color: rgb(203, 213, 225);
-  margin-bottom: 10px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid rgb(51, 65, 85);
+  @include typography(sm, medium);
+  color: var(--color-slate-300);
+  margin-bottom: spacing(2);
+  padding-bottom: spacing(2);
+  border-bottom: 1px solid var(--color-slate-700);
 }
 
 .statisticsContent {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: spacing(2);
 }
 
 .statRow {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 11px;
+  @include typography(xs);
 }
 
 .statLabel {
-  color: rgb(148, 163, 184);
+  color: var(--color-slate-400);
 }
 
 .statValue {
-  color: rgb(203, 213, 225);
+  color: var(--color-slate-300);
   font-weight: 500;
   font-variant-numeric: tabular-nums;
-}
 
+  &[data-highlight='true'] {
+    color: var(--stat-highlight-color, var(--color-slate-300));
+  }
+}

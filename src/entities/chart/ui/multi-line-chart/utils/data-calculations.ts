@@ -29,7 +29,6 @@ interface PrepareChartDataConfig {
     timeExtent: [number, number] | null;
     timeStep: number;
   };
-  isInitialRender: boolean;
   chartWidth: number;
 }
 
@@ -44,14 +43,13 @@ interface ChartData {
 export const prepareChartData = ({
   lines,
   prevMetadata,
-  isInitialRender,
   chartWidth,
 }: PrepareChartDataConfig): ChartData => {
   const { timeExtent, timeStep } = calculateTimeExtent({ lines });
   const maxValue = calculateMaxValue({ lines });
 
   const { shouldAnimate, shiftOffset } =
-    !isInitialRender && prevMetadata.timeExtent !== null
+    prevMetadata.timeExtent !== null
       ? calculateShiftAnimation({
           prevTimeExtent: prevMetadata.timeExtent,
           currentTimeExtent: timeExtent,
