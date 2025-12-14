@@ -1,6 +1,5 @@
-import type { ScaleLinear } from 'd3-scale';
-
 import { getClippedWidth } from '../chart-dimensions';
+import type { LinearScale } from '../../model/types';
 import { getTimeFormatter, isTimestamp } from './time-utils';
 
 export const resolveCSSVariable = (variable: string, element: Element): string => {
@@ -67,8 +66,8 @@ export const setupCanvas = (
 
 interface DrawAxesConfig {
   ctx: CanvasRenderingContext2D;
-  xAxisScale: ScaleLinear<number, number>;
-  yScale: ScaleLinear<number, number>;
+  xAxisScale: LinearScale;
+  yScale: LinearScale;
   chartWidth: number;
   chartHeight: number;
   margin: { top: number; right: number; bottom: number; left: number };
@@ -178,8 +177,8 @@ export const drawAxes = ({
 
 interface DrawGridConfig {
   ctx: CanvasRenderingContext2D;
-  xAxisScale: ScaleLinear<number, number>;
-  yScale: ScaleLinear<number, number>;
+  xAxisScale: LinearScale;
+  yScale: LinearScale;
   chartWidth: number;
   chartHeight: number;
   margin: { top: number; right: number; bottom: number; left: number };

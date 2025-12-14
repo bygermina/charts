@@ -1,4 +1,4 @@
-import { useRef, useCallback } from 'react';
+import { useRef, useCallback, type RefObject } from 'react';
 
 import { type ChartVariant } from '../../model/types';
 import { useChartBase } from '../../lib/use-chart-base';
@@ -18,7 +18,7 @@ export interface RealTimeSingleLineDataRef {
 }
 
 interface RealTimeSingleLineChartCanvasProps {
-  dataRef: React.RefObject<RealTimeSingleLineDataRef>;
+  dataRef: RefObject<RealTimeSingleLineDataRef>;
   width?: number;
   height?: number;
   variant?: ChartVariant;

@@ -1,15 +1,15 @@
-import type { ScaleTime, ScaleLinear } from 'd3-scale';
+import type { ScaleTime } from 'd3-scale';
 import { select, type Selection } from 'd3-selection';
 
 import { BAR_OPACITY, BAR_BORDER_RADIUS } from '../../../model/constants';
-import { type ChartColors, type BarDataPoint } from '../../../model/types';
+import { type ChartColors, type BarDataPoint, type LinearScale, type SVGGroupSelection } from '../../../model/types';
 import { type CreateBarsConfig, type BarsSelection } from './types';
 
 const createTooltip = (
-  g: Selection<SVGGElement, unknown, null, undefined>,
+  g: SVGGroupSelection,
   d: BarDataPoint,
   xScale: ScaleTime<number, number>,
-  yScale: ScaleLinear<number, number>,
+  yScale: LinearScale,
   chartColors: ChartColors,
 ): void => {
   g.selectAll('.bar-tooltip').remove();
@@ -34,9 +34,9 @@ const createTooltip = (
 
 const attachHoverHandlers = (
   selection: Selection<SVGRectElement, BarDataPoint, SVGGElement, unknown>,
-  g: Selection<SVGGElement, unknown, null, undefined>,
+  g: SVGGroupSelection,
   xScale: ScaleTime<number, number>,
-  yScale: ScaleLinear<number, number>,
+  yScale: LinearScale,
   chartColors: ChartColors,
 ): void => {
   selection

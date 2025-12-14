@@ -1,10 +1,12 @@
+import { type RefObject } from 'react';
+
 import { drawAxes, drawGrid } from '../../../lib/utils/canvas-helpers';
 import { type RealTimeSingleLineDataRef } from '../real-time-single-line-chart-canvas';
 import { createScalesForAxes, updateScalesForAxes, type Scales } from '../../multi-line-chart';
 
 interface RenderSingleLineChartConfig {
   ctx: CanvasRenderingContext2D;
-  dataRef: React.RefObject<RealTimeSingleLineDataRef>;
+  dataRef: RefObject<RealTimeSingleLineDataRef>;
   resolvedStrokeColor: string;
   resolvedHighlightStrokeColor?: string;
   highlightThreshold?: number;

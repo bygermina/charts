@@ -1,24 +1,23 @@
-import { useEffect } from 'react';
-import type * as d3 from 'd3';
+import { useEffect, type RefObject } from 'react';
 
 import { calculateAnimationSpeed } from '../../lib/chart-animation';
-import type { ChartColors } from '../../model/types';
+import type { ChartColors, SVGGroupSelection } from '../../model/types';
 import { animateGridAndAxis, manageGrid, manageLegend } from './components/grid-legend';
 import { calculateGridLeftShift } from './utils/grid-shift-calculations';
 import type { LineSeries, Metadata, Scales } from './types';
 
 interface UseMultiLineChartGridParams {
   lines: LineSeries[];
-  svgRef: React.RefObject<SVGSVGElement | null>;
-  mainGroupRef: React.RefObject<d3.Selection<SVGGElement, unknown, null, undefined> | null>;
-  scalesRef: React.RefObject<Scales | null>;
-  gridGroupRef: React.RefObject<d3.Selection<SVGGElement, unknown, null, undefined> | null>;
-  xAxisGroupRef: React.RefObject<d3.Selection<SVGGElement, unknown, null, undefined> | null>;
-  lastChartDataRef: React.RefObject<{
+  svgRef: RefObject<SVGSVGElement | null>;
+  mainGroupRef: RefObject<SVGGroupSelection | null>;
+  scalesRef: RefObject<Scales | null>;
+  gridGroupRef: RefObject<SVGGroupSelection | null>;
+  xAxisGroupRef: RefObject<SVGGroupSelection | null>;
+  lastChartDataRef: RefObject<{
     shouldAnimateShift: boolean;
     shiftOffset: number;
   } | null>;
-  prevMetadataRef: React.RefObject<Metadata>;
+  prevMetadataRef: RefObject<Metadata>;
   chartWidth: number;
   chartHeight: number;
   margin: { left: number; right: number; top: number; bottom: number };

@@ -1,7 +1,12 @@
-import type { ScaleTime, ScaleLinear } from 'd3-scale';
+import type { ScaleTime } from 'd3-scale';
 import type { Selection } from 'd3-selection';
 
-import { type ChartColors, type BarDataPoint } from '../../../model/types';
+import {
+  type ChartColors,
+  type BarDataPoint,
+  type LinearScale,
+  type SVGGroupSelection,
+} from '../../../model/types';
 
 export interface CreateScalesConfig {
   data: BarDataPoint[];
@@ -13,7 +18,7 @@ export interface CreateScalesConfig {
 export interface Scales {
   xScale: ScaleTime<number, number>;
   xAxisScale: ScaleTime<number, number>;
-  yScale: ScaleLinear<number, number>;
+  yScale: LinearScale;
 }
 
 export interface CreateGradientConfig {
@@ -24,10 +29,10 @@ export interface CreateGradientConfig {
 }
 
 export interface CreateBarsConfig {
-  g: Selection<SVGGElement, unknown, null, undefined>;
+  g: SVGGroupSelection;
   data: BarDataPoint[];
   xScale: ScaleTime<number, number>;
-  yScale: ScaleLinear<number, number>;
+  yScale: LinearScale;
   chartHeight: number;
   gradientId: string;
   barWidth: number;

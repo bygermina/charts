@@ -1,10 +1,10 @@
-import type { ScaleTime, ScaleBand, ScaleLinear } from 'd3-scale';
+import type { ScaleTime, ScaleBand } from 'd3-scale';
 import type { Selection } from 'd3-selection';
 import { axisLeft, axisBottom } from 'd3-axis';
 import { interrupt } from 'd3-transition';
 
 import { CHART_FONT_SIZE, CHART_FONT_FAMILY } from '../model/constants';
-import { type ChartColors } from '../model/types';
+import { type ChartColors, type SVGGroupSelection, type LinearScale } from '../model/types';
 import { getClippedWidth } from './chart-dimensions';
 import { resolveCSSVariable } from './utils/canvas-helpers';
 import { getTimeFormatter, isTimestamp } from './utils/time-utils';
@@ -16,8 +16,8 @@ interface CreateChartGroupsConfig {
 }
 
 interface ChartGroups {
-  mainGroup: Selection<SVGGElement, unknown, null, undefined>;
-  axesGroup: Selection<SVGGElement, unknown, null, undefined>;
+  mainGroup: SVGGroupSelection;
+  axesGroup: SVGGroupSelection;
 }
 
 export const createChartGroups = ({
@@ -48,15 +48,15 @@ export const createChartGroups = ({
   return { mainGroup, axesGroup };
 };
 
-type XScale = ScaleTime<number, number> | ScaleBand<string> | ScaleLinear<number, number>;
-type YScale = ScaleLinear<number, number>;
+type XScale = ScaleTime<number, number> | ScaleBand<string> | LinearScale;
+type YScale = LinearScale;
 
 const getGridColor = (chartColors: ChartColors, svgElement?: SVGSVGElement): string => {
   return svgElement ? resolveCSSVariable(chartColors.grid, svgElement) : chartColors.grid;
 };
 
 const createHorizontalGrid = (
-  g: Selection<SVGGElement, unknown, null, undefined>,
+  g: SVGGroupSelection,
   yScale: YScale,
   chartWidth: number,
   chartColors: ChartColors,
@@ -88,7 +88,7 @@ const createHorizontalGrid = (
 };
 
 const createVerticalGrid = (
-  g: Selection<SVGGElement, unknown, null, undefined>,
+  g: SVGGroupSelection,
   xScale: XScale,
   chartHeight: number,
   chartColors: ChartColors,
@@ -143,7 +143,7 @@ const createVerticalGrid = (
 };
 
 export const createGrid = (
-  g: Selection<SVGGElement, unknown, null, undefined>,
+  g: SVGGroupSelection,
   xScale: XScale,
   yScale: YScale,
   chartWidth: number,
@@ -152,7 +152,7 @@ export const createGrid = (
   svgElement?: SVGSVGElement,
   xTicks?: number,
   yTicks?: number,
-): Selection<SVGGElement, unknown, null, undefined> => {
+): SVGGroupSelection => {
   let gridGroup = g.select<SVGGElement>('g.grid-group');
   if (gridGroup.empty()) {
     gridGroup = g.append('g').attr('class', 'grid-group');
@@ -174,7 +174,7 @@ export const createGrid = (
 };
 
 const createXAxis = (
-  g: Selection<SVGGElement, unknown, null, undefined>,
+  g: SVGGroupSelection,
   xScale: XScale,
   chartHeight: number,
   chartWidth: number,
@@ -252,7 +252,7 @@ const createXAxis = (
 };
 
 const createYAxis = (
-  g: Selection<SVGGElement, unknown, null, undefined>,
+  g: SVGGroupSelection,
   yScale: YScale,
   chartHeight: number,
   chartColors: ChartColors,
@@ -296,7 +296,7 @@ const createYAxis = (
 };
 
 export const createAxes = (
-  g: Selection<SVGGElement, unknown, null, undefined>,
+  g: SVGGroupSelection,
   xScale: XScale,
   yScale: YScale,
   chartHeight: number,
@@ -306,8 +306,8 @@ export const createAxes = (
   xTicks?: number,
   yTicks?: number,
 ): {
-  xAxisGroup: Selection<SVGGElement, unknown, null, undefined>;
-  yAxisGroup: Selection<SVGGElement, unknown, null, undefined>;
+  xAxisGroup: SVGGroupSelection;
+  yAxisGroup: SVGGroupSelection;
 } => {
   let xAxisGroup = g.select<SVGGElement>('g.x-axis-group');
   if (xAxisGroup.empty()) {
@@ -331,7 +331,7 @@ interface LegendItem {
 }
 
 export const createLineLegend = (
-  g: Selection<SVGGElement, unknown, null, undefined>,
+  g: SVGGroupSelection,
   items: LegendItem[],
   chartWidth: number,
   chartColors: ChartColors,

@@ -1,10 +1,10 @@
-import { useRef, useMemo } from 'react';
+import { useRef, useMemo, type RefObject } from 'react';
 
 import { type ChartVariant, getChartColors } from '../model/types';
 import { getChartDimensions, type ChartBaseConfig } from './chart-dimensions';
 
 interface UseChartBaseResult {
-  svgRef: React.RefObject<SVGSVGElement | null>;
+  svgRef: RefObject<SVGSVGElement | null>;
   chartColors: ReturnType<typeof getChartColors>;
   margin: { top: number; right: number; bottom: number; left: number };
   chartWidth: number;

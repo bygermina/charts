@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type RefObject } from 'react';
 
 import { type RealTimeSingleLineDataRef } from '@/entities/chart';
 
@@ -23,7 +23,7 @@ export interface Statistics {
 }
 
 interface ChartStatisticsProps {
-  dataRef: React.RefObject<RealTimeSingleLineDataRef>;
+  dataRef: RefObject<RealTimeSingleLineDataRef>;
   timeWindowMs: number;
   highlightThreshold: number;
   updateInterval?: number;
@@ -136,4 +136,3 @@ export const ChartStatistics = ({
     </div>
   );
 };
-

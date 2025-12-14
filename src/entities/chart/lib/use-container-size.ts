@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type RefObject } from 'react';
 
 import { DEBOUNCE_DELAY, DEFAULT_CHART_SIZE } from '../model/constants';
 
@@ -38,7 +38,7 @@ const debounce = <T extends (...args: unknown[]) => void>(
   return debouncedFn;
 };
 
-export const useContainerSize = (ref: React.RefObject<HTMLElement | null>): ContainerSize => {
+export const useContainerSize = (ref: RefObject<HTMLElement | null>): ContainerSize => {
   const [size, setSize] = useState<ContainerSize>(DEFAULT_CHART_SIZE);
   const observerRef = useRef<ResizeObserver | null>(null);
   const debouncedUpdateRef = useRef<DebouncedFunction<() => void> | null>(null);

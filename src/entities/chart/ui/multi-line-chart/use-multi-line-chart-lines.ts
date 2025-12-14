@@ -1,10 +1,9 @@
-import { useEffect, useState } from 'react';
-import type * as d3 from 'd3';
+import { useEffect, useState, type RefObject } from 'react';
 
 import { calculateAnimationSpeed } from '../../lib/chart-animation';
 import { createAxes } from '../../lib/chart-utils';
 import { DEFAULT_X_AXIS_TICKS, DEFAULT_Y_AXIS_TICKS } from '../../model/constants';
-import type { ChartColors } from '../../model/types';
+import type { ChartColors, SVGGroupSelection } from '../../model/types';
 import { getOrCreateLineGroup, getOrCreateLinePath } from './components/svg-groups';
 import { createAndAnimateDots } from './components/dots';
 import { prepareChartData } from './utils/data-calculations';
@@ -15,16 +14,16 @@ import type { LineSeries, Metadata, Scales } from './types';
 
 interface UseMultiLineChartLinesParams {
   lines: LineSeries[];
-  svgRef: React.RefObject<SVGSVGElement | null>;
-  mainGroupRef: React.RefObject<d3.Selection<SVGGElement, unknown, null, undefined> | null>;
-  axesGroupRef: React.RefObject<d3.Selection<SVGGElement, unknown, null, undefined> | null>;
-  scalesRef: React.RefObject<Scales | null>;
-  xAxisGroupRef: React.RefObject<d3.Selection<SVGGElement, unknown, null, undefined> | null>;
-  lastChartDataRef: React.RefObject<{
+  svgRef: RefObject<SVGSVGElement | null>;
+  mainGroupRef: RefObject<SVGGroupSelection | null>;
+  axesGroupRef: RefObject<SVGGroupSelection | null>;
+  scalesRef: RefObject<Scales | null>;
+  xAxisGroupRef: RefObject<SVGGroupSelection | null>;
+  lastChartDataRef: RefObject<{
     shouldAnimateShift: boolean;
     shiftOffset: number;
   } | null>;
-  prevMetadataRef: React.RefObject<Metadata>;
+  prevMetadataRef: RefObject<Metadata>;
   chartWidth: number;
   chartHeight: number;
   margin: { left: number; right: number; top: number; bottom: number };

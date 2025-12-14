@@ -1,3 +1,6 @@
+import type { Selection } from 'd3-selection';
+import type { ScaleLinear } from 'd3-scale';
+
 export interface DataPoint {
   time: number;
   value: number;
@@ -21,3 +24,6 @@ export const getChartColors = (variant: ChartVariant = 'normal') => {
 };
 
 export type ChartColors = ReturnType<typeof getChartColors>;
+
+export type SVGGroupSelection = Selection<SVGGElement, unknown, null, undefined>;
+export type LinearScale = ScaleLinear<number, number>;

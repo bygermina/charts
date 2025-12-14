@@ -1,11 +1,10 @@
-import type { ScaleLinear } from 'd3-scale';
 import type { Selection } from 'd3-selection';
 
-import type { BarDataPoint } from '../../../model/types';
+import type { BarDataPoint, LinearScale } from '../../../model/types';
 
 const updateBarPosition = (
   selection: Selection<SVGRectElement, BarDataPoint, SVGGElement, unknown>,
-  yScale: ScaleLinear<number, number>,
+  yScale: LinearScale,
   chartHeight: number,
 ): void => {
   selection.attr('y', (d) => yScale(d.value)).attr('height', (d) => chartHeight - yScale(d.value));
@@ -21,7 +20,7 @@ export const updateBars = ({
   barsEnter: Selection<SVGRectElement, BarDataPoint, SVGGElement, unknown>;
   barsUpdate: Selection<SVGRectElement, BarDataPoint, SVGGElement, unknown>;
   barsExit: Selection<SVGRectElement, unknown, SVGGElement, unknown>;
-  yScale: ScaleLinear<number, number>;
+  yScale: LinearScale;
   chartHeight: number;
 }): void => {
   const barsEnterData = barsEnter.data() as BarDataPoint[];

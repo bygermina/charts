@@ -1,9 +1,5 @@
 import { clamp } from './math-utils';
-
-interface DataPoint {
-  time: number;
-  value: number;
-}
+import type { DataPoint } from '@/entities/chart/model/types';
 
 interface GenerateDataConfig {
   count: number;

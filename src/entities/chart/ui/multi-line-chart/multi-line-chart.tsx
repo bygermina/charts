@@ -1,8 +1,7 @@
-import * as d3 from 'd3';
 import { select } from 'd3-selection';
 import { useEffect, useRef, useState } from 'react';
 
-import { type ChartVariant } from '../../model/types';
+import { type ChartVariant, type SVGGroupSelection } from '../../model/types';
 import { createClipPaths } from '../../lib/utils/clip-paths';
 import { useChartBase } from '../../lib/use-chart-base';
 import { useVisibility } from '../../lib/use-visibility';
@@ -47,10 +46,10 @@ export const MultiLineChart = ({
   });
 
   const scalesRef = useRef<Scales | null>(null);
-  const mainGroupRef = useRef<d3.Selection<SVGGElement, unknown, null, undefined> | null>(null);
-  const axesGroupRef = useRef<d3.Selection<SVGGElement, unknown, null, undefined> | null>(null);
-  const gridGroupRef = useRef<d3.Selection<SVGGElement, unknown, null, undefined> | null>(null);
-  const xAxisGroupRef = useRef<d3.Selection<SVGGElement, unknown, null, undefined> | null>(null);
+  const mainGroupRef = useRef<SVGGroupSelection | null>(null);
+  const axesGroupRef = useRef<SVGGroupSelection | null>(null);
+  const gridGroupRef = useRef<SVGGroupSelection | null>(null);
+  const xAxisGroupRef = useRef<SVGGroupSelection | null>(null);
   const lastChartDataRef = useRef<{ shouldAnimateShift: boolean; shiftOffset: number } | null>(
     null,
   );

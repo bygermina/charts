@@ -1,8 +1,7 @@
-import type { Selection } from 'd3-selection';
-
 import { getClippedWidth } from '../../../lib/chart-dimensions';
 import { createGrid, createLineLegend } from '../../../lib/chart-utils';
 import { applyShiftAnimation, getCurrentTranslate } from '../../../lib/chart-animation';
+import type { SVGGroupSelection } from '../../../model/types';
 
 import {
   type ManageLegendConfig,
@@ -40,7 +39,7 @@ export const manageGrid = ({
   gridLeftShift,
   chartColors,
   svgElement,
-}: ManageGridConfig): Selection<SVGGElement, unknown, null, undefined> | null => {
+}: ManageGridConfig): SVGGroupSelection | null => {
   const existingGridGroup = mainGroup.select<SVGGElement>('g.grid-group');
   const savedTransform = existingGridGroup.empty() ? '' : existingGridGroup.attr('transform') || '';
 

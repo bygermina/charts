@@ -22,10 +22,8 @@ export const calculateShiftAnimation = ({
     return { shouldAnimate: false, shiftOffset: 0 };
   }
 
-  const prevXScale = scaleLinear<number, number>().domain(prevTimeExtent).range([0, chartWidth]);
-  const currentXScale = scaleLinear<number, number>()
-    .domain(currentTimeExtent)
-    .range([0, chartWidth]);
+  const prevXScale = scaleLinear().domain(prevTimeExtent).range([0, chartWidth]);
+  const currentXScale = scaleLinear().domain(currentTimeExtent).range([0, chartWidth]);
 
   if (currentTimeExtent[1] > prevTimeExtent[1]) {
     const oldFirstX = prevXScale(prevTimeExtent[0]);
@@ -71,21 +69,29 @@ export const calculateAnimationSpeed = ({
   return fallbackSpeed || 100;
 };
 
-interface ApplyShiftAnimationConfig {
-  element: Selection<SVGGElement, unknown, null, undefined>;
+interface ApplyShiftAnimationConfig<
+  Datum = unknown,
+  PElement extends Element | null = Element | null,
+  PDatum = unknown,
+> {
+  element: Selection<SVGGElement, Datum, PElement, PDatum>;
   shiftOffset: number;
   speed: number;
   targetX?: number;
   targetY?: number;
 }
 
-export const applyShiftAnimation = ({
+export const applyShiftAnimation = <
+  Datum = unknown,
+  PElement extends Element | null = Element | null,
+  PDatum = unknown,
+>({
   element,
   shiftOffset,
   speed,
   targetX = 0,
   targetY = 0,
-}: ApplyShiftAnimationConfig): void => {
+}: ApplyShiftAnimationConfig<Datum, PElement, PDatum>): void => {
   const duration = Math.abs(shiftOffset / speed) * 1000;
 
   const { x: currentTranslateX, y: currentTranslateY } = getCurrentTranslate(element);
@@ -102,8 +108,12 @@ export const applyShiftAnimation = ({
     .attr('transform', `translate(${targetX}, ${targetY})`);
 };
 
-export const getCurrentTranslate = (
-  element: Selection<SVGGElement, unknown, null, undefined>,
+export const getCurrentTranslate = <
+  Datum = unknown,
+  PElement extends Element | null = Element | null,
+  PDatum = unknown,
+>(
+  element: Selection<SVGGElement, Datum, PElement, PDatum>,
 ): { x: number; y: number } => {
   const currentTransform = element.attr('transform') || 'translate(0, 0)';
   const match = currentTransform.match(/translate\(([^,]+),\s*([^)]+)\)/);

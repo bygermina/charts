@@ -1,8 +1,7 @@
 import type { Line } from 'd3-shape';
-import type { ScaleLinear } from 'd3-scale';
 import type { Selection } from 'd3-selection';
 
-import { type DataPoint } from '../../model/types';
+import { type DataPoint, type LinearScale, type SVGGroupSelection } from '../../model/types';
 
 export interface LineSeries {
   data: DataPoint[];
@@ -30,9 +29,9 @@ export interface CreateScalesConfig {
 }
 
 export interface Scales {
-  xScale: ScaleLinear<number, number>;
-  xAxisScale: ScaleLinear<number, number>;
-  yScale: ScaleLinear<number, number>;
+  xScale: LinearScale;
+  xAxisScale: LinearScale;
+  yScale: LinearScale;
 }
 
 export interface CalculateMaxValueConfig {
@@ -46,30 +45,30 @@ export interface CalculateGridLeftShiftConfig {
 }
 
 export interface CreateLineGeneratorConfig {
-  xScale: ScaleLinear<number, number>;
-  yScale: ScaleLinear<number, number>;
+  xScale: LinearScale;
+  yScale: LinearScale;
 }
 
 export interface UpdateLinePathConfig {
-  path: Selection<SVGPathElement, unknown, null, undefined>;
+  path: Selection<SVGPathElement, string, SVGGElement, number>;
   line: Line<DataPoint>;
   data: DataPoint[];
   isInitialRender: boolean;
 }
 
 export interface UpdateLineWithShiftConfig {
-  path: Selection<SVGPathElement, unknown, null, undefined>;
+  path: Selection<SVGPathElement, string, SVGGElement, number>;
   line: Line<DataPoint>;
-  lineGroup: Selection<SVGGElement, unknown, null, undefined>;
+  lineGroup: Selection<SVGGElement, number, SVGGElement, unknown>;
   data: DataPoint[];
   shiftOffset: number;
   speed: number;
 }
 
 export interface UpdateLineConfig {
-  path: Selection<SVGPathElement, unknown, null, undefined>;
+  path: Selection<SVGPathElement, string, SVGGElement, number>;
   line: Line<DataPoint>;
-  lineGroup: Selection<SVGGElement, unknown, null, undefined>;
+  lineGroup: Selection<SVGGElement, number, SVGGElement, unknown>;
   data: DataPoint[];
   isInitialRender: boolean;
   shouldShift: boolean;
@@ -78,15 +77,15 @@ export interface UpdateLineConfig {
 }
 
 export interface UpdateDotsConfig {
-  lineGroup: Selection<SVGGElement, unknown, null, undefined>;
+  lineGroup: Selection<SVGGElement, number, SVGGElement, unknown>;
   lineIndex: number;
   data: DataPoint[];
-  xScale: ScaleLinear<number, number>;
-  yScale: ScaleLinear<number, number>;
+  xScale: LinearScale;
+  yScale: LinearScale;
 }
 
 export interface CreateDotsConfig {
-  lineGroup: Selection<SVGGElement, unknown, null, undefined>;
+  lineGroup: Selection<SVGGElement, number, SVGGElement, unknown>;
   lineIndex: number;
   data: DataPoint[];
   color: string;
@@ -94,12 +93,12 @@ export interface CreateDotsConfig {
 }
 
 export interface GetOrCreateLineGroupConfig {
-  mainGroup: Selection<SVGGElement, unknown, null, undefined>;
+  mainGroup: SVGGroupSelection;
   lineIndex: number;
 }
 
 export interface GetOrCreateLinePathConfig {
-  lineGroup: Selection<SVGGElement, unknown, null, undefined>;
+  lineGroup: Selection<SVGGElement, number, SVGGElement, unknown>;
   color: string;
   strokeWidth: number;
   isInitialRender: boolean;
@@ -108,7 +107,7 @@ export interface GetOrCreateLinePathConfig {
 import { type ChartColors } from '../../model/types';
 
 export interface ManageLegendConfig {
-  mainGroup: Selection<SVGGElement, unknown, null, undefined>;
+  mainGroup: SVGGroupSelection;
   lines: LineSeries[];
   chartWidth: number;
   showLegend: boolean;
@@ -116,9 +115,9 @@ export interface ManageLegendConfig {
 }
 
 export interface ManageGridConfig {
-  mainGroup: Selection<SVGGElement, unknown, null, undefined>;
-  xScale: ScaleLinear<number, number>;
-  yScale: ScaleLinear<number, number>;
+  mainGroup: SVGGroupSelection;
+  xScale: LinearScale;
+  yScale: LinearScale;
   chartWidth: number;
   chartHeight: number;
   margin: { right: number };
@@ -128,8 +127,8 @@ export interface ManageGridConfig {
 }
 
 export interface AnimateGridAndAxisConfig {
-  gridGroup: Selection<SVGGElement, unknown, null, undefined> | null;
-  xAxisGroup: Selection<SVGGElement, unknown, null, undefined>;
+  gridGroup: SVGGroupSelection | null;
+  xAxisGroup: SVGGroupSelection;
   shiftOffset: number;
   speed: number;
   gridLeftShift: number;
