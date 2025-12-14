@@ -84,7 +84,7 @@ export const animateGridAndAxis = ({
     element: xAxisGroup,
     shiftOffset,
     speed,
-    targetX: 0,
+    targetX: -gridLeftShift,
     targetY: xAxisY || chartHeight,
   });
 };

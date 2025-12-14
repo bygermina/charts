@@ -8,6 +8,7 @@ import type { ChartColors } from '../../model/types';
 import { getOrCreateLineGroup, getOrCreateLinePath } from './components/svg-groups';
 import { createAndAnimateDots } from './components/dots';
 import { prepareChartData } from './utils/data-calculations';
+import { calculateGridLeftShift } from './utils/grid-shift-calculations';
 import { createScalesForAxes, updateScalesForAxes } from './utils/scales';
 import { createLineGenerator, updateLine } from './utils/line-generator';
 import type { LineSeries, Metadata, Scales } from './types';
@@ -94,6 +95,12 @@ export const useMultiLineChartLines = ({
 
     const { xScale, xAxisScale, yScale } = scalesRef.current;
 
+    const gridLeftShift = calculateGridLeftShift({
+      timeStep,
+      timeExtent,
+      chartWidth,
+    });
+
     const { xAxisGroup } = createAxes(
       axesGroup,
       xAxisScale,
@@ -105,6 +112,8 @@ export const useMultiLineChartLines = ({
       DEFAULT_X_AXIS_TICKS,
       DEFAULT_Y_AXIS_TICKS,
     );
+
+    xAxisGroup.attr('transform', `translate(${-gridLeftShift},${chartHeight})`);
 
     xAxisGroupRef.current = xAxisGroup;
 
