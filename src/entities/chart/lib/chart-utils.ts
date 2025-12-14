@@ -1,6 +1,6 @@
 import type { ScaleTime, ScaleBand, ScaleLinear } from 'd3-scale';
 import type { Selection } from 'd3-selection';
-import { axisLeft, axisBottom, type AxisScale } from 'd3-axis';
+import { axisLeft, axisBottom } from 'd3-axis';
 import { interrupt } from 'd3-transition';
 
 import { CHART_FONT_SIZE, CHART_FONT_FAMILY } from '../model/constants';
@@ -51,6 +51,10 @@ export const createChartGroups = ({
 type XScale = ScaleTime<number, number> | ScaleBand<string> | ScaleLinear<number, number>;
 type YScale = ScaleLinear<number, number>;
 
+const getGridColor = (chartColors: ChartColors, svgElement?: SVGSVGElement): string => {
+  return svgElement ? resolveCSSVariable(chartColors.grid, svgElement) : chartColors.grid;
+};
+
 const createHorizontalGrid = (
   g: Selection<SVGGElement, unknown, null, undefined>,
   yScale: YScale,
@@ -59,19 +63,13 @@ const createHorizontalGrid = (
   svgElement?: SVGSVGElement,
   ticks?: number,
 ) => {
-  const gridColor = svgElement
-    ? resolveCSSVariable(chartColors.grid, svgElement)
-    : chartColors.grid;
+  const gridColor = getGridColor(chartColors, svgElement);
 
   const axis = axisLeft(yScale)
     .tickSize(-chartWidth)
     .tickFormat(() => '');
 
-  if (ticks !== undefined) {
-    axis.ticks(ticks);
-  } else {
-    axis.ticks(5);
-  }
+  axis.ticks(ticks ?? 5);
 
   const gridGroup = g.append('g').attr('class', 'grid').call(axis);
 
@@ -97,9 +95,7 @@ const createVerticalGrid = (
   svgElement?: SVGSVGElement,
   ticks?: number,
 ) => {
-  const gridColor = svgElement
-    ? resolveCSSVariable(chartColors.grid, svgElement)
-    : chartColors.grid;
+  const gridColor = getGridColor(chartColors, svgElement);
 
   const verticalGridGroup = g
     .append('g')
@@ -125,15 +121,11 @@ const createVerticalGrid = (
       }
     });
   } else {
-    const axis = axisBottom(xScale as AxisScale<number | Date>)
+    const axis = axisBottom(xScale)
       .tickSize(-chartHeight)
       .tickFormat(() => '');
 
-    if (ticks !== undefined) {
-      axis.ticks(ticks);
-    } else {
-      axis.ticks(5);
-    }
+    axis.ticks(ticks ?? 5);
 
     verticalGridGroup.call(axis);
     verticalGridGroup
@@ -196,25 +188,20 @@ const createXAxis = (
     const axis = axisBottom(xScale as ScaleBand<string>);
     g.call(axis);
   } else {
-    const domain = xScale.domain();
-    const firstValue = domain[0];
-    const isTimeScale = firstValue instanceof Date;
-    const linearScale = xScale as ScaleLinear<number, number> | ScaleTime<number, number>;
-    const [min, max] = domain as [number | Date, number | Date];
+    const [min, max] = xScale.domain();
+    const isTimeScale = min instanceof Date;
 
-    const axis = axisBottom(linearScale as AxisScale<number | Date>);
+    const axis = axisBottom(xScale);
 
-    if (isTimeScale) {
-      const timeFormat = getTimeFormatter((min as Date).getTime(), (max as Date).getTime());
-      axis.tickFormat((d) => timeFormat(d instanceof Date ? d : new Date(d as number)));
-    } else {
-      const minNum = min as number;
-      const maxNum = max as number;
+    const minTime = isTimeScale ? (min as Date).getTime() : (min as number);
+    const maxTime = isTimeScale ? (max as Date).getTime() : (max as number);
 
-      if (isTimestamp(minNum, maxNum)) {
-        const timeFormatter = getTimeFormatter(minNum, maxNum);
-        axis.tickFormat((d) => timeFormatter(new Date(typeof d === 'number' ? d : Number(d))));
-      }
+    if (isTimeScale || isTimestamp(minTime, maxTime)) {
+      const timeFormat = getTimeFormatter(minTime, maxTime);
+      axis.tickFormat((d) => {
+        const date = d instanceof Date ? d : new Date(typeof d === 'number' ? d : Number(d));
+        return timeFormat(date);
+      });
     }
 
     if (ticks !== undefined) {

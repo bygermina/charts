@@ -2,14 +2,12 @@ import { useState } from 'react';
 
 import {
   BarChart,
-  type DataPoint,
+  type BarDataPoint,
   type ChartVariant,
   useVisibilityAwareTimer,
   ResponsiveChartWrapper,
 } from '@/entities/chart';
 import { generateTimeSeriesData } from '@/shared/lib/utils';
-
-type BarDataPoint = DataPoint;
 
 const valueGenerator = () => Math.random() * 100 + 20;
 

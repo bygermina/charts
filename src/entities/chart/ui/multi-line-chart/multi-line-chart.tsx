@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import { type ChartVariant } from '../../model/types';
 import { createClipPaths } from '../../lib/utils/clip-paths';
 import { useChartBase } from '../../lib/use-chart-base';
-import { useVisibilityCleanup } from '../../lib/use-visibility-cleanup';
+import { useVisibility } from '../../lib/use-visibility';
 import type { LineSeries, Metadata, Scales } from './types';
 import { DEFAULT_METADATA } from './types';
 import { createChartGroups } from './components/svg-groups';
@@ -77,12 +77,7 @@ export const MultiLineChart = ({
     visibilityKey,
   });
 
-  useVisibilityCleanup({
-    svgRef,
-    cleanupOnHidden: false,
-    onHidden: () => {
-      // Reset handled in useMultiLineChartLines
-    },
+  useVisibility({
     onVisible: () => {
       prevMetadataRef.current = DEFAULT_METADATA;
       scalesRef.current = null;

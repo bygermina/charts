@@ -55,6 +55,30 @@ export const getInitialParticles = (segments: Segment[]): Particle[] => {
   return allParticles;
 };
 
+const findSegmentByPosition = (
+  chain: number[],
+  segments: Segment[],
+  normalizedPosition: number,
+  totalLength: number,
+): { segmentIndex: number; t: number } => {
+  let accumulatedLength = 0;
+
+  for (const segIdx of chain) {
+    const segLength = getSegmentLength(segments[segIdx]);
+    const segmentStart = accumulatedLength / totalLength;
+    const segmentEnd = (accumulatedLength + segLength) / totalLength;
+
+    if (normalizedPosition >= segmentStart && normalizedPosition <= segmentEnd) {
+      const t = (normalizedPosition - segmentStart) / (segmentEnd - segmentStart);
+      return { segmentIndex: segIdx, t };
+    }
+
+    accumulatedLength += segLength;
+  }
+
+  return { segmentIndex: chain[0], t: 0 };
+};
+
 export const updateParticles = (
   particles: Particle[],
   segments: Segment[],
@@ -71,53 +95,32 @@ export const updateParticles = (
     const chain = typeChains.find((c) => c.includes(segmentIndex));
     if (!chain) return p;
 
-    const totalLengthPx = getChainLength(chain, segments);
-
+    const totalLength = getChainLength(chain, segments);
     const BASE_SPEED_PX_PER_SEC = 60;
-    const speedPxPerSec = BASE_SPEED_PX_PER_SEC;
+    const distancePx = (BASE_SPEED_PX_PER_SEC * dt) / 1000;
+    const distance = distancePx / totalLength;
 
-    const distancePx = (speedPxPerSec * dt) / 1000;
-
-    const distance = distancePx / totalLengthPx;
+    const currentSegmentIndex = chain.indexOf(segmentIndex);
     let currentPosition = 0;
 
-    for (let i = 0; i < chain.length; i++) {
-      if (chain[i] === segmentIndex) {
-        const segLength = getSegmentLength(segments[chain[i]]);
-        const totalLength = getChainLength(chain, segments);
-
-        currentPosition = t * (segLength / totalLength);
-
-        for (let j = 0; j < i; j++) {
-          currentPosition += getSegmentLength(segments[chain[j]]) / totalLength;
-        }
-        break;
+    for (let i = 0; i <= currentSegmentIndex; i++) {
+      const segLength = getSegmentLength(segments[chain[i]]);
+      if (i === currentSegmentIndex) {
+        currentPosition += (t * segLength) / totalLength;
+      } else {
+        currentPosition += segLength / totalLength;
       }
     }
 
-    let newPosition = currentPosition + distance;
+    let newPosition = (currentPosition + distance) % 1;
+    if (newPosition < 0) newPosition += 1;
 
-    if (newPosition >= 1) {
-      newPosition = newPosition % 1;
-    }
-    let accumulatedLength = 0;
-    let newSegmentIndex = chain[0];
-    let newT = 0;
-    const totalLength = getChainLength(chain, segments);
-
-    for (const segIdx of chain) {
-      const segLength = getSegmentLength(segments[segIdx]);
-      const segmentStart = accumulatedLength / totalLength;
-      const segmentEnd = (accumulatedLength + segLength) / totalLength;
-
-      if (newPosition >= segmentStart && newPosition <= segmentEnd) {
-        newSegmentIndex = segIdx;
-        newT = (newPosition - segmentStart) / (segmentEnd - segmentStart);
-        break;
-      }
-
-      accumulatedLength += segLength;
-    }
+    const { segmentIndex: newSegmentIndex, t: newT } = findSegmentByPosition(
+      chain,
+      segments,
+      newPosition,
+      totalLength,
+    );
 
     return {
       ...p,

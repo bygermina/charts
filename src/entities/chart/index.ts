@@ -9,8 +9,8 @@ export { ResponsiveChartWrapper } from './ui/responsive-chart-wrapper';
 export type { DataPoint, BarDataPoint, ChartVariant, ChartColors } from './model/types';
 export { getChartColors } from './model/types';
 export type { LineSeries } from './ui/multi-line-chart';
-
 export { useChartBase } from './lib/use-chart-base';
 export { useCanvasRenderLoop } from './lib/use-canvas-render-loop';
+export { useVisibility } from './lib/use-visibility';
 export { useVisibilityCleanup } from './lib/use-visibility-cleanup';
 export { useVisibilityAwareTimer } from './lib/use-visibility-aware-timer';

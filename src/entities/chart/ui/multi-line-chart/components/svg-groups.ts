@@ -8,11 +8,8 @@ export const createChartGroups = (config: {
   margin: { left: number; top: number };
 }) => createChartGroupsUtil({ ...config, useClipPath: true });
 
-export const getOrCreateLineGroup = ({
-  mainGroup,
-  lineIndex,
-}: GetOrCreateLineGroupConfig): Selection<SVGGElement, unknown, null, undefined> => {
-  mainGroup
+export const getOrCreateLineGroup = ({ mainGroup, lineIndex }: GetOrCreateLineGroupConfig) => {
+  const selection = mainGroup
     .selectAll<SVGGElement, number>(`g.line-group-${lineIndex}`)
     .data([lineIndex], (d) => d)
     .join(
@@ -21,12 +18,7 @@ export const getOrCreateLineGroup = ({
       (exit) => exit.remove(),
     );
 
-  return mainGroup.select<SVGGElement>(`g.line-group-${lineIndex}`) as Selection<
-    SVGGElement,
-    unknown,
-    null,
-    undefined
-  >;
+  return selection;
 };
 
 export const getOrCreateLinePath = ({
@@ -34,8 +26,8 @@ export const getOrCreateLinePath = ({
   color,
   strokeWidth,
   isInitialRender,
-}: GetOrCreateLinePathConfig): Selection<SVGPathElement, unknown, null, undefined> => {
-  lineGroup
+}: GetOrCreateLinePathConfig) => {
+  const selection = lineGroup
     .selectAll<SVGPathElement, string>('path.line-path')
     .data(['line-path'], (d) => d)
     .join(
@@ -56,10 +48,5 @@ export const getOrCreateLinePath = ({
       (exit) => exit.remove(),
     );
 
-  return lineGroup.select<SVGPathElement>('path.line-path') as Selection<
-    SVGPathElement,
-    unknown,
-    null,
-    undefined
-  >;
+  return selection;
 };

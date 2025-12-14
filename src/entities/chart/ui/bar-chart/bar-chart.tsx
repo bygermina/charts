@@ -8,7 +8,7 @@ import {
   DEFAULT_X_AXIS_TICKS,
   DEFAULT_Y_AXIS_TICKS,
 } from '../../model/constants';
-import { type DataPoint, type ChartVariant } from '../../model/types';
+import { type BarDataPoint, type ChartVariant } from '../../model/types';
 import { createGrid, createAxes, createChartGroups } from '../../lib/chart-utils';
 import { createClipPaths } from '../../lib/utils/clip-paths';
 import { useChartBase } from '../../lib/use-chart-base';
@@ -18,8 +18,6 @@ import { createGradient } from './utils/gradients';
 import { createScales } from './utils/scales';
 import { updateBars } from './utils/animation';
 import { cleanupBarChart } from './utils/cleanup';
-
-type BarDataPoint = DataPoint;
 
 interface BarChartProps {
   data: BarDataPoint[];

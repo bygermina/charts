@@ -1,12 +1,8 @@
-import { select, type Selection } from 'd3-selection';
-
-export const cleanupSVG = (svg: Selection<SVGSVGElement, unknown, null, undefined>): void => {
-  svg.selectAll('*').interrupt();
-  svg.selectAll('*').remove();
-};
+import { select } from 'd3-selection';
 
 export const cleanupSVGElement = (svgElement: SVGSVGElement | null): void => {
   if (!svgElement) return;
   const svg = select(svgElement);
-  cleanupSVG(svg);
+  svg.selectAll('*').interrupt();
+  svg.selectAll('*').remove();
 };

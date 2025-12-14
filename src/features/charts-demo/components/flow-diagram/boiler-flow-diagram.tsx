@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-import { useVisibility } from '@/entities/chart/lib/use-visibility';
+import { useVisibility } from '@/entities/chart';
 
 import { Pipe } from './components/pipe';
 import { Boiler } from './components/boiler';

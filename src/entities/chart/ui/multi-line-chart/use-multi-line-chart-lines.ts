@@ -129,9 +129,10 @@ export const useMultiLineChartLines = ({
         : undefined;
 
       lines.forEach((lineSeries, lineIndex) => {
-        const { data, color } = lineSeries;
-        const line = createLineGenerator({ xScale, yScale });
+        const { data, color, showDots } = lineSeries;
         const lineGroup = getOrCreateLineGroup({ mainGroup, lineIndex });
+
+        const line = createLineGenerator({ xScale, yScale });
         const path = getOrCreateLinePath({
           lineGroup,
           color,
@@ -149,24 +150,20 @@ export const useMultiLineChartLines = ({
           shiftOffset,
           speed,
         });
+
+        if (showDots ?? true) {
+          createAndAnimateDots({
+            lineGroup,
+            lineIndex,
+            data,
+            color,
+            isInitialRender,
+            xScale,
+            yScale,
+          });
+        }
       });
     }
-
-    lines.forEach((lineSeries, lineIndex) => {
-      const { data, color, showDots } = lineSeries;
-      if (showDots ?? true) {
-        const lineGroup = getOrCreateLineGroup({ mainGroup, lineIndex });
-        createAndAnimateDots({
-          lineGroup,
-          lineIndex,
-          data,
-          color,
-          isInitialRender,
-          xScale,
-          yScale,
-        });
-      }
-    });
 
     prevMetadataRef.current = {
       timeExtent,

@@ -1,9 +1,7 @@
 import type { ScaleTime, ScaleLinear } from 'd3-scale';
 import type { Selection } from 'd3-selection';
 
-import { type ChartColors, type DataPoint } from '../../../model/types';
-
-type BarDataPoint = DataPoint;
+import { type ChartColors, type BarDataPoint } from '../../../model/types';
 
 export interface CreateScalesConfig {
   data: BarDataPoint[];
