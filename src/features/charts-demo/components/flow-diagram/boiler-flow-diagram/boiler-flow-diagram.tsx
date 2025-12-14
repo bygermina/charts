@@ -45,8 +45,8 @@ export const BoilerFlowDiagram = ({ width = 900, height = 500 }: BoilerFlowDiagr
   const isVisibleRef = useRef(true);
 
   const startLoop = () => {
-    if (animationIdRef.current === null && isVisibleRef.current) {
-      animationIdRef.current = requestAnimationFrame(loopRef.current!);
+    if (animationIdRef.current === null && isVisibleRef.current && loopRef.current) {
+      animationIdRef.current = requestAnimationFrame(loopRef.current);
     }
   };
 

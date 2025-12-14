@@ -61,8 +61,7 @@ export const useMultiLineChartLines = ({
       return;
     }
 
-    const svgElement = svgRef.current;
-    if (!svgElement) return;
+    if (!svgRef.current) return;
     if (!mainGroupRef.current || !axesGroupRef.current) return;
 
     const mainGroup = mainGroupRef.current;

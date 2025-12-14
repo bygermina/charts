@@ -4,7 +4,6 @@ import { useEffect, useRef } from 'react';
 import { type ChartVariant, type SVGGroupSelection } from '../../model/types';
 import { createClipPaths } from '../../lib/utils/clip-paths';
 import { useChartBase } from '../../lib/use-chart-base';
-import { useVisibility } from '../../lib/use-visibility';
 import type { LineSeries, Metadata, Scales } from './types';
 import { DEFAULT_METADATA } from './types';
 import { createChartGroups } from './components/svg-groups';

@@ -38,7 +38,7 @@ const updateLinePath = ({ path, line, data, isInitialRender }: UpdateLinePathCon
 
       const node = path.node();
       if (node && node.ownerDocument) {
-        path.attr('opacity', 1);
+        path.attr('opacity', 1).attr('d', finalPathD);
       }
     });
   } else {
