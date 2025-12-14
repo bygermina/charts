@@ -18,16 +18,25 @@ export const Charts = () => {
           Real-time Analytics
         </Typography>
         <div className={styles.chartsGrid}>
-          <ChartContainer header="d3.js Multi Line Chart (SVG)" subtitle="data update every second">
+          <ChartContainer
+            header="d3.js Multi Line Chart (SVG)"
+            subtitle="data update every second"
+            className={styles.fixedScaleChart}
+          >
             <MultiLineChartDemo />
           </ChartContainer>
           <ChartContainer
             header="Canvas chart 1000 points / sec"
             subtitle="data update every millisecond"
+            className={styles.fixedScaleChart}
           >
             <RealTimeCanvasChart />
           </ChartContainer>
-          <ChartContainer header="Bar Chart" subtitle="Hover to see the value">
+          <ChartContainer
+            header="Bar Chart"
+            subtitle="Hover to see the value"
+            className={styles.fixedScaleChart}
+          >
             <BarChartDemo />
           </ChartContainer>
           <ChartContainer

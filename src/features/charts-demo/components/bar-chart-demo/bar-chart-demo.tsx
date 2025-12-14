@@ -61,7 +61,7 @@ export const BarChartDemo = ({
   });
 
   return (
-    <ResponsiveChartWrapper width={width} height={height}>
+    <ResponsiveChartWrapper width={width} height={height} fixedWidth={!width}>
       {({ width: chartWidth, height: chartHeight }: { width: number; height: number }) => (
         <BarChart
           data={barData}
