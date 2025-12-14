@@ -27,6 +27,7 @@ interface BarChartProps {
   height?: number;
   variant?: ChartVariant;
   showGrid?: boolean;
+  margin?: { top?: number; right?: number; bottom?: number; left?: number };
 }
 
 export const BarChart = ({
@@ -35,11 +36,13 @@ export const BarChart = ({
   height = 250,
   variant = 'normal',
   showGrid = true,
+  margin: customMargin,
 }: BarChartProps) => {
   const { svgRef, chartColors, margin, chartWidth, chartHeight } = useChartBase({
     width,
     height,
     variant,
+    margin: customMargin,
   });
 
   const fillColor = chartColors.secondary;

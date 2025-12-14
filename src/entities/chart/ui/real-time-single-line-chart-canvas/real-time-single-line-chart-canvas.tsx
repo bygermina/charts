@@ -28,6 +28,7 @@ interface RealTimeSingleLineChartCanvasProps {
   highlightStrokeColor?: string;
   highlightThreshold?: number;
   strokeWidth?: number;
+  margin?: { top?: number; right?: number; bottom?: number; left?: number };
 }
 
 export const RealTimeSingleLineChartCanvas = ({
@@ -41,11 +42,13 @@ export const RealTimeSingleLineChartCanvas = ({
   highlightStrokeColor,
   highlightThreshold,
   strokeWidth = 1,
+  margin: customMargin,
 }: RealTimeSingleLineChartCanvasProps) => {
   const { chartColors, margin, chartWidth, chartHeight } = useChartBase({
     width,
     height,
     variant,
+    margin: customMargin,
   });
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);

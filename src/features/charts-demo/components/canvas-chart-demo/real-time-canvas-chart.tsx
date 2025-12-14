@@ -73,6 +73,7 @@ export default function RealTimeCanvasChart({ variant = 'normal' }: { variant?: 
         highlightThreshold={HIGHLIGHT_THRESHOLD}
         strokeWidth={1}
         height={DEFAULT_CHART_HEIGHT}
+        margin={{ left: 30 }}
       />
     </div>
   );

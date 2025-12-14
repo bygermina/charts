@@ -24,6 +24,7 @@ interface MultiLineChartProps {
   strokeWidth?: number;
   animationSpeed?: number;
   yDomain?: [number, number];
+  margin?: { top?: number; right?: number; bottom?: number; left?: number };
 }
 
 export const MultiLineChart = ({
@@ -36,11 +37,13 @@ export const MultiLineChart = ({
   strokeWidth = 1,
   animationSpeed,
   yDomain,
+  margin: customMargin,
 }: MultiLineChartProps) => {
   const { svgRef, chartColors, margin, chartWidth, chartHeight } = useChartBase({
     width,
     height,
     variant,
+    margin: customMargin,
   });
 
   const scalesRef = useRef<Scales | null>(null);

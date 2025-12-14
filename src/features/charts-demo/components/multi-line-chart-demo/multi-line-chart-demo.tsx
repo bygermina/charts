@@ -117,6 +117,7 @@ export const MultiLineChartDemo = ({
           showGrid={true}
           showLegend={showLegend}
           yDomain={[0, 200]}
+          margin={{ left: 30 }}
         />
       )}
     </ResponsiveChartWrapper>

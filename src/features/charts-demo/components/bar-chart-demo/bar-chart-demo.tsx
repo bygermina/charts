@@ -69,6 +69,7 @@ export const BarChartDemo = ({
           height={chartHeight}
           variant={variant}
           showGrid={true}
+          margin={{ left: 30 }}
         />
       )}
     </ResponsiveChartWrapper>
