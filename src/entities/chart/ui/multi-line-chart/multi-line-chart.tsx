@@ -74,17 +74,6 @@ export const MultiLineChart = ({
     strokeWidth,
   });
 
-  useVisibility({
-    onVisible: () => {
-      prevMetadataRef.current = DEFAULT_METADATA;
-      scalesRef.current = null;
-      mainGroupRef.current = null;
-      axesGroupRef.current = null;
-      gridGroupRef.current = null;
-      xAxisGroupRef.current = null;
-    },
-  });
-
   useEffect(() => {
     const svgElement = svgRef.current;
     if (!svgElement) return;

@@ -25,7 +25,11 @@ export const ResponsiveChartWrapper = ({
 }: ResponsiveChartWrapperProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const containerSize = useContainerSize(containerRef);
-  const chartWidth = width ?? (fixedWidth ? DEFAULT_CHART_SIZE.width : containerSize.width);
+  const chartWidth =
+    width ??
+    (fixedWidth && DEFAULT_CHART_SIZE.width > containerSize.width
+      ? DEFAULT_CHART_SIZE.width
+      : containerSize.width);
   const chartHeight = height ?? containerSize.height;
 
   return (

@@ -1,10 +1,11 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 
 import {
   RealTimeSingleLineChartCanvas,
   type RealTimeSingleLineDataRef,
   type ChartVariant,
   getChartColors,
+  useVisibilityAwareTimer,
 } from '@/entities/chart';
 import { createTrendGenerator } from '@/shared/lib/utils';
 
@@ -36,27 +37,31 @@ export const RealTimeCanvasChart = ({ variant = 'normal' }: RealTimeCanvasChartP
     maxPoints: MAX_POINTS,
   });
 
-  useEffect(() => {
-    let timeoutId: ReturnType<typeof setTimeout>;
+  const updateData = () => {
+    const t = Date.now();
+    const v = valueGeneratorRef.current();
+    const data = dataRef.current;
 
-    const updateData = () => {
-      const t = Date.now();
-      const v = valueGeneratorRef.current();
-      const data = dataRef.current;
+    data.values[data.head] = v;
+    data.times[data.head] = t;
 
-      data.values[data.head] = v;
-      data.times[data.head] = t;
+    data.head = (data.head + 1) % MAX_POINTS;
+    data.size = Math.min(data.size + 1, MAX_POINTS);
+  };
 
-      data.head = (data.head + 1) % MAX_POINTS;
-      data.size = Math.min(data.size + 1, MAX_POINTS);
-
-      timeoutId = setTimeout(updateData, DATA_UPDATE_INTERVAL_MS);
-    };
-
-    timeoutId = setTimeout(updateData, DATA_UPDATE_INTERVAL_MS);
-
-    return () => clearTimeout(timeoutId);
-  }, []);
+  useVisibilityAwareTimer({
+    delay: DATA_UPDATE_INTERVAL_MS,
+    onTick: updateData,
+    onVisible: () => {
+      dataRef.current = {
+        values: new Float32Array(MAX_POINTS),
+        times: new Float64Array(MAX_POINTS),
+        head: 0,
+        size: 0,
+        maxPoints: MAX_POINTS,
+      };
+    },
+  });
 
   return (
     <div className={styles.container}>

@@ -115,7 +115,7 @@ export const MultiLineChartDemo = ({
   });
 
   return (
-    <ResponsiveChartWrapper width={width} height={height} fixedWidth={!width}>
+    <ResponsiveChartWrapper width={width} height={height} fixedWidth>
       {({ width: chartWidth, height: chartHeight }: ChartSize) => (
         <MultiLineChart
           lines={lines}
