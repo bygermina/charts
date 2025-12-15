@@ -2,7 +2,7 @@ import type { Selection } from 'd3-selection';
 
 import { type DataPoint, type LinearScale } from '../../../model/types';
 
-interface CreateDotsConfig {
+interface RenderDotsConfig {
   lineGroup: Selection<SVGGElement, number, SVGGElement, unknown>;
   lineIndex: number;
   data: DataPoint[];
@@ -11,14 +11,14 @@ interface CreateDotsConfig {
   yScale: LinearScale;
 }
 
-export const createAndAnimateDots = ({
+export const renderDots = ({
   lineGroup,
   lineIndex,
   data,
   color,
   xScale,
   yScale,
-}: CreateDotsConfig): void => {
+}: RenderDotsConfig): void => {
   const dots = lineGroup
     .selectAll<SVGCircleElement, DataPoint>(`.dot-${lineIndex}`)
     .data(data, (d) => d.time);

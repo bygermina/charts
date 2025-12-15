@@ -4,11 +4,11 @@ import { useEffect, useRef } from 'react';
 import { type ChartVariant, type SVGGroupSelection } from '../../model/types';
 import { useChartBase } from '../../lib/use-chart-base';
 import { useVisibility } from '../../lib/use-visibility';
-import type { LineSeries, Metadata, Scales } from './types';
+import type { LineSeries, MultiLineChartMetadata, MultiLineChartScales } from './types';
 import { DEFAULT_METADATA } from './types';
-import { createChartGroups } from './components/svg-groups';
-import { useMultiLineChartLines } from './use-multi-line-chart-lines';
-import { useMultiLineChartGrid } from './use-multi-line-chart-grid';
+import { createChartGroups } from './utils/svg-groups';
+import { useMultiLineChartLines } from './hooks/use-multi-line-chart-lines';
+import { useMultiLineChartGrid } from './hooks/use-multi-line-chart-grid';
 
 import styles from './multi-line-chart.module.scss';
 
@@ -44,7 +44,7 @@ export const MultiLineChart = ({
     margin: customMargin,
   });
 
-  const scalesRef = useRef<Scales | null>(null);
+  const scalesRef = useRef<MultiLineChartScales | null>(null);
   const mainGroupRef = useRef<SVGGroupSelection | null>(null);
   const axesGroupRef = useRef<SVGGroupSelection | null>(null);
   const gridGroupRef = useRef<SVGGroupSelection | null>(null);
@@ -53,7 +53,7 @@ export const MultiLineChart = ({
     null,
   );
 
-  const prevMetadataRef = useRef<Metadata>(DEFAULT_METADATA);
+  const prevMetadataRef = useRef<MultiLineChartMetadata>(DEFAULT_METADATA);
 
   useVisibility({
     onHidden: () => {

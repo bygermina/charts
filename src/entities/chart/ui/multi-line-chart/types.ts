@@ -27,7 +27,7 @@ export interface CreateScalesConfig {
   yDomain?: [number, number];
 }
 
-export interface Scales {
+export interface MultiLineChartScales {
   xScale: LinearScale;
   xAxisScale: LinearScale;
   yScale: LinearScale;
@@ -79,9 +79,9 @@ export interface ManageGridConfig {
   svgElement?: SVGSVGElement;
 }
 
-export interface Metadata {
+export interface MultiLineChartMetadata {
   timeExtent: [number, number] | null;
   timeStep: number;
 }
 
-export const DEFAULT_METADATA: Metadata = { timeExtent: null, timeStep: 0 };
+export const DEFAULT_METADATA: MultiLineChartMetadata = { timeExtent: null, timeStep: 0 };

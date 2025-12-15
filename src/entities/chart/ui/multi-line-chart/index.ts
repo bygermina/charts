@@ -1,4 +1,4 @@
-export type { LineSeries, Scales } from './types';
+export type { LineSeries, MultiLineChartScales } from './types';
 
 export { prepareChartData } from './utils/data-calculations';
 
@@ -8,9 +8,9 @@ export { createOrUpdateScalesForAxes } from './utils/scales';
 
 export { createLineGenerator, updateLine } from './utils/line-generator';
 
-export { createAndAnimateDots } from './components/dots';
+export { renderDots } from './utils/dots';
 
-export { createChartGroups, getOrCreateLinePath } from './components/svg-groups';
+export { createChartGroups, getOrCreateLinePath } from './utils/svg-groups';
 export { getOrCreateLineGroup } from './utils/svg-group-helpers';
 
-export { manageGrid, manageLegend } from './components/grid-legend';
+export { manageGrid, manageLegend } from './utils/grid-legend';

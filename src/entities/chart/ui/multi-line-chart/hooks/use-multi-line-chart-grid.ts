@@ -1,21 +1,21 @@
 import { useEffect, type RefObject } from 'react';
 
-import type { ChartColors, SVGGroupSelection } from '../../model/types';
-import { manageGrid, manageLegend } from './components/grid-legend';
-import { calculateGridLeftShift } from './utils/grid-shift-calculations';
-import type { LineSeries, Metadata, Scales } from './types';
+import type { ChartColors, SVGGroupSelection } from '../../../model/types';
+import { manageGrid, manageLegend } from '../utils/grid-legend';
+import { calculateGridLeftShift } from '../utils/grid-shift-calculations';
+import type { LineSeries, MultiLineChartMetadata, MultiLineChartScales } from '../types';
 
 interface UseMultiLineChartGridParams {
   lines: LineSeries[];
   svgRef: RefObject<SVGSVGElement | null>;
   mainGroupRef: RefObject<SVGGroupSelection | null>;
-  scalesRef: RefObject<Scales | null>;
+  scalesRef: RefObject<MultiLineChartScales | null>;
   gridGroupRef: RefObject<SVGGroupSelection | null>;
   lastChartDataRef: RefObject<{
     shouldAnimateShift: boolean;
     shiftOffset: number;
   } | null>;
-  prevMetadataRef: RefObject<Metadata>;
+  prevMetadataRef: RefObject<MultiLineChartMetadata>;
   chartWidth: number;
   chartHeight: number;
   margin: { left: number; right: number; top: number; bottom: number };

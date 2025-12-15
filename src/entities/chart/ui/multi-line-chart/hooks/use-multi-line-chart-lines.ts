@@ -1,31 +1,31 @@
 import { useEffect, type RefObject } from 'react';
 
-import { createAxes } from '../../lib/chart-utils';
-import { DEFAULT_X_AXIS_TICKS, DEFAULT_Y_AXIS_TICKS } from '../../model/constants';
-import type { ChartColors, SVGGroupSelection } from '../../model/types';
-import { getOrCreateLineGroup } from './utils/svg-group-helpers';
-import { getOrCreateLinePath } from './components/svg-groups';
-import { createAndAnimateDots } from './components/dots';
-import { prepareChartData } from './utils/data-calculations';
-import { createOrUpdateScalesForAxes } from './utils/scales';
-import { createLineGenerator, updateLine } from './utils/line-generator';
-import type { LineSeries, Metadata, Scales } from './types';
-import { calculateGridLeftShift } from './utils/grid-shift-calculations';
-import { animateChartShift, calculateChartAnimationSpeed } from './utils/chart-animation';
+import { createAxes } from '../../../lib/chart-utils';
+import { DEFAULT_X_AXIS_TICKS, DEFAULT_Y_AXIS_TICKS } from '../../../model/constants';
+import type { ChartColors, SVGGroupSelection } from '../../../model/types';
+import { getOrCreateLineGroup } from '../utils/svg-group-helpers';
+import { getOrCreateLinePath } from '../utils/svg-groups';
+import { renderDots } from '../utils/dots';
+import { prepareChartData } from '../utils/data-calculations';
+import { createOrUpdateScalesForAxes } from '../utils/scales';
+import { createLineGenerator, updateLine } from '../utils/line-generator';
+import type { LineSeries, MultiLineChartMetadata, MultiLineChartScales } from '../types';
+import { calculateGridLeftShift } from '../utils/grid-shift-calculations';
+import { animateChartShift, calculateChartAnimationSpeed } from '../utils/chart-animation';
 
 interface UseMultiLineChartLinesParams {
   lines: LineSeries[];
   svgRef: RefObject<SVGSVGElement | null>;
   mainGroupRef: RefObject<SVGGroupSelection | null>;
   axesGroupRef: RefObject<SVGGroupSelection | null>;
-  scalesRef: RefObject<Scales | null>;
+  scalesRef: RefObject<MultiLineChartScales | null>;
   xAxisGroupRef: RefObject<SVGGroupSelection | null>;
   gridGroupRef: RefObject<SVGGroupSelection | null>;
   lastChartDataRef: RefObject<{
     shouldAnimateShift: boolean;
     shiftOffset: number;
   } | null>;
-  prevMetadataRef: RefObject<Metadata>;
+  prevMetadataRef: RefObject<MultiLineChartMetadata>;
   chartWidth: number;
   chartHeight: number;
   margin: { left: number; right: number; top: number; bottom: number };
@@ -152,7 +152,7 @@ export const useMultiLineChartLines = ({
         });
 
         if (showDots ?? true) {
-          createAndAnimateDots({
+          renderDots({
             lineGroup,
             lineIndex,
             data,
