@@ -1,15 +1,13 @@
-type FlowType = 'water_cold' | 'water_hot' | 'gas' | 'air';
+export type FlowType = 'water_cold' | 'water_hot' | 'gas' | 'air';
 
-type Segment = {
+export type Segment = {
   from: { x: number; y: number };
   to: { x: number; y: number };
   type: FlowType;
 };
 
-type Particle = {
+export type Particle = {
   segmentIndex: number;
   t: number;
   speed: number;
 };
-
-export type { FlowType, Segment, Particle };

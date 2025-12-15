@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { FLOW_TEXT_BASE_PROPS } from '../config/text-props';
 
 interface LegendEntry {
   label: string;
@@ -12,13 +12,14 @@ interface LegendProps {
   fontSize?: number;
 }
 
-export const Legend = memo(({ entries, x = 30, y = 30, fontSize = 14 }: LegendProps) => {
-  const lineHeight = 27;
+const lineHeight = 27;
 
+export const Legend = ({ entries, x = 30, y = 30, fontSize = 14 }: LegendProps) => {
   return (
     <g>
       {entries.map((entry, i) => {
         const currentY = y + i * lineHeight;
+
         return (
           <g key={entry.label}>
             <rect x={x} y={currentY - 9} width={27} height={18} rx={6} fill={entry.color} />
@@ -27,8 +28,7 @@ export const Legend = memo(({ entries, x = 30, y = 30, fontSize = 14 }: LegendPr
               y={currentY}
               fill="var(--color-slate-300)"
               fontSize={fontSize}
-              fontFamily="sans-serif"
-              dominantBaseline="middle"
+              {...FLOW_TEXT_BASE_PROPS}
             >
               {entry.label}
             </text>
@@ -37,4 +37,4 @@ export const Legend = memo(({ entries, x = 30, y = 30, fontSize = 14 }: LegendPr
       })}
     </g>
   );
-});
+};

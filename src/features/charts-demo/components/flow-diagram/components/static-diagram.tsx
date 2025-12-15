@@ -1,5 +1,3 @@
-import { memo, useMemo } from 'react';
-
 import { Boiler } from './boiler';
 import { Sensor } from './sensor';
 import { Pump } from './pump';
@@ -13,62 +11,44 @@ interface StaticDiagramProps {
   waterContainer: { x: number; y: number; w: number; h: number };
 }
 
-export const StaticDiagram = memo(({ boiler, waterContainer }: StaticDiagramProps) => {
-  const legendEntries = useMemo(() => getLegendEntries(), []);
+const LEGEND_ENTRIES = getLegendEntries();
 
-  const pump1Props = useMemo(
-    () => ({
-      x: boiler.x - 120,
-      y: boiler.y + boiler.h - 45,
-      color: getParticleColor('water_cold'),
-    }),
-    [boiler],
-  );
+export const StaticDiagram = ({ boiler, waterContainer }: StaticDiagramProps) => {
+  const pump1 = {
+    x: boiler.x - 120,
+    y: boiler.y + boiler.h - 45,
+    color: getParticleColor('water_cold'),
+  };
 
-  const pump2Props = useMemo(
-    () => ({
-      x: boiler.x + boiler.w + 200,
-      y: waterContainer.y,
-      color: getParticleColor('water_hot'),
-    }),
-    [boiler, waterContainer],
-  );
+  const pump2 = {
+    x: boiler.x + boiler.w + 200,
+    y: waterContainer.y,
+    color: getParticleColor('water_hot'),
+  };
 
-  const gasValve1Props = useMemo(
-    () => ({
-      x: boiler.x - 60,
-      y: boiler.y + boiler.h + 60,
-      color: getParticleColor('gas'),
-    }),
-    [boiler],
-  );
+  const gasValve1 = {
+    x: boiler.x - 60,
+    y: boiler.y + boiler.h + 60,
+    color: getParticleColor('gas'),
+  };
 
-  const gasValve2Props = useMemo(
-    () => ({
-      x: boiler.x + boiler.w + 150,
-      y: boiler.y + boiler.h + 60,
-      color: getParticleColor('air'),
-    }),
-    [boiler],
-  );
+  const gasValve2 = {
+    x: boiler.x + boiler.w + 150,
+    y: boiler.y + boiler.h + 60,
+    color: getParticleColor('air'),
+  };
 
-  const sensor1Props = useMemo(
-    () => ({
-      x: boiler.x + boiler.w + 78,
-      y: waterContainer.y - 80,
-      pipeY: waterContainer.y,
-    }),
-    [boiler, waterContainer],
-  );
+  const sensor1 = {
+    x: boiler.x + boiler.w + 78,
+    y: waterContainer.y - 80,
+    pipeY: waterContainer.y,
+  };
 
-  const sensor2Props = useMemo(
-    () => ({
-      x: waterContainer.x - 80,
-      y: boiler.y + boiler.h - 120,
-      pipeY: boiler.y + boiler.h - 45,
-    }),
-    [boiler, waterContainer],
-  );
+  const sensor2 = {
+    x: waterContainer.x - 80,
+    y: boiler.y + boiler.h - 120,
+    pipeY: boiler.y + boiler.h - 45,
+  };
 
   return (
     <>
@@ -83,16 +63,16 @@ export const StaticDiagram = memo(({ boiler, waterContainer }: StaticDiagramProp
         waterContainerHeight={waterContainer.h}
       />
 
-      <Pump {...pump1Props} rotationSpeed={360} />
+      <Pump {...pump1} rotationSpeed={360} />
 
-      <Pump {...pump2Props} rotationSpeed={360} />
+      <Pump {...pump2} rotationSpeed={360} />
 
-      <GasValve {...gasValve1Props} />
+      <GasValve {...gasValve1} />
 
-      <GasValve {...gasValve2Props} />
+      <GasValve {...gasValve2} />
 
       <Sensor
-        {...sensor1Props}
+        {...sensor1}
         type="temperature"
         label="T Out"
         value={75.5}
@@ -101,7 +81,7 @@ export const StaticDiagram = memo(({ boiler, waterContainer }: StaticDiagramProp
       />
 
       <Sensor
-        {...sensor2Props}
+        {...sensor2}
         type="pressure"
         label="P"
         value={2.5}
@@ -109,7 +89,7 @@ export const StaticDiagram = memo(({ boiler, waterContainer }: StaticDiagramProp
         color={FLOW_COLORS.sensorPressure}
       />
 
-      <Legend entries={legendEntries} />
+      <Legend entries={LEGEND_ENTRIES} />
     </>
   );
-});
+};

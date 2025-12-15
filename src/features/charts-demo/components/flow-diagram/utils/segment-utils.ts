@@ -4,6 +4,16 @@ export const getSegmentLength = (seg: Segment): number => {
   return Math.sqrt(Math.pow(seg.to.x - seg.from.x, 2) + Math.pow(seg.to.y - seg.from.y, 2));
 };
 
+export const getChainPathD = (chain: number[], segments: Segment[]): string => {
+  const firstSeg = segments[chain[0]];
+  const rest = chain.map((idx) => {
+    const seg = segments[idx];
+    return `L ${seg.to.x} ${seg.to.y}`;
+  });
+
+  return `M ${firstSeg.from.x} ${firstSeg.from.y} ${rest.join(' ')}`;
+};
+
 export const getSegmentChains = (segments: Segment[]): Map<FlowType, number[][]> => {
   const chains = new Map<FlowType, number[][]>();
   const processed = new Set<number>();

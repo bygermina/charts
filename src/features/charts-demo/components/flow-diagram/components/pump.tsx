@@ -1,11 +1,7 @@
-import { memo } from 'react';
-
 interface PumpProps {
   x: number;
   y: number;
-  label?: string;
   color: string;
-  fontSize?: number;
   rotationSpeed?: number;
 }
 
@@ -13,7 +9,7 @@ const RADIUS = 40;
 const INNER_RADIUS = 35;
 const FILL_OPACITY = 0.05;
 
-export const Pump = memo(({ x, y, label, color, fontSize = 12, rotationSpeed = 0 }: PumpProps) => {
+export const Pump = ({ x, y, color, rotationSpeed = 0 }: PumpProps) => {
   const rotationDuration = rotationSpeed > 0 ? 360 / rotationSpeed : 0;
 
   return (
@@ -87,19 +83,6 @@ export const Pump = memo(({ x, y, label, color, fontSize = 12, rotationSpeed = 0
           />
         </>
       )}
-      {label && (
-        <text
-          x={x + RADIUS + 8}
-          y={y}
-          fill="var(--color-slate-300)"
-          fontSize={fontSize}
-          fontFamily="sans-serif"
-          dominantBaseline="middle"
-          fontWeight="500"
-        >
-          {label}
-        </text>
-      )}
     </g>
   );
-});
+};

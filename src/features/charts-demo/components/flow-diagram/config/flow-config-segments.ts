@@ -1,56 +1,47 @@
 import type { Segment } from './types';
 
-interface BoilerDimensions {
-  x: number;
-  y: number;
-  w: number;
-  h: number;
-}
-
-interface WaterContainerDimensions {
-  x: number;
-  y: number;
-  w: number;
-  h: number;
-}
-
-export const createFlowSegments = (
-  boiler: BoilerDimensions,
-  waterContainer: WaterContainerDimensions,
-): Segment[] => [
+// Absolute segment coordinates in the flow diagram viewBox (0 0 900 500).
+// These match the original math for width=900, height=500, boiler and water container positions.
+export const FLOW_SEGMENTS: Segment[] = [
+  // cold water: from left into boiler bottom
   {
     type: 'water_cold',
-    from: { x: boiler.x - 300, y: boiler.y + boiler.h - 45 },
-    to: { x: waterContainer.x, y: boiler.y + boiler.h - 45 },
+    from: { x: 30, y: 355 },
+    to: { x: 360, y: 355 },
   },
+  // hot water: from boiler/water container to the right
   {
     type: 'water_hot',
-    from: { x: waterContainer.x + waterContainer.w, y: waterContainer.y },
-    to: { x: boiler.x + boiler.w + 330, y: waterContainer.y },
+    from: { x: 540, y: 130 },
+    to: { x: 900, y: 130 },
+  },
+  // gas: from left to boiler bottom left
+  {
+    type: 'gas',
+    from: { x: 30, y: 460 },
+    to: { x: 415, y: 460 },
   },
   {
     type: 'gas',
-    from: { x: boiler.x - 300, y: boiler.y + boiler.h + 60 },
-    to: { x: boiler.x + boiler.w / 2 - 35, y: boiler.y + boiler.h + 60 },
+    from: { x: 415, y: 460 },
+    to: { x: 415, y: 400 },
   },
+  // air: from right to boiler bottom right and chimney
   {
-    type: 'gas',
-    from: { x: boiler.x + boiler.w / 2 - 35, y: boiler.y + boiler.h + 60 },
-    to: { x: boiler.x + boiler.w / 2 - 35, y: boiler.y + boiler.h },
+    type: 'air',
+    from: { x: 810, y: 460 },
+    to: { x: 485, y: 460 },
   },
   {
     type: 'air',
-    from: { x: boiler.x + boiler.w + 240, y: boiler.y + boiler.h + 60 },
-    to: { x: boiler.x + boiler.w / 2 + 35, y: boiler.y + boiler.h + 60 },
+    from: { x: 485, y: 460 },
+    to: { x: 485, y: 400 },
   },
   {
     type: 'air',
-    from: { x: boiler.x + boiler.w / 2 + 35, y: boiler.y + boiler.h + 60 },
-    to: { x: boiler.x + boiler.w / 2 + 35, y: boiler.y + boiler.h },
-  },
-  {
-    type: 'air',
-    from: { x: boiler.x + boiler.w / 2, y: boiler.y },
-    to: { x: boiler.x + boiler.w / 2, y: boiler.y - 180 },
+    from: { x: 450, y: 100 },
+    to: { x: 450, y: -80 },
   },
 ];
+
+export const createFlowSegments = (): Segment[] => FLOW_SEGMENTS;

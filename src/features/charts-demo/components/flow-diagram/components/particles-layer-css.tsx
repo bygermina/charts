@@ -1,10 +1,8 @@
-import { memo, useMemo } from 'react';
-
 import { clamp } from '@/shared/lib/utils';
 
-import type { Segment } from '../config/types';
+import type { FlowType, Segment } from '../config/types';
 import { getParticleColor, getBaseSpeed } from '../config/flow-config';
-import { getSegmentChains, getChainLength } from '../utils/segment-utils';
+import { getSegmentChains, getChainLength, getChainPathD } from '../utils/segment-utils';
 
 import styles from './particles-layer-css.module.scss';
 
@@ -18,78 +16,136 @@ const MAX_PARTICLES = 8;
 const PARTICLES_PER_60PX = 1;
 const BASE_SPEED_PX_PER_SEC = 750;
 
-const getChainPathD = (chain: number[], segments: Segment[]): string => {
-  const firstSeg = segments[chain[0]];
-  const rest = chain.map((idx) => {
-    const seg = segments[idx];
-    return `L ${seg.to.x} ${seg.to.y}`;
-  });
-  return `M ${firstSeg.from.x} ${firstSeg.from.y} ${rest.join(' ')}`;
+interface ParticlePath {
+  id: string;
+  d: string;
+}
+
+interface Particle {
+  pathId: string;
+  duration: number;
+  delay: number;
+  color: string;
+  radius: number;
+  key: string;
+}
+
+const calculateChainDuration = (totalLength: number, type: FlowType): number => {
+  return totalLength / (BASE_SPEED_PX_PER_SEC * getBaseSpeed(type));
 };
 
-export const ParticlesLayerCss = memo(
-  ({ segments, particleRadius = 5 }: ParticlesLayerCssProps) => {
-    const { paths, particles } = useMemo(() => {
-      const chains = getSegmentChains(segments);
-      const pathsList: Array<{ id: string; d: string }> = [];
-      const particlesList: Array<{
-        pathId: string;
-        duration: number;
-        delay: number;
-        color: string;
-        radius: number;
-        key: string;
-      }> = [];
+const calculateParticleCount = (totalLength: number): number => {
+  return clamp(Math.round((totalLength / 60) * PARTICLES_PER_60PX), MIN_PARTICLES, MAX_PARTICLES);
+};
 
-      chains.forEach((typeChains, type) => {
-        typeChains.forEach((chain, chainIndex) => {
-          const totalLength = getChainLength(chain, segments);
-          const duration = totalLength / (BASE_SPEED_PX_PER_SEC * getBaseSpeed(type));
-          const count = clamp(
-            Math.round((totalLength / 60) * PARTICLES_PER_60PX),
-            MIN_PARTICLES,
-            MAX_PARTICLES,
-          );
-          const pathId = `path-${type}-${chainIndex}`;
+const createParticlePathId = (type: FlowType, chainIndex: number): string => {
+  return `path-${type}-${chainIndex}`;
+};
 
-          pathsList.push({ id: pathId, d: getChainPathD(chain, segments) });
+const createParticlesForPath = ({
+  pathId,
+  count,
+  duration,
+  type,
+  particleRadius,
+}: {
+  pathId: string;
+  count: number;
+  duration: number;
+  type: FlowType;
+  particleRadius: number;
+}): Particle[] => {
+  return Array.from({ length: count }, (_, index) => ({
+    pathId,
+    duration,
+    delay: (index / count) * duration,
+    color: getParticleColor(type),
+    radius: particleRadius,
+    key: `${pathId}-${index}`,
+  }));
+};
 
-          particlesList.push(
-            ...Array.from({ length: count }, (_, j) => ({
-              pathId,
-              duration,
-              delay: (j / count) * duration,
-              color: getParticleColor(type),
-              radius: type === 'gas' ? particleRadius + 1 : particleRadius,
-              key: `${pathId}-${j}`,
-            })),
-          );
-        });
+const createChainParticles = ({
+  chain,
+  type,
+  chainIndex,
+  segments,
+  particleRadius,
+}: {
+  chain: number[];
+  type: FlowType;
+  chainIndex: number;
+  segments: Segment[];
+  particleRadius: number;
+}): { path: ParticlePath; particles: Particle[] } => {
+  const totalLength = getChainLength(chain, segments);
+  const duration = calculateChainDuration(totalLength, type);
+  const count = calculateParticleCount(totalLength);
+  const pathId = createParticlePathId(type, chainIndex);
+
+  const path: ParticlePath = { id: pathId, d: getChainPathD(chain, segments) };
+  const particles = createParticlesForPath({
+    pathId,
+    count,
+    duration,
+    type,
+    particleRadius,
+  });
+
+  return { path, particles };
+};
+
+const buildPathsAndParticles = ({
+  segments,
+  particleRadius,
+}: {
+  segments: Segment[];
+  particleRadius: number;
+}): { paths: ParticlePath[]; particles: Particle[] } => {
+  const chains = getSegmentChains(segments);
+  const paths: ParticlePath[] = [];
+  const particles: Particle[] = [];
+
+  chains.forEach((typeChains, type) => {
+    typeChains.forEach((chain, chainIndex) => {
+      const { path, particles: chainParticles } = createChainParticles({
+        chain,
+        type,
+        chainIndex,
+        segments,
+        particleRadius,
       });
 
-      return { paths: pathsList, particles: particlesList };
-    }, [segments, particleRadius]);
+      paths.push(path);
+      particles.push(...chainParticles);
+    });
+  });
 
-    return (
-      <g className={styles.container}>
-        <defs>
-          {paths.map((path) => (
-            <path key={path.id} id={path.id} d={path.d} className={styles.particlePath} />
-          ))}
-        </defs>
-        {particles.map((p) => (
-          <circle key={p.key} r={p.radius} fill={p.color} className={styles.particle}>
-            <animateMotion
-              dur={`${p.duration}s`}
-              begin={`${p.delay}s`}
-              repeatCount="indefinite"
-              fill="freeze"
-            >
-              <mpath href={`#${p.pathId}`} />
-            </animateMotion>
-          </circle>
+  return { paths, particles };
+};
+
+export const ParticlesLayerCss = ({ segments, particleRadius = 5 }: ParticlesLayerCssProps) => {
+  const { paths, particles } = buildPathsAndParticles({ segments, particleRadius });
+
+  return (
+    <g className={styles.container}>
+      <defs>
+        {paths.map((path) => (
+          <path key={path.id} id={path.id} d={path.d} className={styles.particlePath} />
         ))}
-      </g>
-    );
-  },
-);
+      </defs>
+      {particles.map((p) => (
+        <circle key={p.key} r={p.radius} fill={p.color} className={styles.particle}>
+          <animateMotion
+            dur={`${p.duration}s`}
+            begin={`${p.delay}s`}
+            repeatCount="indefinite"
+            fill="freeze"
+          >
+            <mpath href={`#${p.pathId}`} />
+          </animateMotion>
+        </circle>
+      ))}
+    </g>
+  );
+};

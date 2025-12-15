@@ -1,4 +1,5 @@
 import { memo } from 'react';
+import { FLOW_TEXT_BASE_PROPS } from '../config/text-props';
 
 interface GasValveProps {
   x: number;
@@ -7,6 +8,11 @@ interface GasValveProps {
   color: string;
   fontSize?: number;
 }
+
+const GAS_VALVE_TEXT_PROPS = {
+  ...FLOW_TEXT_BASE_PROPS,
+  fontWeight: '500' as const,
+};
 
 export const GasValve = memo(({ x, y, label, color, fontSize = 12 }: GasValveProps) => (
   <g>
@@ -26,9 +32,7 @@ export const GasValve = memo(({ x, y, label, color, fontSize = 12 }: GasValvePro
         y={y}
         fill="var(--color-slate-300)"
         fontSize={fontSize}
-        fontFamily="sans-serif"
-        dominantBaseline="middle"
-        fontWeight="500"
+        {...GAS_VALVE_TEXT_PROPS}
       >
         {label}
       </text>
