@@ -10,7 +10,7 @@ export { createLineGenerator, updateLine } from './utils/line-generator';
 
 export { renderDots } from './utils/dots';
 
-export { createChartGroups, getOrCreateLinePath } from './utils/svg-groups';
+export { getOrCreateLinePath } from './utils/svg-groups';
 export { getOrCreateLineGroup } from './utils/svg-group-helpers';
 
 export { manageGrid, manageLegend } from './utils/grid-legend';

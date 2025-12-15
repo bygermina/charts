@@ -1,12 +1,4 @@
-import type { Selection } from 'd3-selection';
-
-import { createChartGroups as createChartGroupsUtil } from '../../../lib/chart-utils';
 import { type GetOrCreateLinePathConfig } from '../types';
-
-export const createChartGroups = (config: {
-  svg: Selection<SVGSVGElement, unknown, null, undefined>;
-  margin: { left: number; top: number };
-}) => createChartGroupsUtil({ ...config, useClipPath: true });
 
 export const getOrCreateLinePath = ({
   lineGroup,

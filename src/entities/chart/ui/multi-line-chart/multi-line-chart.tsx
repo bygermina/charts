@@ -4,9 +4,10 @@ import { useEffect, useRef } from 'react';
 import { type ChartVariant, type SVGGroupSelection, type ChartScales } from '../../model/types';
 import { useChartBase } from '../../lib/use-chart-base';
 import { useVisibility } from '../../lib/use-visibility';
+import { createChartGroups } from '../../lib/chart-utils';
+import { createClipPaths } from '../../lib/utils/clip-paths';
 import type { LineSeries, MultiLineChartMetadata } from './types';
 import { DEFAULT_METADATA } from './types';
-import { createChartGroups } from './utils/svg-groups';
 import { useMultiLineChartLines } from './hooks/use-multi-line-chart-lines';
 import { useMultiLineChartGrid } from './hooks/use-multi-line-chart-grid';
 
@@ -94,9 +95,24 @@ export const MultiLineChart = ({
 
     const svg = select(svgElement);
 
+    createClipPaths({
+      svg,
+      chartWidth,
+      chartHeight,
+      margin,
+    });
+  }, [svgRef, chartWidth, chartHeight, margin]);
+
+  useEffect(() => {
+    const svgElement = svgRef.current;
+    if (!svgElement) return;
+
+    const svg = select(svgElement);
+
     const { mainGroup, axesGroup } = createChartGroups({
       svg,
       margin: { left: margin.left, top: margin.top },
+      useClipPath: true,
     });
 
     mainGroupRef.current = mainGroup;
