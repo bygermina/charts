@@ -6,7 +6,6 @@ import styles from './iot-sensor.module.scss';
 
 interface IoTSensorProps {
   value: number;
-  label: string;
   unit?: string;
   variant?: ChartVariant;
   min?: number;
@@ -18,7 +17,6 @@ const VIEWBOX_HEIGHT = 130;
 
 export const IoTSensor = ({
   value,
-  label,
   unit = '',
   variant = 'normal',
   min = 0,
@@ -104,18 +102,6 @@ export const IoTSensor = ({
           />
           <rect x={15} y={80} width={90 * normalizedValue} height={5} rx={2.5} fill={statusColor} />
         </g>
-
-        <text
-          x={VIEWBOX_WIDTH / 2}
-          y={VIEWBOX_HEIGHT - 5}
-          textAnchor="middle"
-          fill={chartColors.text}
-          fontSize="12px"
-          fontWeight="500"
-          {...CHART_TEXT_BASE_PROPS}
-        >
-          {label}
-        </text>
       </svg>
     </div>
   );

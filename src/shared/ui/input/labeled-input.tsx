@@ -7,8 +7,6 @@ import styles from './labeled-input.module.scss';
 interface LabeledInputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'id'> {
   label: string;
   id?: string;
-  valueDisplay?: string;
-  showValue?: boolean;
   className?: string;
   labelClassName?: string;
   inputClassName?: string;
@@ -17,8 +15,6 @@ interface LabeledInputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 
 export const LabeledInput = ({
   label,
   id,
-  valueDisplay,
-  showValue = true,
   className,
   labelClassName,
   inputClassName,
@@ -26,7 +22,6 @@ export const LabeledInput = ({
   ...inputProps
 }: LabeledInputProps) => {
   const inputId = id || `input-${label.toLowerCase().replace(/\s+/g, '-')}`;
-  const displayValue = valueDisplay !== undefined ? valueDisplay : inputProps.value?.toString();
 
   const inputVariant = type === 'range' ? styles.inputRange : styles.inputText;
 
@@ -34,7 +29,6 @@ export const LabeledInput = ({
     <div className={className}>
       <label htmlFor={inputId} className={cn(styles.label, labelClassName)}>
         {label}
-        {showValue && displayValue && `: ${displayValue}`}
       </label>
       <input
         id={inputId}

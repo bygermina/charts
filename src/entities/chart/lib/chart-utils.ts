@@ -256,7 +256,6 @@ const createXAxis = (
       text.setAttribute('opacity', '1');
     });
 
-  // Static baseline for X axis: full chart width, not affected by X-axis animation.
   const jointColor = chartColors.grid;
   const jointLength = clippedWidth;
 

@@ -9,7 +9,7 @@ import styles from './iot-sensors.module.scss';
 const INITIAL_VALUE = 420;
 const MIN = 300;
 const MAX = 1000;
-const LABEL = 'CO₂';
+const LABEL = 'CO₂ (300 - 1000)';
 const UNIT = 'ppm';
 
 export const IoTSensors = () => {
@@ -43,7 +43,7 @@ export const IoTSensors = () => {
         </div>
         <div className={styles.chartContainer}>
           <ResponsiveChartWrapper>
-            {() => <IoTSensor value={value} label={LABEL} unit={UNIT} min={MIN} max={MAX} />}
+            {() => <IoTSensor value={value} unit={UNIT} min={MIN} max={MAX} />}
           </ResponsiveChartWrapper>
         </div>
       </div>

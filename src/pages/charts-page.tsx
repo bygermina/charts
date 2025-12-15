@@ -19,21 +19,21 @@ export const Charts = () => {
         </Typography>
         <div className={styles.chartsGrid}>
           <ChartContainer
-            header="d3.js Multi Line Chart (SVG)"
-            subtitle="data update every second"
+            header="d3.js Multi Line Chart"
+            subtitle="data updates every second"
             className={styles.fixedScaleChart}
           >
             <MultiLineChartDemo />
           </ChartContainer>
           <ChartContainer
             header="Canvas chart 1000 points / sec"
-            subtitle="data update every millisecond"
+            subtitle="data updates every millisecond"
             className={styles.fixedScaleChart}
           >
             <RealTimeCanvasChart />
           </ChartContainer>
           <ChartContainer
-            header="Bar Chart"
+            header="d3.js Bar Chart"
             subtitle="Hover to see the value"
             className={styles.fixedScaleChart}
           >
@@ -41,7 +41,7 @@ export const Charts = () => {
           </ChartContainer>
           <ChartContainer
             header="Svg sensor (change value in input)"
-            subtitle="I can draw any svg shape and add any animation to it"
+            subtitle="sensors are visualized as custom SVG shapes with fully configurable animations"
             className={styles.sensorContainer}
           >
             <div className={styles.sensorColumnGauge}>
@@ -52,12 +52,15 @@ export const Charts = () => {
             </div>
           </ChartContainer>
           <ChartContainer
-            header="Network Graph (d3)"
+            header="d3.js Network Graph"
             subtitle="Drag nodes, scroll to zoom, drag background to pan. Hover to highlight connections"
           >
             <IoTNetworkGraph />
           </ChartContainer>
-          <ChartContainer header="Flow Diagram" subtitle="Simulates data flow between nodes">
+          <ChartContainer
+            header="Svg Flow Diagram"
+            subtitle="data flow between nodes using custom SVG graphics and animations"
+          >
             <BoilerFlowDiagram />
           </ChartContainer>
         </div>
