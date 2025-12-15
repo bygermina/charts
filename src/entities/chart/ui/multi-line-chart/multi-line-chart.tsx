@@ -19,7 +19,7 @@ interface MultiLineChartProps {
   height?: number;
   variant?: ChartVariant;
   showGrid?: boolean;
-  showLegend?: boolean;
+  showHeaderLegend?: boolean;
   strokeWidth?: number;
   animationSpeed?: number;
   yDomain?: [number, number];
@@ -32,7 +32,7 @@ export const MultiLineChart = ({
   height = 250,
   variant = 'normal',
   showGrid = true,
-  showLegend = true,
+  showHeaderLegend = true,
   strokeWidth = 1,
   animationSpeed,
   yDomain,
@@ -133,12 +133,29 @@ export const MultiLineChart = ({
     margin,
     chartColors,
     showGrid,
-    showLegend,
   });
 
+  const headerLegendLines = showHeaderLegend ? lines : [];
+
   return (
-    <div className={styles.container} style={{ width, height }}>
-      <svg ref={svgRef} width={width} height={height} className={styles.svg} />
+    <div className={styles.container} style={{ width }}>
+      {headerLegendLines.length > 0 && (
+        <div className={styles.headerLegend}>
+          {headerLegendLines.map((line) => (
+            <div
+              key={line.label}
+              className={styles.headerLegendItem}
+              style={{ ['--multi-line-header-color' as string]: line.color }}
+            >
+              <div className={styles.headerLegendLine} />
+              <span className={styles.headerLegendLabel}>{line.label}</span>
+            </div>
+          ))}
+        </div>
+      )}
+      <div style={{ width, height }}>
+        <svg ref={svgRef} width={width} height={height} className={styles.svg} />
+      </div>
     </div>
   );
 };

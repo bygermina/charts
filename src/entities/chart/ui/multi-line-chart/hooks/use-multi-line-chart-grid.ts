@@ -1,7 +1,7 @@
 import { useEffect, type RefObject } from 'react';
 
 import type { ChartColors, ChartScales, SVGGroupSelection } from '../../../model/types';
-import { manageGrid, manageLegend } from '../utils/grid-legend';
+import { manageGrid } from '../utils/grid-legend';
 import { calculateGridLeftShift } from '../utils/grid-shift-calculations';
 import type { LineSeries, MultiLineChartMetadata } from '../types';
 
@@ -21,7 +21,6 @@ interface UseMultiLineChartGridParams {
   margin: { left: number; right: number; top: number; bottom: number };
   chartColors: ChartColors;
   showGrid: boolean;
-  showLegend: boolean;
 }
 
 export const useMultiLineChartGrid = ({
@@ -37,7 +36,6 @@ export const useMultiLineChartGrid = ({
   margin,
   chartColors,
   showGrid,
-  showLegend,
 }: UseMultiLineChartGridParams) => {
   useEffect(() => {
     if (lines.length === 0 || lines.some((line) => line.data.length === 0)) return;
@@ -75,14 +73,6 @@ export const useMultiLineChartGrid = ({
       : null;
 
     gridGroupRef.current = gridGroup;
-
-    manageLegend({
-      mainGroup,
-      lines,
-      chartWidth,
-      showLegend,
-      chartColors,
-    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [showGrid, showLegend, chartColors, chartWidth, chartHeight, margin, lines]);
+  }, [showGrid, chartColors, chartWidth, chartHeight, margin, lines]);
 };

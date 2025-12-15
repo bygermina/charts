@@ -3,6 +3,33 @@
   overflow: visible;
 }
 
+.headerLegend {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.headerLegendItem {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--multi-line-header-color, currentColor);
+}
+
+.headerLegendLine {
+  width: 16px;
+  height: 0;
+  border-bottom-width: 2px;
+  border-bottom-style: solid;
+  border-bottom-color: var(--multi-line-header-color, currentColor);
+}
+
+.headerLegendLabel {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
 .svg {
   display: block;
   overflow: visible;

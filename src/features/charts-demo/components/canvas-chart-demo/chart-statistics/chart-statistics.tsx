@@ -40,12 +40,6 @@ const HIGHLIGHT_COLOR = 'var(--color-red-600)';
 
 const STAT_ITEMS: StatItem[] = [
   {
-    label: 'Current:',
-    key: 'current',
-    format: (v) => v.toFixed(1),
-    getColor: (v, threshold) => (v > threshold ? HIGHLIGHT_COLOR : undefined),
-  },
-  {
     label: 'Min:',
     key: 'min',
     format: (v) => v.toFixed(1),
