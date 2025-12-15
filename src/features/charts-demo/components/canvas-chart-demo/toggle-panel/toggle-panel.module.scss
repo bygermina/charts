@@ -1,8 +1,7 @@
 @use 'styles/design-system' as *;
 
 .toggleButton {
-  position: absolute;
-  z-index: 10;
+  position: relative;
   padding: spacing(2) spacing(4);
   background: color-opacity('slate', 900, 0.9);
   border: 1px solid var(--color-slate-700);
@@ -13,26 +12,6 @@
   transition: all transition(fast);
   backdrop-filter: blur(8px);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-
-  &[data-position='top-right'] {
-    top: spacing(4);
-    right: spacing(4);
-  }
-
-  &[data-position='top-left'] {
-    top: spacing(4);
-    left: spacing(4);
-  }
-
-  &[data-position='bottom-right'] {
-    bottom: spacing(4);
-    right: spacing(4);
-  }
-
-  &[data-position='bottom-left'] {
-    bottom: spacing(4);
-    left: spacing(4);
-  }
 
   &:hover {
     background: color-opacity('slate', 800, 0.95);
@@ -48,26 +27,5 @@
 }
 
 .panel {
-  position: absolute;
-  z-index: 9;
-
-  &[data-position='top-right'] {
-    top: 56px;
-    right: spacing(4);
-  }
-
-  &[data-position='top-left'] {
-    top: 56px;
-    left: spacing(4);
-  }
-
-  &[data-position='bottom-right'] {
-    bottom: 56px;
-    right: spacing(4);
-  }
-
-  &[data-position='bottom-left'] {
-    bottom: 56px;
-    left: spacing(4);
-  }
+  margin-top: spacing(2);
 }
