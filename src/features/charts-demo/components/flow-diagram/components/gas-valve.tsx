@@ -1,3 +1,5 @@
+import { memo } from 'react';
+
 interface GasValveProps {
   x: number;
   y: number;
@@ -6,45 +8,30 @@ interface GasValveProps {
   fontSize?: number;
 }
 
-export const GasValve = ({ x, y, label, color, fontSize = 12 }: GasValveProps) => {
-  const size = 28;
-  const halfSize = size / 2;
-
-  return (
-    <g>
+export const GasValve = memo(({ x, y, label, color, fontSize = 12 }: GasValveProps) => (
+  <g>
+    <g transform={`translate(${x}, ${y})`}>
       <path
-        d={`M ${x} ${y - halfSize} 
-            L ${x + halfSize} ${y} 
-            L ${x} ${y + halfSize} 
-            L ${x - halfSize} ${y} 
-            Z`}
+        d="M 0 -14 L 14 0 L 0 14 L -14 0 Z"
         fill="transparent"
         stroke={color}
         strokeWidth={3}
         strokeLinejoin="round"
       />
-      <line
-        x1={x - halfSize * 0.7}
-        y1={y}
-        x2={x + halfSize * 0.7}
-        y2={y}
-        stroke={color}
-        strokeWidth={2}
-        strokeLinecap="round"
-      />
-      {label && (
-        <text
-          x={x + size + 8}
-          y={y}
-          fill="var(--color-slate-300)"
-          fontSize={fontSize}
-          fontFamily="system-ui, -apple-system, BlinkMacSystemFont, sans-serif"
-          dominantBaseline="middle"
-          fontWeight="500"
-        >
-          {label}
-        </text>
-      )}
+      <line x1="-9.8" y1="0" x2="9.8" y2="0" stroke={color} strokeWidth={2} strokeLinecap="round" />
     </g>
-  );
-};
+    {label && (
+      <text
+        x={x + 36}
+        y={y}
+        fill="var(--color-slate-300)"
+        fontSize={fontSize}
+        fontFamily="sans-serif"
+        dominantBaseline="middle"
+        fontWeight="500"
+      >
+        {label}
+      </text>
+    )}
+  </g>
+));

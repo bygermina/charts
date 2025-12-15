@@ -1,3 +1,5 @@
+import { memo } from 'react';
+
 interface PumpProps {
   x: number;
   y: number;
@@ -7,10 +9,11 @@ interface PumpProps {
   rotationSpeed?: number;
 }
 
-export const Pump = ({ x, y, label, color, fontSize = 12, rotationSpeed = 0 }: PumpProps) => {
-  const radius = 40;
-  const innerRadius = radius - 5;
-  const fillOpacity = 0.05;
+const RADIUS = 40;
+const INNER_RADIUS = 35;
+const FILL_OPACITY = 0.05;
+
+export const Pump = memo(({ x, y, label, color, fontSize = 12, rotationSpeed = 0 }: PumpProps) => {
   const rotationDuration = rotationSpeed > 0 ? 360 / rotationSpeed : 0;
 
   return (
@@ -18,18 +21,18 @@ export const Pump = ({ x, y, label, color, fontSize = 12, rotationSpeed = 0 }: P
       <circle
         cx={x}
         cy={y}
-        r={radius}
+        r={RADIUS}
         fill={color}
-        fillOpacity={fillOpacity}
+        fillOpacity={FILL_OPACITY}
         stroke={color}
         strokeWidth={3}
       />
       <circle
         cx={x}
         cy={y}
-        r={innerRadius}
+        r={INNER_RADIUS}
         fill={color}
-        fillOpacity={fillOpacity * 0.5}
+        fillOpacity={FILL_OPACITY * 0.5}
         stroke={color}
         strokeWidth={1}
         strokeOpacity={0.6}
@@ -86,11 +89,11 @@ export const Pump = ({ x, y, label, color, fontSize = 12, rotationSpeed = 0 }: P
       )}
       {label && (
         <text
-          x={x + radius + 8}
+          x={x + RADIUS + 8}
           y={y}
           fill="var(--color-slate-300)"
           fontSize={fontSize}
-          fontFamily="system-ui, -apple-system, BlinkMacSystemFont, sans-serif"
+          fontFamily="sans-serif"
           dominantBaseline="middle"
           fontWeight="500"
         >
@@ -99,4 +102,4 @@ export const Pump = ({ x, y, label, color, fontSize = 12, rotationSpeed = 0 }: P
       )}
     </g>
   );
-};
+});

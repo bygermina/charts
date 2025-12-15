@@ -1,3 +1,5 @@
+import { memo } from 'react';
+
 interface LegendEntry {
   label: string;
   color: string;
@@ -10,7 +12,7 @@ interface LegendProps {
   fontSize?: number;
 }
 
-export const Legend = ({ entries, x = 30, y = 30, fontSize = 14 }: LegendProps) => {
+export const Legend = memo(({ entries, x = 30, y = 30, fontSize = 14 }: LegendProps) => {
   const lineHeight = 27;
 
   return (
@@ -25,7 +27,7 @@ export const Legend = ({ entries, x = 30, y = 30, fontSize = 14 }: LegendProps) 
               y={currentY}
               fill="var(--color-slate-300)"
               fontSize={fontSize}
-              fontFamily="system-ui, -apple-system, BlinkMacSystemFont, sans-serif"
+              fontFamily="sans-serif"
               dominantBaseline="middle"
             >
               {entry.label}
@@ -35,4 +37,4 @@ export const Legend = ({ entries, x = 30, y = 30, fontSize = 14 }: LegendProps) 
       })}
     </g>
   );
-};
+});

@@ -24,11 +24,6 @@ export const createFlowSegments = (
     to: { x: waterContainer.x, y: boiler.y + boiler.h - 45 },
   },
   {
-    type: 'water_cold',
-    from: { x: waterContainer.x, y: boiler.y + boiler.h - 45 },
-    to: { x: waterContainer.x, y: waterContainer.y + waterContainer.h },
-  },
-  {
     type: 'water_hot',
     from: { x: waterContainer.x + waterContainer.w, y: waterContainer.y },
     to: { x: boiler.x + boiler.w + 330, y: waterContainer.y },
@@ -41,7 +36,7 @@ export const createFlowSegments = (
   {
     type: 'gas',
     from: { x: boiler.x + boiler.w / 2 - 35, y: boiler.y + boiler.h + 60 },
-    to: { x: boiler.x + boiler.w / 2 - 35, y: boiler.y + boiler.h - 5 },
+    to: { x: boiler.x + boiler.w / 2 - 35, y: boiler.y + boiler.h },
   },
   {
     type: 'air',
@@ -51,7 +46,7 @@ export const createFlowSegments = (
   {
     type: 'air',
     from: { x: boiler.x + boiler.w / 2 + 35, y: boiler.y + boiler.h + 60 },
-    to: { x: boiler.x + boiler.w / 2 + 35, y: boiler.y + boiler.h - 5 },
+    to: { x: boiler.x + boiler.w / 2 + 35, y: boiler.y + boiler.h },
   },
   {
     type: 'air',

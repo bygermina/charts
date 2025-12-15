@@ -84,18 +84,34 @@ export const updateParticles = (
   segments: Segment[],
   dt: number,
 ): Particle[] => {
+  const chains = getSegmentChains(segments);
+  const chainCache = new Map<number, { chain: number[]; totalLength: number }>();
+
+  const getChainData = (segmentIndex: number, segType: string) => {
+    if (chainCache.has(segmentIndex)) {
+      return chainCache.get(segmentIndex)!;
+    }
+
+    const typeChains = chains.get(segType as any) || [];
+    const chain = typeChains.find((c) => c.includes(segmentIndex));
+    if (!chain) return null;
+
+    const totalLength = getChainLength(chain, segments);
+    const data = { chain, totalLength };
+    chain.forEach((idx) => chainCache.set(idx, data));
+    return data;
+  };
+
   return particles.map((p) => {
     const segmentIndex = p.segmentIndex;
     const t = p.t;
     const seg = segments[segmentIndex];
     if (!seg) return p;
 
-    const chains = getSegmentChains(segments);
-    const typeChains = chains.get(seg.type) || [];
-    const chain = typeChains.find((c) => c.includes(segmentIndex));
-    if (!chain) return p;
+    const chainData = getChainData(segmentIndex, seg.type);
+    if (!chainData) return p;
 
-    const totalLength = getChainLength(chain, segments);
+    const { chain, totalLength } = chainData;
     const BASE_SPEED_PX_PER_SEC = 60;
     const distancePx = (BASE_SPEED_PX_PER_SEC * dt) / 1000;
     const distance = distancePx / totalLength;
