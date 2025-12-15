@@ -44,11 +44,15 @@ export const Charts = () => {
             subtitle="I can draw any svg shape and add any animation to it"
             className={styles.sensorContainer}
           >
-            <GaugeChartDemo />
-            <IoTSensors />
+            <div className={styles.sensorColumnGauge}>
+              <GaugeChartDemo />
+            </div>
+            <div className={styles.sensorColumnSensor}>
+              <IoTSensors />
+            </div>
           </ChartContainer>
           <ChartContainer
-            header="IoT Network Graph"
+            header="Network Graph (d3)"
             subtitle="Drag nodes, scroll to zoom, drag background to pan. Hover to highlight connections"
           >
             <IoTNetworkGraph />

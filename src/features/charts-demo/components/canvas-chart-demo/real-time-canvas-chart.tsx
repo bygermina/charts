@@ -6,6 +6,8 @@ import {
   type ChartVariant,
   getChartColors,
   useVisibilityAwareTimer,
+  ResponsiveChartWrapper,
+  type ChartSize,
 } from '@/entities/chart';
 import { createTrendGenerator } from '@/shared/lib/utils';
 
@@ -23,9 +25,15 @@ const DEFAULT_CHART_HEIGHT = 300;
 
 interface RealTimeCanvasChartProps {
   variant?: ChartVariant;
+  width?: number;
+  height?: number;
 }
 
-export const RealTimeCanvasChart = ({ variant = 'normal' }: RealTimeCanvasChartProps) => {
+export const RealTimeCanvasChart = ({
+  variant = 'normal',
+  width,
+  height = DEFAULT_CHART_HEIGHT,
+}: RealTimeCanvasChartProps) => {
   const chartColors = getChartColors(variant);
   const valueGeneratorRef = useRef(createTrendGenerator(75, [30, 170]));
 
@@ -72,18 +80,23 @@ export const RealTimeCanvasChart = ({ variant = 'normal' }: RealTimeCanvasChartP
           highlightThreshold={HIGHLIGHT_THRESHOLD}
         />
       </TogglePanel>
-      <RealTimeSingleLineChartCanvas
-        dataRef={dataRef}
-        variant={variant}
-        yDomain={Y_DOMAIN}
-        timeWindowMs={TIME_WINDOW_MS}
-        strokeColor={chartColors.tertiary}
-        highlightStrokeColor="var(--color-red-600)"
-        highlightThreshold={HIGHLIGHT_THRESHOLD}
-        strokeWidth={1}
-        height={DEFAULT_CHART_HEIGHT}
-        margin={{ left: 30 }}
-      />
+      <ResponsiveChartWrapper width={width} height={height} fixedWidth>
+        {({ width: chartWidth, height: chartHeight }: ChartSize) => (
+          <RealTimeSingleLineChartCanvas
+            dataRef={dataRef}
+            variant={variant}
+            yDomain={Y_DOMAIN}
+            timeWindowMs={TIME_WINDOW_MS}
+            strokeColor={chartColors.tertiary}
+            highlightStrokeColor="var(--color-red-600)"
+            highlightThreshold={HIGHLIGHT_THRESHOLD}
+            strokeWidth={1}
+            width={chartWidth}
+            height={chartHeight}
+            margin={{ left: 30 }}
+          />
+        )}
+      </ResponsiveChartWrapper>
     </div>
   );
 };

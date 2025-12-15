@@ -30,7 +30,7 @@
     max-width: calc(50% - #{spacing(4)});
     box-sizing: border-box;
 
-    @media (max-width: 988px) {
+    @media (max-width: 1200px) {
       flex: 0 0 100%;
       max-width: 100%;
       width: 100%;
@@ -41,13 +41,38 @@
 .sensorContainer {
   display: flex;
   align-items: flex-start;
-  justify-content: space-between;
+  justify-content: center;
   gap: spacing(6);
+}
 
-  @media (max-width: 555px) {
+.sensorColumnGauge {
+  flex: 0 0 286px; // ~1.3 * 220px
+  max-width: 286px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 555px) {
+  .sensorContainer {
     flex-direction: column;
-    align-items: stretch;
+    align-items: center;
   }
+
+  .sensorColumnGauge,
+  .sensorColumnSensor {
+    flex: 0 0 auto;
+    max-width: 100%;
+    align-items: center;
+  }
+}
+
+.sensorColumnSensor {
+  flex: 0 0 220px;
+  max-width: 220px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .fixedScaleChart {

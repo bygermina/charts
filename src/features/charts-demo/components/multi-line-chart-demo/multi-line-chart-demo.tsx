@@ -124,7 +124,7 @@ export const MultiLineChartDemo = ({
           height={chartHeight}
           variant={variant}
           showGrid={true}
-          showLegend={showLegend}
+          showHeaderLegend={showLegend}
           yDomain={[0, 200]}
           margin={{ left: 30 }}
         />
