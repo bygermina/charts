@@ -1,6 +1,6 @@
 import { clamp } from '@/shared/lib/utils';
 
-import { type ChartVariant, getChartColors } from '../../model/types';
+import { CHART_TEXT_BASE_PROPS, type ChartVariant, getChartColors } from '../../model/types';
 
 import styles from './iot-sensor.module.scss';
 
@@ -44,7 +44,6 @@ export const IoTSensor = ({
       <svg
         viewBox={`${viewBoxX} ${viewBoxY} ${viewBoxWidth} ${viewBoxHeight}`}
         className={styles.svg}
-        preserveAspectRatio="xMidYMid meet"
       >
         <g>
           <rect
@@ -122,11 +121,10 @@ export const IoTSensor = ({
             x={0}
             y={60 * scale}
             textAnchor="middle"
-            dominantBaseline="middle"
             fill={chartColors.text}
             fontSize={`${12 * scale}px`}
-            fontFamily="Arial, sans-serif"
             fontWeight="500"
+            {...CHART_TEXT_BASE_PROPS}
           >
             {label}
           </text>

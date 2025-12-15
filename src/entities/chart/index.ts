@@ -8,7 +8,7 @@ export { ResponsiveChartWrapper } from './ui/responsive-chart-wrapper';
 export type { ChartSize } from './ui/responsive-chart-wrapper/responsive-chart-wrapper';
 
 export type { DataPoint, BarDataPoint, ChartVariant, ChartColors } from './model/types';
-export { getChartColors } from './model/types';
+export { getChartColors, CHART_TEXT_BASE_PROPS } from './model/types';
 export type { LineSeries } from './ui/multi-line-chart';
 export { useChartBase } from './lib/use-chart-base';
 export { useCanvasRenderLoop } from './lib/use-canvas-render-loop';

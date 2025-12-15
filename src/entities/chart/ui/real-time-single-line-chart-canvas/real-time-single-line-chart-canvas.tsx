@@ -1,10 +1,9 @@
 import { useRef, useCallback, type RefObject } from 'react';
 
-import { type ChartVariant } from '../../model/types';
+import { type ChartScales, type ChartVariant } from '../../model/types';
 import { useChartBase } from '../../lib/use-chart-base';
 import { useCanvasRenderLoop } from '../../lib/use-canvas-render-loop';
 import { resolveChartColors, resolveCSSVariable } from '../../lib/utils/canvas-helpers';
-import { type Scales } from '../multi-line-chart';
 import { renderSingleLineChart } from './utils/render-chart';
 
 import styles from './real-time-single-line-chart-canvas.module.scss';
@@ -52,7 +51,7 @@ export const RealTimeSingleLineChartCanvas = ({
   });
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const scalesRef = useRef<Scales | null>(null);
+  const scalesRef = useRef<ChartScales | null>(null);
 
   const renderChart = useCallback(
     (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {
@@ -100,7 +99,6 @@ export const RealTimeSingleLineChartCanvas = ({
     width,
     height,
     render: renderChart,
-    dependencies: [timeWindowMs],
   });
 
   return (

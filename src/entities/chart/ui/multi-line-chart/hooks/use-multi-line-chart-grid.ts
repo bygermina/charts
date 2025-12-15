@@ -1,15 +1,15 @@
 import { useEffect, type RefObject } from 'react';
 
-import type { ChartColors, SVGGroupSelection } from '../../../model/types';
+import type { ChartColors, ChartScales, SVGGroupSelection } from '../../../model/types';
 import { manageGrid, manageLegend } from '../utils/grid-legend';
 import { calculateGridLeftShift } from '../utils/grid-shift-calculations';
-import type { LineSeries, MultiLineChartMetadata, MultiLineChartScales } from '../types';
+import type { LineSeries, MultiLineChartMetadata } from '../types';
 
 interface UseMultiLineChartGridParams {
   lines: LineSeries[];
   svgRef: RefObject<SVGSVGElement | null>;
   mainGroupRef: RefObject<SVGGroupSelection | null>;
-  scalesRef: RefObject<MultiLineChartScales | null>;
+  scalesRef: RefObject<ChartScales | null>;
   gridGroupRef: RefObject<SVGGroupSelection | null>;
   lastChartDataRef: RefObject<{
     shouldAnimateShift: boolean;

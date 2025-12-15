@@ -13,7 +13,7 @@ import {
   GAUGE_VIEWBOX_HEIGHT,
   GAUGE_CENTER,
 } from '../../model/constants';
-import { type ChartVariant, getChartColors } from '../../model/types';
+import { CHART_TEXT_BASE_PROPS, type ChartVariant, getChartColors } from '../../model/types';
 
 import styles from './gauge-chart.module.scss';
 
@@ -93,10 +93,9 @@ export const GaugeChart = ({ value, variant = 'normal', min = 0, max = 100 }: Ga
                   x={Math.cos(tick.angle) * (GAUGE_RADIUS + GAUGE_LABEL_OFFSET)}
                   y={Math.sin(tick.angle) * (GAUGE_RADIUS + GAUGE_LABEL_OFFSET)}
                   textAnchor="middle"
-                  dominantBaseline="middle"
                   fill={chartColors.textSecondary}
                   fontSize="12px"
-                  fontFamily="Arial, sans-serif"
+                  {...CHART_TEXT_BASE_PROPS}
                 >
                   {Math.round(tick.value)}
                 </text>

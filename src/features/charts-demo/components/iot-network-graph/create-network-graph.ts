@@ -72,8 +72,17 @@ const generateIoTNetwork = (): { nodes: Node[]; links: Link[] } => {
   return { nodes, links };
 };
 
-const getNodeById = (id: string | Node, nodes: Node[]): Node => {
-  return typeof id === 'string' ? nodes.find((n) => n.id === id)! : id;
+const createNodeByIdMap = (nodes: Node[]): Map<string, Node> => {
+  return new Map(nodes.map((node) => [node.id, node]));
+};
+
+const getNodeById = (id: string | Node, nodeById: Map<string, Node>): Node => {
+  if (typeof id !== 'string') return id;
+
+  const node = nodeById.get(id);
+  if (!node) throw new Error(`Node with id "${id}" not found in network graph`);
+
+  return node;
 };
 
 interface CreateNetworkGraphConfig {
@@ -90,6 +99,7 @@ export const createNetworkGraph = ({
   chartColors,
 }: CreateNetworkGraphConfig): (() => void) => {
   const { nodes, links } = generateIoTNetwork();
+  const nodeById = createNodeByIdMap(nodes);
 
   const svg = select(svgElement);
   svg.selectAll('*').remove();
@@ -179,10 +189,10 @@ export const createNetworkGraph = ({
 
   simulation.on('tick', () => {
     link
-      .attr('x1', (d) => getNodeById(d.source, nodes).x ?? 0)
-      .attr('y1', (d) => getNodeById(d.source, nodes).y ?? 0)
-      .attr('x2', (d) => getNodeById(d.target, nodes).x ?? 0)
-      .attr('y2', (d) => getNodeById(d.target, nodes).y ?? 0);
+      .attr('x1', (d) => getNodeById(d.source, nodeById).x ?? 0)
+      .attr('y1', (d) => getNodeById(d.source, nodeById).y ?? 0)
+      .attr('x2', (d) => getNodeById(d.target, nodeById).x ?? 0)
+      .attr('y2', (d) => getNodeById(d.target, nodeById).y ?? 0);
 
     node.attr('transform', (d) => `translate(${d.x ?? 0},${d.y ?? 0})`);
   });

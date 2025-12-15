@@ -2,7 +2,8 @@ import { scaleLinear, type ScaleLinear } from 'd3-scale';
 
 import { getClippedWidth } from '../../../lib/chart-dimensions';
 import { Y_SCALE_PADDING_MULTIPLIER } from '../../../model/constants';
-import { type CreateScalesConfig, type MultiLineChartScales } from '../types';
+import { type ChartScales } from '../../../model/types';
+import { type CreateScalesConfig } from '../types';
 
 export const createOrUpdateXScale = (
   timeExtent: [number, number],
@@ -15,7 +16,7 @@ export const createOrUpdateXScale = (
 };
 
 export const createOrUpdateScalesForAxes = (
-  existingScales: MultiLineChartScales | null,
+  existingScales: ChartScales | null,
   {
     timeExtent,
     maxValue,
@@ -25,7 +26,7 @@ export const createOrUpdateScalesForAxes = (
     yDomain,
     xScale: providedXScale,
   }: CreateScalesConfig & { xScale?: ScaleLinear<number, number> },
-): MultiLineChartScales => {
+): ChartScales => {
   const xScale = createOrUpdateXScale(
     timeExtent,
     chartWidth,

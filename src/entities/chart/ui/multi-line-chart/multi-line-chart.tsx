@@ -1,10 +1,10 @@
 import { select } from 'd3-selection';
 import { useEffect, useRef } from 'react';
 
-import { type ChartVariant, type SVGGroupSelection } from '../../model/types';
+import { type ChartVariant, type SVGGroupSelection, type ChartScales } from '../../model/types';
 import { useChartBase } from '../../lib/use-chart-base';
 import { useVisibility } from '../../lib/use-visibility';
-import type { LineSeries, MultiLineChartMetadata, MultiLineChartScales } from './types';
+import type { LineSeries, MultiLineChartMetadata } from './types';
 import { DEFAULT_METADATA } from './types';
 import { createChartGroups } from './utils/svg-groups';
 import { useMultiLineChartLines } from './hooks/use-multi-line-chart-lines';
@@ -44,7 +44,7 @@ export const MultiLineChart = ({
     margin: customMargin,
   });
 
-  const scalesRef = useRef<MultiLineChartScales | null>(null);
+  const scalesRef = useRef<ChartScales | null>(null);
   const mainGroupRef = useRef<SVGGroupSelection | null>(null);
   const axesGroupRef = useRef<SVGGroupSelection | null>(null);
   const gridGroupRef = useRef<SVGGroupSelection | null>(null);

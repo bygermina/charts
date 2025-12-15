@@ -1,4 +1,4 @@
-export type { LineSeries, MultiLineChartScales } from './types';
+export type { LineSeries } from './types';
 
 export { prepareChartData } from './utils/data-calculations';
 

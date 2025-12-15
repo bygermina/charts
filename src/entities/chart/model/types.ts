@@ -27,3 +27,14 @@ export type ChartColors = ReturnType<typeof getChartColors>;
 
 export type SVGGroupSelection = Selection<SVGGElement, unknown, null, undefined>;
 export type LinearScale = ScaleLinear<number, number>;
+
+export const CHART_TEXT_BASE_PROPS = {
+  fontFamily: 'sans-serif',
+  dominantBaseline: 'middle' as const,
+};
+
+export interface ChartScales {
+  xScale: LinearScale;
+  xAxisScale: LinearScale;
+  yScale: LinearScale;
+}

@@ -27,12 +27,6 @@ export interface CreateScalesConfig {
   yDomain?: [number, number];
 }
 
-export interface MultiLineChartScales {
-  xScale: LinearScale;
-  xAxisScale: LinearScale;
-  yScale: LinearScale;
-}
-
 export interface CalculateMaxValueConfig {
   lines: LineSeries[];
 }

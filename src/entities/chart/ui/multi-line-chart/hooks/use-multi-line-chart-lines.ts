@@ -9,7 +9,8 @@ import { renderDots } from '../utils/dots';
 import { prepareChartData } from '../utils/data-calculations';
 import { createOrUpdateScalesForAxes } from '../utils/scales';
 import { createLineGenerator, updateLine } from '../utils/line-generator';
-import type { LineSeries, MultiLineChartMetadata, MultiLineChartScales } from '../types';
+import type { LineSeries, MultiLineChartMetadata } from '../types';
+import type { ChartScales } from '../../../model/types';
 import { calculateGridLeftShift } from '../utils/grid-shift-calculations';
 import { animateChartShift, calculateChartAnimationSpeed } from '../utils/chart-animation';
 
@@ -18,7 +19,7 @@ interface UseMultiLineChartLinesParams {
   svgRef: RefObject<SVGSVGElement | null>;
   mainGroupRef: RefObject<SVGGroupSelection | null>;
   axesGroupRef: RefObject<SVGGroupSelection | null>;
-  scalesRef: RefObject<MultiLineChartScales | null>;
+  scalesRef: RefObject<ChartScales | null>;
   xAxisGroupRef: RefObject<SVGGroupSelection | null>;
   gridGroupRef: RefObject<SVGGroupSelection | null>;
   lastChartDataRef: RefObject<{

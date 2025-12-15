@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { FLOW_TEXT_BASE_PROPS } from '../config/text-props';
+import { CHART_TEXT_BASE_PROPS } from '@/entities/chart';
 
 interface GasValveProps {
   x: number;
@@ -10,7 +10,7 @@ interface GasValveProps {
 }
 
 const GAS_VALVE_TEXT_PROPS = {
-  ...FLOW_TEXT_BASE_PROPS,
+  ...CHART_TEXT_BASE_PROPS,
   fontWeight: '500' as const,
 };
 

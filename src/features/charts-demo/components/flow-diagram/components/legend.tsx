@@ -1,4 +1,4 @@
-import { FLOW_TEXT_BASE_PROPS } from '../config/text-props';
+import { CHART_TEXT_BASE_PROPS } from '@/entities/chart';
 
 interface LegendEntry {
   label: string;
@@ -28,7 +28,7 @@ export const Legend = ({ entries, x = 30, y = 30, fontSize = 14 }: LegendProps) 
               y={currentY}
               fill="var(--color-slate-300)"
               fontSize={fontSize}
-              {...FLOW_TEXT_BASE_PROPS}
+              {...CHART_TEXT_BASE_PROPS}
             >
               {entry.label}
             </text>

@@ -1,8 +1,10 @@
 import { type RefObject } from 'react';
 
+import type { ChartScales } from '@/entities/chart/model/types';
+
 import { drawAxes, drawGrid } from '../../../lib/utils/canvas-helpers';
 import { type RealTimeSingleLineDataRef } from '../real-time-single-line-chart-canvas';
-import { createOrUpdateScalesForAxes, type Scales } from '../../multi-line-chart';
+import { createOrUpdateScalesForAxes } from '../../multi-line-chart';
 
 interface RenderSingleLineChartConfig {
   ctx: CanvasRenderingContext2D;
@@ -16,7 +18,7 @@ interface RenderSingleLineChartConfig {
   yDomain: [number, number];
   timeWindowMs: number;
   strokeWidth: number;
-  cachedScales?: Scales | null;
+  cachedScales?: ChartScales | null;
   resolvedColors?: Record<string, string>;
 }
 
@@ -35,7 +37,7 @@ export const renderSingleLineChart = ({
   cachedScales,
   resolvedColors,
 }: RenderSingleLineChartConfig): {
-  scales: Scales;
+  scales: ChartScales;
 } => {
   const data = dataRef.current;
   if (!data) {

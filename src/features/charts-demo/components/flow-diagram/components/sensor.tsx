@@ -1,4 +1,4 @@
-import { FLOW_TEXT_BASE_PROPS } from '../config/text-props';
+import { CHART_TEXT_BASE_PROPS } from '@/entities/chart';
 
 type SensorType = 'temperature' | 'pressure';
 
@@ -18,7 +18,7 @@ const radius = 40;
 const innerRadius = 35;
 
 const SENSOR_TEXT_PROPS = {
-  ...FLOW_TEXT_BASE_PROPS,
+  ...CHART_TEXT_BASE_PROPS,
   textAnchor: 'middle' as const,
 };
 
