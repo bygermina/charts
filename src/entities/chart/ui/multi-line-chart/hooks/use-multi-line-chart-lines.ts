@@ -112,8 +112,6 @@ export const useMultiLineChartLines = ({
       DEFAULT_Y_AXIS_TICKS,
     );
 
-    xAxisGroup.attr('transform', `translate(${-gridLeftShift},${chartHeight})`);
-
     xAxisGroupRef.current = xAxisGroup;
 
     if (timeExtent) {
@@ -140,6 +138,7 @@ export const useMultiLineChartLines = ({
 
         if (!shouldShift) {
           lineGroup.attr('transform', `translate(${-gridLeftShift}, 0)`);
+          xAxisGroup.attr('transform', `translate(${-gridLeftShift},${chartHeight})`);
         }
 
         const path = getOrCreateLinePath({

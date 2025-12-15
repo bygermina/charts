@@ -1,5 +1,5 @@
 import type { ScaleTime, ScaleBand } from 'd3-scale';
-import type { Selection } from 'd3-selection';
+import { select, type Selection } from 'd3-selection';
 import { axisLeft, axisBottom } from 'd3-axis';
 import { interrupt } from 'd3-transition';
 
@@ -219,7 +219,7 @@ const createXAxis = (
   g.selectAll('path')
     .attr('stroke', axisColor)
     .attr('stroke-width', 1)
-    .attr('stroke-opacity', 1)
+    .attr('stroke-opacity', 0)
     .attr('d', `M0,0H${clippedWidth}`);
 
   g.selectAll('line')
@@ -229,7 +229,7 @@ const createXAxis = (
     .each(function () {
       const line = this as SVGLineElement;
       const x1 = parseFloat(line.getAttribute('x1') || '0');
-      if (x1 > clippedWidth) {
+      if (x1 < 0 || x1 > clippedWidth) {
         line.setAttribute('stroke-opacity', '0');
       }
     });
@@ -244,10 +244,38 @@ const createXAxis = (
       const text = this as SVGTextElement;
       const x = parseFloat(text.getAttribute('x') || '0');
       const textWidth = text.getBBox().width;
-      if (x + textWidth / 2 > clippedWidth) {
+
+      const isOutLeft = x + textWidth / 2 < 0;
+      const isOutRight = x - textWidth / 2 > clippedWidth;
+
+      if (isOutLeft || isOutRight) {
         text.setAttribute('opacity', '0');
+        return;
       }
+
+      text.setAttribute('opacity', '1');
     });
+
+  // Static baseline for X axis: full chart width, not affected by X-axis animation.
+  const jointColor = chartColors.grid;
+  const jointLength = clippedWidth;
+
+  const axesGroupNode = (g.node()?.parentNode as SVGGElement | null) ?? null;
+  const axesGroupSelection = axesGroupNode ? (select(axesGroupNode) as SVGGroupSelection) : g;
+
+  const existingJoint = axesGroupSelection.select<SVGLineElement>('line.x-axis-static-baseline');
+  const jointLine = existingJoint.empty()
+    ? axesGroupSelection.append('line').attr('class', 'x-axis-static-baseline')
+    : existingJoint;
+
+  jointLine
+    .attr('x1', 0)
+    .attr('x2', jointLength)
+    .attr('y1', chartHeight)
+    .attr('y2', chartHeight)
+    .attr('stroke', jointColor)
+    .attr('stroke-width', 1)
+    .attr('stroke-opacity', 1);
 };
 
 const createYAxis = (
@@ -312,6 +340,7 @@ export const createAxes = (
   if (xAxisGroup.empty()) {
     xAxisGroup = g.append('g').attr('class', 'x-axis-group');
   }
+  xAxisGroup.attr('clip-path', 'url(#x-axis-clip)');
 
   let yAxisGroup = g.select<SVGGElement>('g.y-axis-group');
   if (yAxisGroup.empty()) {
