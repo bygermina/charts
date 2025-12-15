@@ -11,8 +11,10 @@ interface IoTSensorProps {
   variant?: ChartVariant;
   min?: number;
   max?: number;
-  scale?: number;
 }
+
+const VIEWBOX_WIDTH = 140;
+const VIEWBOX_HEIGHT = 130;
 
 export const IoTSensor = ({
   value,
@@ -21,7 +23,6 @@ export const IoTSensor = ({
   variant = 'normal',
   min = 0,
   max = 100,
-  scale = 0.7,
 }: IoTSensorProps) => {
   const chartColors = getChartColors(variant);
 
@@ -33,102 +34,88 @@ export const IoTSensor = ({
   if (normalizedValue < 0.33) statusColor = chartColors.primary;
   else if (normalizedValue < 0.66) statusColor = chartColors.secondary;
 
-  const padding = 5;
-  const viewBoxX = -60 * scale - padding;
-  const viewBoxY = -50 * scale - padding;
-  const viewBoxWidth = 120 * scale + padding * 2;
-  const viewBoxHeight = 110 * scale + padding * 2;
-
   return (
     <div className={styles.container}>
-      <svg
-        viewBox={`${viewBoxX} ${viewBoxY} ${viewBoxWidth} ${viewBoxHeight}`}
-        className={styles.svg}
-      >
-        <g>
+      <svg viewBox={`0 0 ${VIEWBOX_WIDTH} ${VIEWBOX_HEIGHT}`} className={styles.svg}>
+        <g transform="translate(10 10)">
           <rect
-            x={-60 * scale}
-            y={-50 * scale}
-            width={120 * scale}
-            height={100 * scale}
-            rx={8 * scale}
+            x={0}
+            y={0}
+            width={120}
+            height={100}
+            rx={8}
             fill="var(--color-slate-700)"
             stroke="var(--color-slate-600)"
-            strokeWidth={1 * scale}
+            strokeWidth={1}
           />
           <rect
-            x={-55 * scale}
-            y={-45 * scale}
-            width={110 * scale}
-            height={90 * scale}
-            rx={6 * scale}
+            x={5}
+            y={5}
+            width={110}
+            height={90}
+            rx={6}
             fill="var(--color-slate-800)"
             stroke="var(--color-slate-700)"
-            strokeWidth={1 * scale}
+            strokeWidth={1}
           />
           <rect
-            x={-50 * scale}
-            y={-40 * scale}
-            width={100 * scale}
-            height={70 * scale}
-            rx={5 * scale}
+            x={10}
+            y={10}
+            width={100}
+            height={70}
+            rx={5}
             fill="var(--color-slate-900)"
             stroke="var(--color-slate-800)"
-            strokeWidth={1 * scale}
+            strokeWidth={1}
           />
+
           <text
-            x={0}
-            y={-8 * scale}
+            x={60}
+            y={40}
             textAnchor="middle"
-            dominantBaseline="middle"
             fill={statusColor}
-            fontSize={`${26 * scale}px`}
-            fontFamily="'Courier New', monospace"
+            fontSize="26px"
             fontWeight="bold"
+            {...CHART_TEXT_BASE_PROPS}
           >
             {displayValue}
           </text>
+
           <text
-            x={0}
-            y={12 * scale}
+            x={60}
+            y={58}
             textAnchor="middle"
-            dominantBaseline="middle"
             fill="var(--color-slate-400)"
-            fontSize={`${11 * scale}px`}
-            fontFamily="'Courier New', monospace"
+            fontSize="11px"
+            {...CHART_TEXT_BASE_PROPS}
           >
             {unit}
           </text>
+
           <rect
-            x={-45 * scale}
-            y={20 * scale}
-            width={90 * scale}
-            height={5 * scale}
-            rx={2.5 * scale}
+            x={15}
+            y={80}
+            width={90}
+            height={5}
+            rx={2.5}
             fill="var(--color-slate-800)"
             stroke="var(--color-slate-700)"
-            strokeWidth={0.5 * scale}
+            strokeWidth={0.5}
           />
-          <rect
-            x={-45 * scale}
-            y={20 * scale}
-            width={90 * scale * normalizedValue}
-            height={5 * scale}
-            rx={2.5 * scale}
-            fill={statusColor}
-          />
-          <text
-            x={0}
-            y={60 * scale}
-            textAnchor="middle"
-            fill={chartColors.text}
-            fontSize={`${12 * scale}px`}
-            fontWeight="500"
-            {...CHART_TEXT_BASE_PROPS}
-          >
-            {label}
-          </text>
+          <rect x={15} y={80} width={90 * normalizedValue} height={5} rx={2.5} fill={statusColor} />
         </g>
+
+        <text
+          x={VIEWBOX_WIDTH / 2}
+          y={VIEWBOX_HEIGHT - 5}
+          textAnchor="middle"
+          fill={chartColors.text}
+          fontSize="12px"
+          fontWeight="500"
+          {...CHART_TEXT_BASE_PROPS}
+        >
+          {label}
+        </text>
       </svg>
     </div>
   );
