@@ -131,12 +131,10 @@ export const animateChartElements = ({
   const duration = Math.abs(shiftOffset / speed) * 1000;
 
   elements.forEach(({ element, targetX, targetY }) => {
-    const { x: currentTranslateX, y: currentTranslateY } = getCurrentTranslate(element);
-
     element.interrupt();
 
-    const startTranslateX = currentTranslateX + shiftOffset;
-    element.attr('transform', `translate(${startTranslateX},${currentTranslateY})`);
+    const startTranslateX = targetX + shiftOffset;
+    element.attr('transform', `translate(${startTranslateX},${targetY})`);
 
     element
       .transition()

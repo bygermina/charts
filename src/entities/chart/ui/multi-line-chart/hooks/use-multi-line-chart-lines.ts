@@ -54,6 +54,8 @@ export const useMultiLineChartLines = ({
   strokeWidth,
 }: UseMultiLineChartLinesParams) => {
   useEffect(() => {
+    if (!chartWidth || !chartHeight) return;
+
     if (lines.length === 0 || lines.some((line) => line.data.length === 0)) {
       if (mainGroupRef.current) {
         mainGroupRef.current.selectAll('*').remove();
@@ -127,6 +129,8 @@ export const useMultiLineChartLines = ({
 
       const lineGroups: SVGGroupSelection[] = [];
 
+      const line = createLineGenerator({ xScale: xAxisScale, yScale });
+
       lines.forEach((lineSeries, lineIndex) => {
         const { data, color, showDots } = lineSeries;
 
@@ -136,8 +140,6 @@ export const useMultiLineChartLines = ({
         if (!shouldShift) {
           lineGroup.attr('transform', `translate(${-gridLeftShift}, 0)`);
         }
-
-        const line = createLineGenerator({ xScale: xAxisScale, yScale });
 
         const path = getOrCreateLinePath({
           lineGroup,
