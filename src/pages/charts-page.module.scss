@@ -39,9 +39,14 @@
 }
 
 .sensorContainer {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: spacing(6);
+
   @media (max-width: 555px) {
-    display: flex;
     flex-direction: column;
+    align-items: stretch;
   }
 }
 
