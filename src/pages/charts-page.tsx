@@ -15,33 +15,33 @@ export const Charts = () => {
     <main className={styles.root}>
       <div className={styles.container}>
         <Typography variant="h2" size="4xl" weight="bold" align="center" className={styles.title}>
-          Real-time Analytics
+          Real-Time Data Visualization & Performance-Critical Frontend
         </Typography>
         <div className={styles.chartsGrid}>
           <ChartContainer
             header="d3.js Multi Line Chart"
-            subtitle="data updates every second"
+            subtitle="Real-time chart with discrete 1-second data updates, rendered as smooth, continuous motion using transform: translate and frame-synchronized animations for stable FPS"
             className={styles.fixedScaleChart}
           >
             <MultiLineChartDemo />
           </ChartContainer>
           <ChartContainer
             header="Canvas chart 1000 points / sec"
-            subtitle="data updates every millisecond"
+            subtitle="High-frequency real-time Canvas visualization processing a continuous data stream with millisecond-level updates."
             className={styles.fixedScaleChart}
           >
             <RealTimeCanvasChart />
           </ChartContainer>
           <ChartContainer
             header="d3.js Bar Chart"
-            subtitle="Hover to see the value"
+            subtitle="Interactive bar chart built with D3.js, providing hover-based value inspection"
             className={styles.fixedScaleChart}
           >
             <BarChartDemo />
           </ChartContainer>
           <ChartContainer
             header="Svg sensor (change value in input)"
-            subtitle="sensors are visualized as custom SVG shapes with fully configurable animations"
+            subtitle="Interactive SVG-based sensors with input-driven value updates, demonstrating data-driven visuals and controlled UI state"
             className={styles.sensorContainer}
           >
             <div className={styles.sensorColumnGauge}>
@@ -59,7 +59,7 @@ export const Charts = () => {
           </ChartContainer>
           <ChartContainer
             header="Svg Flow Diagram"
-            subtitle="data flow between nodes using custom SVG graphics and animations"
+            subtitle="Data flow visualization between nodes using custom SVG graphics and animations"
           >
             <BoilerFlowDiagram />
           </ChartContainer>
