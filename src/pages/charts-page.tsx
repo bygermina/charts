@@ -12,7 +12,7 @@ import styles from './charts-page.module.scss';
 
 export const Charts = () => {
   return (
-    <section className={styles.root}>
+    <main className={styles.root}>
       <div className={styles.container}>
         <Typography variant="h2" size="4xl" weight="bold" align="center" className={styles.title}>
           Real-time Analytics
@@ -65,6 +65,6 @@ export const Charts = () => {
           </ChartContainer>
         </div>
       </div>
-    </section>
+    </main>
   );
 };
