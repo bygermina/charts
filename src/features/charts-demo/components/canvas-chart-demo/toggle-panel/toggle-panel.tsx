@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react';
+import { useState, type ReactNode, useId } from 'react';
 
 import styles from './toggle-panel.module.scss';
 
@@ -14,19 +14,29 @@ export const TogglePanel = ({
   position = 'top-right',
 }: TogglePanelProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const panelId = useId();
 
   return (
     <>
       <button
+        type="button"
         className={styles.toggleButton}
         onClick={() => setIsOpen(!isOpen)}
         aria-label={buttonLabel}
+        aria-expanded={isOpen}
+        aria-controls={panelId}
         data-position={position}
       >
         {buttonLabel}
       </button>
       {isOpen && (
-        <div className={styles.panel} data-position={position}>
+        <div
+          id={panelId}
+          className={styles.panel}
+          role="region"
+          aria-label={buttonLabel}
+          data-position={position}
+        >
           {children}
         </div>
       )}

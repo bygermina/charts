@@ -103,7 +103,14 @@ export const RealTimeSingleLineChartCanvas = ({
 
   return (
     <div className={styles.container} style={{ width, height }}>
-      <canvas ref={canvasRef} width={width} height={height} className={styles.canvas} />
+      <canvas
+        ref={canvasRef}
+        width={width}
+        height={height}
+        className={styles.canvas}
+        role="img"
+        aria-label="Real-time line chart showing live data stream"
+      />
     </div>
   );
 };

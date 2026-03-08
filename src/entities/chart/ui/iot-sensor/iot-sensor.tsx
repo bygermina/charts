@@ -33,7 +33,11 @@ export const IoTSensor = ({
   else if (normalizedValue < 0.66) statusColor = chartColors.secondary;
 
   return (
-    <div className={styles.container}>
+    <div
+      className={styles.container}
+      role="img"
+      aria-label={`Sensor value: ${displayValue} ${unit}. Range ${min} to ${max}`}
+    >
       <svg viewBox={`0 0 ${VIEWBOX_WIDTH} ${VIEWBOX_HEIGHT}`} className={styles.svg}>
         <g transform="translate(10 10)">
           <rect

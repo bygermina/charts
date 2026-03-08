@@ -10,6 +10,7 @@ interface LabeledInputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 
   className?: string;
   labelClassName?: string;
   inputClassName?: string;
+  ariaDescribedBy?: string;
 }
 
 export const LabeledInput = ({
@@ -18,6 +19,7 @@ export const LabeledInput = ({
   className,
   labelClassName,
   inputClassName,
+  ariaDescribedBy,
   type = 'text',
   ...inputProps
 }: LabeledInputProps) => {
@@ -33,6 +35,7 @@ export const LabeledInput = ({
       <input
         id={inputId}
         type={type}
+        {...(ariaDescribedBy ? { 'aria-describedby': ariaDescribedBy } : {})}
         {...inputProps}
         className={cn(styles.input, inputVariant, inputClassName)}
       />

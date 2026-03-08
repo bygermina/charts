@@ -155,5 +155,13 @@ export const BarChart = ({
     isInitialRenderRef.current = false;
   }, [data, chartWidth, chartHeight, margin, showGrid, chartColors, svgRef]);
 
-  return <svg ref={svgRef} width={width} height={height} />;
+  return (
+    <svg
+      ref={svgRef}
+      width={width}
+      height={height}
+      role="img"
+      aria-label={`Bar chart with ${data.length} data points`}
+    />
+  );
 };

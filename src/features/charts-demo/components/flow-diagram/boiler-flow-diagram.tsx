@@ -27,7 +27,11 @@ export const BoilerFlowDiagram = () => {
   const segments = createFlowSegments();
 
   return (
-    <div className={styles.container}>
+    <div
+      className={styles.container}
+      role="img"
+      aria-label="Boiler flow diagram showing data flow between nodes"
+    >
       <svg viewBox={`0 0 ${VIEWBOX_WIDTH} ${VIEWBOX_HEIGHT}`} className={styles.svg}>
         <PipesLayer segments={segments} />
         <ParticlesLayerCss segments={segments} />

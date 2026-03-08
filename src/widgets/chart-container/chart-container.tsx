@@ -15,7 +15,7 @@ interface ChartContainerProps {
 
 export const ChartContainer = ({ header, subtitle, children, className }: ChartContainerProps) => {
   return (
-    <Card className={styles.chartContainer}>
+    <Card as="section" className={styles.chartContainer}>
       <div className={styles.chartHeader}>
         <Typography variant="h3" size="lg" weight="bold" className={styles.chartTitle}>
           {header}

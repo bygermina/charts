@@ -76,7 +76,11 @@ export const GaugeChart = ({ value, variant = 'normal', min = 0, max = 100 }: Ga
   const ticks = createGaugeTicks({ min, max });
 
   return (
-    <div className={styles.container}>
+    <div
+      className={styles.container}
+      role="img"
+      aria-label={`Gauge: ${clampedValue} out of ${max}. Range ${min} to ${max}`}
+    >
       <svg viewBox={`0 0 ${GAUGE_VIEWBOX_WIDTH} ${GAUGE_VIEWBOX_HEIGHT}`} className={styles.svg}>
         <g transform={`translate(${GAUGE_CENTER}, ${GAUGE_CENTER})`}>
           <path

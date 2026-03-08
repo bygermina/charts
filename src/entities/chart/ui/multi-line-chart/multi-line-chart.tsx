@@ -153,7 +153,7 @@ export const MultiLineChart = ({
           ))}
         </div>
       )}
-      <div style={{ width, height }}>
+      <div style={{ width, height }} role="img" aria-label="Multi-line chart with real-time series">
         <svg ref={svgRef} width={width} height={height} className={styles.svg} />
       </div>
     </div>

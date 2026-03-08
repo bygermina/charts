@@ -40,7 +40,11 @@ const NetworkGraphContent = ({ width, height, variant = 'normal' }: NetworkGraph
   }, [width, height, chartColors]);
 
   return (
-    <div className={styles.container}>
+    <div
+      className={styles.container}
+      role="img"
+      aria-label="Network graph. Drag nodes to move, scroll to zoom, drag background to pan."
+    >
       <svg ref={svgRef} width={width} height={height} className={styles.svg} />
     </div>
   );

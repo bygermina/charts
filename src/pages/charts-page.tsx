@@ -12,7 +12,7 @@ import styles from './charts-page.module.scss';
 
 export const Charts = () => {
   return (
-    <main className={styles.root}>
+    <main id="main-content" className={styles.root} aria-label="Charts and data visualizations">
       <div className={styles.container}>
         <Typography variant="h2" size="4xl" weight="bold" align="center" className={styles.title}>
           Real-Time Data Visualization & Performance-Critical Frontend
