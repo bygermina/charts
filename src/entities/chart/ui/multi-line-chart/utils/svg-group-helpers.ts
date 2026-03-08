@@ -1,4 +1,4 @@
-import type { SVGGroupSelection } from '@/entities/chart/model/types';
+import type { SVGGroupSelection } from '../../../model/types';
 
 export interface GetOrCreateLineGroupConfig {
   mainGroup: SVGGroupSelection;
