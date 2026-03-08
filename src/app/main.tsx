@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 
 import { App } from './App.tsx';
 
-import '@/shared/config/styles/design-system/_css-variables.scss';
+import '@/shared/config/styles/design-system/global.scss';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

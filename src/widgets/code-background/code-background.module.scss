@@ -18,21 +18,23 @@
 }
 
 .grid {
-  display: grid;
+  display: flex;
+  flex-wrap: wrap;
   height: 100%;
-  grid-template-columns: repeat(3, 1fr);
   gap: spacing(8);
   padding: spacing(4);
+}
 
-  .column {
-    display: flex;
-    flex-direction: column;
-    gap: spacing(2);
-    user-select: none;
+.column {
+  display: flex;
+  flex: 1 1 calc(33.333% - spacing(8));
+  flex-direction: column;
+  gap: spacing(2);
+  min-width: 0;
+  user-select: none;
+}
 
-    .line {
-      transition: all transition(slow);
-      color: var(--color-blue-400-30);
-    }
-  }
+.line {
+  transition: all transition(slow);
+  color: var(--color-blue-400-30);
 }

@@ -53,20 +53,8 @@
   @return map.get(tokens.$radius, $size);
 }
 
-@function shadow($size) {
-  $shadow: map.get(tokens.$shadows, $size);
-  @if meta.type-of($shadow) == list {
-    @return $shadow;
-  }
-  @return $shadow;
-}
-
 @function transition($speed) {
   @return map.get(tokens.$transitions, $speed);
-}
-
-@function z-index($layer) {
-  @return map.get(tokens.$z-index, $layer);
 }
 
 @function breakpoint($size) {
