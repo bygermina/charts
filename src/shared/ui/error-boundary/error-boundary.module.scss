@@ -1,0 +1,6 @@
+@use 'styles/design-system' as *;
+
+.fallback {
+  padding: spacing(4);
+  color: var(--color-slate-300);
+}

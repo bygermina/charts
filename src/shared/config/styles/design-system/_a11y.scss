@@ -1,5 +1,6 @@
 @use './tokens' as *;
 @use './functions' as *;
+@use './mixins' as *;
 
 .visually-hidden {
   position: absolute;
@@ -32,4 +33,23 @@
   transform: translateY(0);
   outline: 2px solid var(--color-white);
   outline-offset: spacing(1);
+}
+
+:where(button, a, input, select, textarea):focus-visible {
+  outline: 2px solid var(--color-cyan-300);
+  outline-offset: 2px;
+  border-radius: radius(sm);
+  transition:
+    outline-color transition(fast),
+    outline-offset transition(fast);
+}
+
+:where(button, a):focus:not(:focus-visible) {
+  outline: none;
+}
+
+@include no-motion {
+  :where(button, a, input, select, textarea):focus-visible {
+    transition: none;
+  }
 }

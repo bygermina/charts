@@ -1,7 +1,6 @@
 import { type ReactNode } from 'react';
 
-import { Typography } from '@/shared/ui';
-import { Card } from '@/shared/ui';
+import { Typography, Card, ErrorBoundary } from '@/shared/ui';
 import { cn } from '@/shared/lib/utils';
 
 import styles from './chart-container.module.scss';
@@ -24,7 +23,9 @@ export const ChartContainer = ({ header, subtitle, children, className }: ChartC
           {subtitle}
         </Typography>
       </div>
-      <div className={cn(styles.chart, className)}>{children}</div>
+      <div className={cn(styles.chart, className)}>
+        <ErrorBoundary>{children}</ErrorBoundary>
+      </div>
     </Card>
   );
 };

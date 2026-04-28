@@ -171,7 +171,9 @@ export const drawAxes = ({
     ctx.restore();
   } catch (error) {
     ctx.restore();
-    console.error('Error drawing axes:', error);
+    if (import.meta.env.DEV) {
+      console.error('drawAxes failed:', error);
+    }
   }
 };
 
@@ -250,6 +252,8 @@ export const drawGrid = ({
     ctx.restore();
   } catch (error) {
     ctx.restore();
-    console.error('Error drawing grid:', error);
+    if (import.meta.env.DEV) {
+      console.error('drawGrid failed:', error);
+    }
   }
 };
