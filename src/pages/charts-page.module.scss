@@ -34,7 +34,6 @@
 
 .chartsGrid {
   display: flex;
-  flex-direction: row;
   flex-wrap: wrap;
   gap: spacing(8);
 
@@ -107,6 +106,6 @@
 }
 
 .fixedScaleChart {
-  overflow-x: hidden;
+  overflow-x: clip;
   overflow-y: visible;
 }
