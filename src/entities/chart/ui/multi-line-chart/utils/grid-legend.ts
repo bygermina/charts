@@ -1,27 +1,7 @@
 import { getClippedWidth } from '../../../lib/chart-dimensions';
-import { createGrid, createLineLegend } from '../../../lib/chart-utils';
+import { createGrid } from '../../../lib/chart-utils';
 import type { SVGGroupSelection } from '../../../model/types';
-import { type ManageLegendConfig, type ManageGridConfig } from '../types';
-
-export const manageLegend = ({
-  mainGroup,
-  lines,
-  chartWidth,
-  showLegend,
-  chartColors,
-}: ManageLegendConfig): void => {
-  mainGroup.selectAll('g.chart-legend').remove();
-
-  if (showLegend) {
-    const legendItems = lines.map((lineSeries) => ({
-      label: lineSeries.label,
-      color: lineSeries.color,
-      type: 'line' as const,
-    }));
-
-    createLineLegend(mainGroup, legendItems, chartWidth, chartColors);
-  }
-};
+import { type ManageGridConfig } from '../types';
 
 export const manageGrid = ({
   mainGroup,

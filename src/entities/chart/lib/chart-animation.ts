@@ -74,45 +74,6 @@ export const calculateAnimationSpeed = ({
   return fallbackSpeed || 100;
 };
 
-interface ApplyShiftAnimationConfig<
-  Datum = unknown,
-  PElement extends Element | null = Element | null,
-  PDatum = unknown,
-> {
-  element: Selection<SVGGElement, Datum, PElement, PDatum>;
-  shiftOffset: number;
-  speed: number;
-  targetX?: number;
-  targetY?: number;
-}
-
-export const applyShiftAnimation = <
-  Datum = unknown,
-  PElement extends Element | null = Element | null,
-  PDatum = unknown,
->({
-  element,
-  shiftOffset,
-  speed,
-  targetX = 0,
-  targetY = 0,
-}: ApplyShiftAnimationConfig<Datum, PElement, PDatum>): void => {
-  const duration = Math.abs(shiftOffset / speed) * 1000;
-
-  const { x: currentTranslateX, y: currentTranslateY } = getCurrentTranslate(element);
-
-  element.interrupt();
-
-  const startTranslateX = currentTranslateX + shiftOffset;
-  element.attr('transform', `translate(${startTranslateX},${currentTranslateY})`);
-
-  element
-    .transition()
-    .duration(duration)
-    .ease(easeLinear)
-    .attr('transform', `translate(${targetX},${targetY})`);
-};
-
 interface AnimateChartElementsConfig {
   elements: Array<{
     element: Selection<SVGGElement, unknown, null, undefined>;

@@ -4,7 +4,6 @@ import { type RealTimeSingleLineDataRef } from '@/entities/chart';
 
 import {
   calculateAvg,
-  calculateCurrent,
   calculateExceedCount,
   calculateExceedPercent,
   calculateMax,
@@ -13,8 +12,7 @@ import {
 
 import styles from './chart-statistics.module.scss';
 
-export interface Statistics {
-  current: number;
+interface Statistics {
   min: number;
   max: number;
   avg: number;
@@ -33,7 +31,7 @@ interface StatItem {
   label: string;
   key: keyof Statistics;
   format: (value: number) => string;
-  getColor?: (value: number, threshold: number) => string | undefined;
+  highlight?: boolean;
 }
 
 const HIGHLIGHT_COLOR = 'var(--color-red-600)';
@@ -58,13 +56,13 @@ const STAT_ITEMS: StatItem[] = [
     label: 'Exceeded:',
     key: 'exceedCount',
     format: (v) => v.toString(),
-    getColor: () => HIGHLIGHT_COLOR,
+    highlight: true,
   },
   {
     label: 'Exceed %:',
     key: 'exceedPercent',
     format: (v) => `${v.toFixed(1)}%`,
-    getColor: () => HIGHLIGHT_COLOR,
+    highlight: true,
   },
 ];
 
@@ -75,7 +73,6 @@ export const ChartStatistics = ({
   updateInterval = 1000,
 }: ChartStatisticsProps) => {
   const [statistics, setStatistics] = useState<Statistics>({
-    current: 0,
     min: 0,
     max: 0,
     avg: 0,
@@ -94,7 +91,6 @@ export const ChartStatistics = ({
       }
 
       const stats = {
-        current: calculateCurrent({ data }),
         min: calculateMin({ data, timeWindowMs }),
         max: calculateMax({ data, timeWindowMs }),
         avg: calculateAvg({ data, timeWindowMs }),
@@ -117,8 +113,7 @@ export const ChartStatistics = ({
       <div className={styles.statisticsContent}>
         {STAT_ITEMS.map((item) => {
           const value = statistics[item.key];
-          const color = item.getColor?.(value, highlightThreshold);
-          const isHighlighted = !!color;
+          const isHighlighted = item.highlight ?? false;
 
           return (
             <div key={item.key} className={styles.statRow}>
@@ -128,7 +123,7 @@ export const ChartStatistics = ({
                 data-highlight={isHighlighted}
                 style={
                   isHighlighted
-                    ? ({ '--stat-highlight-color': color } as React.CSSProperties)
+                    ? ({ '--stat-highlight-color': HIGHLIGHT_COLOR } as React.CSSProperties)
                     : undefined
                 }
               >

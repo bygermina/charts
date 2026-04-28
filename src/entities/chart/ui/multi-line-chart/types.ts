@@ -1,6 +1,11 @@
 import type { Selection } from 'd3-selection';
 
-import { type DataPoint, type LinearScale, type SVGGroupSelection } from '../../model/types';
+import {
+  type ChartColors,
+  type DataPoint,
+  type LinearScale,
+  type SVGGroupSelection,
+} from '../../model/types';
 
 export interface LineSeries {
   data: DataPoint[];
@@ -37,28 +42,10 @@ export interface CalculateGridLeftShiftConfig {
   chartWidth: number;
 }
 
-export interface UpdateDotsConfig {
-  lineGroup: Selection<SVGGElement, number, SVGGElement, unknown>;
-  lineIndex: number;
-  data: DataPoint[];
-  xScale: LinearScale;
-  yScale: LinearScale;
-}
-
 export interface GetOrCreateLinePathConfig {
   lineGroup: Selection<SVGGElement, number, SVGGElement, unknown>;
   color: string;
   strokeWidth: number;
-}
-
-import { type ChartColors } from '../../model/types';
-
-export interface ManageLegendConfig {
-  mainGroup: SVGGroupSelection;
-  lines: LineSeries[];
-  chartWidth: number;
-  showLegend: boolean;
-  chartColors: ChartColors;
 }
 
 export interface ManageGridConfig {

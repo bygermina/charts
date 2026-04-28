@@ -1,7 +1,5 @@
 import { type RealTimeSingleLineDataRef } from '@/entities/chart';
 
-import { type Statistics } from '../chart-statistics';
-
 interface GetTimeWindowDataParams {
   data: RealTimeSingleLineDataRef;
   timeWindowMs: number;
@@ -25,18 +23,6 @@ const getTimeWindowData = ({ data, timeWindowMs }: GetTimeWindowDataParams) => {
   }
 
   return dataPoints;
-};
-
-interface GetCurrentParams {
-  data: RealTimeSingleLineDataRef;
-}
-
-export const calculateCurrent = ({ data }: GetCurrentParams): number => {
-  if (!data || data.size === 0) return 0;
-
-  const { values, head, maxPoints } = data;
-  const lastIndex = (head - 1 + maxPoints) % maxPoints;
-  return values[lastIndex] || 0;
 };
 
 export const calculateMin = ({ data, timeWindowMs }: GetTimeWindowDataParams): number => {
@@ -82,25 +68,4 @@ export const calculateExceedPercent = ({
 
   const exceedCount = dataPoints.filter((value) => value > highlightThreshold).length;
   return (exceedCount / dataPoints.length) * 100;
-};
-
-interface CalculateStatisticsParams {
-  data: RealTimeSingleLineDataRef;
-  timeWindowMs: number;
-  highlightThreshold: number;
-}
-
-export const calculateStatistics = ({
-  data,
-  timeWindowMs,
-  highlightThreshold,
-}: CalculateStatisticsParams): Statistics => {
-  return {
-    current: calculateCurrent({ data }),
-    min: calculateMin({ data, timeWindowMs }),
-    max: calculateMax({ data, timeWindowMs }),
-    avg: calculateAvg({ data, timeWindowMs }),
-    exceedCount: calculateExceedCount({ data, timeWindowMs, highlightThreshold }),
-    exceedPercent: calculateExceedPercent({ data, timeWindowMs, highlightThreshold }),
-  };
 };
