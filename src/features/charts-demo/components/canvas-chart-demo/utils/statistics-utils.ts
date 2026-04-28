@@ -1,71 +1,62 @@
 import { type RealTimeSingleLineDataRef } from '@/entities/chart';
 
-interface GetTimeWindowDataParams {
-  data: RealTimeSingleLineDataRef;
+interface CalculateStatisticsParams {
+  data: RealTimeSingleLineDataRef | null;
   timeWindowMs: number;
+  highlightThreshold: number;
 }
 
-const getTimeWindowData = ({ data, timeWindowMs }: GetTimeWindowDataParams) => {
-  if (!data || data.size === 0) return [];
+export interface Statistics {
+  min: number;
+  max: number;
+  avg: number;
+  exceedCount: number;
+  exceedPercent: number;
+}
+
+const EMPTY_STATISTICS: Statistics = {
+  min: 0,
+  max: 0,
+  avg: 0,
+  exceedCount: 0,
+  exceedPercent: 0,
+};
+
+export const calculateStatistics = ({
+  data,
+  timeWindowMs,
+  highlightThreshold,
+}: CalculateStatisticsParams): Statistics => {
+  if (!data || data.size === 0) return EMPTY_STATISTICS;
 
   const { values, times, head, size, maxPoints } = data;
-  const currentTime = Date.now();
-  const t0 = currentTime - timeWindowMs;
-  const dataPoints: number[] = [];
+  const t0 = Date.now() - timeWindowMs;
+
+  let count = 0;
+  let sum = 0;
+  let min = Infinity;
+  let max = -Infinity;
+  let exceedCount = 0;
 
   for (let i = 0; i < size; i++) {
     const idx = (head - size + i + maxPoints) % maxPoints;
-    const pointTime = times[idx];
+    if (times[idx] < t0) continue;
 
-    if (pointTime < t0) continue;
-
-    dataPoints.push(values[idx]);
+    const value = values[idx];
+    sum += value;
+    if (value < min) min = value;
+    if (value > max) max = value;
+    if (value > highlightThreshold) exceedCount++;
+    count++;
   }
 
-  return dataPoints;
-};
+  if (count === 0) return EMPTY_STATISTICS;
 
-export const calculateMin = ({ data, timeWindowMs }: GetTimeWindowDataParams): number => {
-  const dataPoints = getTimeWindowData({ data, timeWindowMs });
-  if (dataPoints.length === 0) return 0;
-
-  return Math.min(...dataPoints);
-};
-
-export const calculateMax = ({ data, timeWindowMs }: GetTimeWindowDataParams): number => {
-  const dataPoints = getTimeWindowData({ data, timeWindowMs });
-  if (dataPoints.length === 0) return 0;
-
-  return Math.max(...dataPoints);
-};
-
-export const calculateAvg = ({ data, timeWindowMs }: GetTimeWindowDataParams): number => {
-  const dataPoints = getTimeWindowData({ data, timeWindowMs });
-  if (dataPoints.length === 0) return 0;
-
-  const sum = dataPoints.reduce((acc, val) => acc + val, 0);
-  return sum / dataPoints.length;
-};
-
-export const calculateExceedCount = ({
-  data,
-  timeWindowMs,
-  highlightThreshold,
-}: GetTimeWindowDataParams & { highlightThreshold: number }): number => {
-  const dataPoints = getTimeWindowData({ data, timeWindowMs });
-  if (dataPoints.length === 0) return 0;
-
-  return dataPoints.filter((value) => value > highlightThreshold).length;
-};
-
-export const calculateExceedPercent = ({
-  data,
-  timeWindowMs,
-  highlightThreshold,
-}: GetTimeWindowDataParams & { highlightThreshold: number }): number => {
-  const dataPoints = getTimeWindowData({ data, timeWindowMs });
-  if (dataPoints.length === 0) return 0;
-
-  const exceedCount = dataPoints.filter((value) => value > highlightThreshold).length;
-  return (exceedCount / dataPoints.length) * 100;
+  return {
+    min,
+    max,
+    avg: sum / count,
+    exceedCount,
+    exceedPercent: (exceedCount / count) * 100,
+  };
 };

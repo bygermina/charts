@@ -1,4 +1,4 @@
-import { select, type Selection } from 'd3-selection';
+import { type Selection } from 'd3-selection';
 
 import { BAR_OPACITY, BAR_BORDER_RADIUS } from '../../../model/constants';
 import {
@@ -44,16 +44,10 @@ const attachHoverHandlers = (
   chartColors: ChartColors,
 ): void => {
   selection
-    .on('mouseenter', null)
-    .on('mouseleave', null)
     .on('mouseenter', function (_event, d) {
-      select(this);
-
       createTooltip(g, d, xScale, yScale, chartColors);
     })
     .on('mouseleave', function () {
-      select(this);
-
       g.selectAll('.bar-tooltip').remove();
     });
 };

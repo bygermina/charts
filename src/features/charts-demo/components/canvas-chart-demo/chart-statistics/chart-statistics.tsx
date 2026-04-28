@@ -2,23 +2,9 @@ import { useEffect, useState, type RefObject } from 'react';
 
 import { type RealTimeSingleLineDataRef } from '@/entities/chart';
 
-import {
-  calculateAvg,
-  calculateExceedCount,
-  calculateExceedPercent,
-  calculateMax,
-  calculateMin,
-} from '../utils/statistics-utils';
+import { calculateStatistics, type Statistics } from '../utils/statistics-utils';
 
 import styles from './chart-statistics.module.scss';
-
-interface Statistics {
-  min: number;
-  max: number;
-  avg: number;
-  exceedCount: number;
-  exceedPercent: number;
-}
 
 interface ChartStatisticsProps {
   dataRef: RefObject<RealTimeSingleLineDataRef>;
@@ -84,21 +70,9 @@ export const ChartStatistics = ({
     let timeoutId: ReturnType<typeof setTimeout>;
 
     const updateStatistics = () => {
-      const data = dataRef.current;
-      if (!data) {
-        timeoutId = setTimeout(updateStatistics, updateInterval);
-        return;
-      }
-
-      const stats = {
-        min: calculateMin({ data, timeWindowMs }),
-        max: calculateMax({ data, timeWindowMs }),
-        avg: calculateAvg({ data, timeWindowMs }),
-        exceedCount: calculateExceedCount({ data, timeWindowMs, highlightThreshold }),
-        exceedPercent: calculateExceedPercent({ data, timeWindowMs, highlightThreshold }),
-      };
-
-      setStatistics(stats);
+      setStatistics(
+        calculateStatistics({ data: dataRef.current, timeWindowMs, highlightThreshold }),
+      );
       timeoutId = setTimeout(updateStatistics, updateInterval);
     };
 

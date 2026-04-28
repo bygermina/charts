@@ -1,3 +1,5 @@
+import { useMemo } from 'react';
+
 import { clamp } from '@/shared/lib/utils';
 
 import type { FlowType, Segment } from '../config/types';
@@ -125,7 +127,10 @@ const buildPathsAndParticles = ({
 };
 
 export const ParticlesLayerCss = ({ segments, particleRadius = 5 }: ParticlesLayerCssProps) => {
-  const { paths, particles } = buildPathsAndParticles({ segments, particleRadius });
+  const { paths, particles } = useMemo(
+    () => buildPathsAndParticles({ segments, particleRadius }),
+    [segments, particleRadius],
+  );
 
   return (
     <g className={styles.container}>
